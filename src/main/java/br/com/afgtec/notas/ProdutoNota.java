@@ -85,31 +85,31 @@ public class ProdutoNota {
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
 	public Nota getNota() {
 		return nota;
 	}
-
+	
 	public void setNota(Nota nota) {
 		this.nota = nota;
 	}
-
+	
 	public Produto getProduto() {
 		return produto;
 	}
-
+	
 	public void setProduto(Produto produto) {
 		this.produto = produto;
 	}
-
+	
 	public double getValor() {
 		return valor;
 	}
-
+	
 	public void setValor(double valor) {
 		this.valor = valor;
 	}
-
+	
 	public double getIcms() {
 		return icms;
 	}

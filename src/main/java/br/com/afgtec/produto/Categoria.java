@@ -8,8 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import br.com.afgtec.impostos.Icms;
+import br.com.afgtec.impostos.Imposto;
 import br.com.afgtec.pessoa.Empresa;
 import br.com.agrofauna.utilidades.Campo;
 
@@ -30,61 +33,21 @@ public class Categoria{
 	@JoinColumn(name="id_empresa")
 	private Empresa empresa;
 	
-	@Column
-	@Campo(nome = "ICMS",lista=true,editavel=true, ordem="{{et}}.icms")
-	private double icms;
-	
-	@Column
-	@Campo(nome = "IPI",lista=true,editavel=true, ordem="{{et}}.ipi")
-	private double ipi;
-	
-	@Column
-	@Campo(nome = "COFINS",lista=true,editavel=true, ordem="{{et}}.cofins")
-	private double cofins;
-	
-	@Column
-	@Campo(nome = "BC",lista=true,editavel=true, ordem="{{et}}.base_calculo")
-	private double base_calculo;
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="id_icms")
+	private Icms icms;
 	
 	@Column
 	private boolean loja_virtual;
 	
-	@Column
-	@Campo(nome = "PIS",lista=true,editavel=true, ordem="{{et}}.pis")
-	private double pis;
 	
 	
-
-	public double getIcms() {
+	public Icms getIcms() {
 		return icms;
 	}
 
-	public void setIcms(double icms) {
+	public void setIcms(Icms icms) {
 		this.icms = icms;
-	}
-
-	public double getIpi() {
-		return ipi;
-	}
-
-	public void setIpi(double ipi) {
-		this.ipi = ipi;
-	}
-
-	public double getCofins() {
-		return cofins;
-	}
-
-	public void setCofins(double cofins) {
-		this.cofins = cofins;
-	}
-
-	public double getBase_calculo() {
-		return base_calculo;
-	}
-
-	public void setBase_calculo(double base_calculo) {
-		this.base_calculo = base_calculo;
 	}
 
 	public boolean isLoja_virtual() {
@@ -93,14 +56,6 @@ public class Categoria{
 
 	public void setLoja_virtual(boolean loja_virtual) {
 		this.loja_virtual = loja_virtual;
-	}
-
-	public double getPis() {
-		return pis;
-	}
-
-	public void setPis(double pis) {
-		this.pis = pis;
 	}
 
 	public int getId() {

@@ -8,6 +8,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
@@ -27,21 +29,21 @@ public class PessoaJuridica extends Pessoa{
 	@Column
 	private Calendar abertura;
 	
-	@Column
-	private String inscricao_suframa;
+	@OneToOne
+	@JoinColumn(name="id_suframa")
+	private Suframa suframa;
 	
 	@Enumerated(EnumType.ORDINAL)
 	@Column
 	private CodigoRegimeTributario crt;
 	
-	
-	
-	public String getInscricao_suframa() {
-		return inscricao_suframa;
+
+	public Suframa getSuframa() {
+		return suframa;
 	}
 
-	public void setInscricao_suframa(String inscricao_suframa) {
-		this.inscricao_suframa = inscricao_suframa;
+	public void setSuframa(Suframa suframa) {
+		this.suframa = suframa;
 	}
 
 	public CodigoRegimeTributario getCrt() {
