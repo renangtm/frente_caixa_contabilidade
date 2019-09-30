@@ -13,8 +13,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import br.com.afgtec.base.ET;
-import br.com.afgtec.pessoa.Usuario;
 import br.com.afgtec.unidades.TipoQuantidade;
+import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.ListModelGenerica;
 import br.com.agrofauna.utilidades.ProvedorDeEventos;
 import br.com.codigo.PadraoCodigo;
@@ -65,7 +65,7 @@ public class CodigosExternos extends Modulo{
 		
 		EntityManager et = ET.nova();
 		
-		this.model = new ListModelGenerica<PadraoCodigo>(operador.getEmpresa().getPadroesCodigo(),PadraoCodigo.class,
+		this.model = new ListModelGenerica<PadraoCodigo>(operador.getPf().getEmpresa().getPadroesCodigo(),PadraoCodigo.class,
 				new ProvedorDeEventos<PadraoCodigo>(){
 
 					@Override
@@ -96,11 +96,11 @@ public class CodigosExternos extends Modulo{
 	
 	public void init(Usuario operador){
 
-		this.setTitle(operador.getEmpresa().getNome()+" - Operador: "+operador.getNome()+" - Codigos Externos");
+		this.setTitle(operador.getPf().getEmpresa()+" - Operador: "+operador.getPf().getNome()+" - Codigos Externos");
 		
 		EntityManager et = ET.nova();
 		
-		et.refresh(operador.getEmpresa());
+		et.refresh(operador.getPf().getEmpresa());
 		
 		this.operador = operador;
 		
@@ -115,7 +115,7 @@ public class CodigosExternos extends Modulo{
 			public void actionPerformed(ActionEvent e) {
 				
 				PadraoCodigo pc = new PadraoCodigo();
-				pc.setEmpresa(operador.getEmpresa());
+				pc.setEmpresa(operador.getPf().getEmpresa());
 				
 				setPadraoCodigo(pc);
 				

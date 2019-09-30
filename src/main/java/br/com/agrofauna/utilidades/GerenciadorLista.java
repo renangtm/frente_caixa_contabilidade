@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableModel;
@@ -32,7 +35,7 @@ public class GerenciadorLista<T> {
 
 	private int numeroPaginas = 0;
 
-	private int porPagina = 3;
+	private int porPagina = 40;
 
 	private String filtro = "";
 
@@ -57,6 +60,31 @@ public class GerenciadorLista<T> {
 
 		this.filtro = filtro;
 		this.atualizar();
+
+	}
+	
+	public void setFiltro(JTextField filtro) {
+
+		filtro.addCaretListener(new CaretListener(){
+
+			@Override
+			public void caretUpdate(CaretEvent e) {
+				
+				new Thread(new Runnable(){
+
+					@Override
+					public void run() {
+						
+						setFiltro(filtro.getText());
+						
+					}
+					
+				}).start();
+				
+			}
+			
+			
+		});
 
 	}
 

@@ -65,34 +65,40 @@ public class ListModelGenerica<T> extends AbstractTableModel {
 	
 	private Representador<T> getRepresentador(T objeto){
 		
-		try {
-			
-			Constructor<? extends Representador<T>> construtor = this.representador.getConstructor(objeto.getClass());
-			
-			Representador<T> representador = construtor.newInstance(objeto);
-			
-			representador.setParametro(this.representerParam);
-			
-			return representador;
-			
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		@SuppressWarnings("rawtypes")
+		Class c = objeto.getClass();
+		
+		while(!c.equals(Object.class)){
+			try {
+				
+				Constructor<? extends Representador<T>> construtor = this.representador.getConstructor(c);
+				
+				Representador<T> representador = construtor.newInstance(objeto);
+				
+				representador.setParametro(this.representerParam);
+				
+				return representador;
+				
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			c=c.getSuperclass();
 		}
 		
 		return null;

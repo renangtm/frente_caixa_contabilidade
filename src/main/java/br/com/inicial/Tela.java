@@ -11,9 +11,7 @@ import br.com.agrofauna.utilidades.LayoutRelativo;
 
 public class Tela extends JFrame{
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	public LayoutRelativo lr;
 	protected final Tela este = this;

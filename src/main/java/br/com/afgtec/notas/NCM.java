@@ -6,23 +6,29 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import br.com.agrofauna.utilidades.Campo;
+
 @Entity
 public class NCM {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Campo(nome="Cod",editavel=false,ordem="{{et}}.id")
 	private int id;
 	
 	@Column
+	@Campo(nome="Numero",editavel=false,ordem="{{et}}.numero")
 	private String numero;
 	
 	@Column
 	private String descricao;
 	
 	@Column
+	@Campo(nome="Ex",editavel=false,ordem="{{et}}.editavel")
 	private int ex;
 	
 	@Column
+	@Campo(nome="Ipi(%)",editavel=false,ordem="{{et}}.alicota_ipi")
 	private double alicota_ipi;
 
 	public int getId() {

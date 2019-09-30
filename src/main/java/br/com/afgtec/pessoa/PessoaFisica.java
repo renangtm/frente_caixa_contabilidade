@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToOne;
+
+import br.com.afgtec.usuario.Usuario;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -18,10 +21,26 @@ public class PessoaFisica extends Pessoa{
 	private String rg;
 	
 	@Column
-	private int idade;
-	
-	@Column
 	private Calendar data_nascimento;
+	
+	@OneToOne(mappedBy="pf")
+	private Usuario usuario;
+	
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public PessoaFisica(){
+		super();
+		
+		this.data_nascimento = Calendar.getInstance();
+		
+	}
 
 	public String getCpf() {
 		return cpf;
@@ -37,14 +56,6 @@ public class PessoaFisica extends Pessoa{
 
 	public void setRg(String rg) {
 		this.rg = rg;
-	}
-
-	public int getIdade() {
-		return idade;
-	}
-
-	public void setIdade(int idade) {
-		this.idade = idade;
 	}
 
 	public Calendar getData_nascimento() {

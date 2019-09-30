@@ -153,6 +153,7 @@ public class ICMS20 extends Icms {
 		if(this.icmsOriginal != null)
 			i.icmsOriginal=(Icms)this.icmsOriginal.clone();
 		
+		i.setOrigem(this.getOrigem());
 		i.modalidadeBC=this.modalidadeBC;
 		i.motivo=this.motivo;
 		i.porcentagemReducaoBC=this.porcentagemReducaoBC;

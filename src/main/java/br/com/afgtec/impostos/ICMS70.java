@@ -219,6 +219,7 @@ public class ICMS70 extends Icms {
 		if (this.icmsOriginal != null)
 			i.icmsOriginal = (Icms) this.icmsOriginal.clone();
 
+		i.setOrigem(this.getOrigem());
 		i.modalidadeBC = this.modalidadeBC;
 		i.modalidadeBCST = this.modalidadeBCST;
 		i.motivoDesoneracao = this.motivoDesoneracao;

@@ -11,7 +11,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 import br.com.afgtec.notas.OrigemMercadoria;
-import br.com.afgtec.pessoa.Pessoa;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -100,4 +99,36 @@ public abstract class Icms {
 
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cst == null) ? 0 : cst.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Icms other = (Icms) obj;
+		if (cst == null) {
+			if (other.cst != null)
+				return false;
+		} else if (!cst.equals(other.cst))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		
+		return this.cst;
+		
+	}
+	
 }

@@ -3,7 +3,7 @@ package br.com.inicial;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.afgtec.pessoa.Usuario;
+import br.com.afgtec.usuario.Usuario;
 
 public class DisposicaoModulos {
 
@@ -15,7 +15,11 @@ public class DisposicaoModulos {
 		
 		disposicao.add(Produtos.class);
 		
-		disposicao.add(Categorias.class);
+		disposicao.add(CadastroCFOP_.class);
+		
+		disposicao.add(CadastroPessoa.class);
+		
+		disposicao.add(CadastroNcm.class);
 	
 		Object[] menu_codigos = new Object[2];
 		menu_codigos[0] = "Codigos de Barra";
@@ -31,13 +35,24 @@ public class DisposicaoModulos {
 		menu_notas[0] = "Notas";
 			
 			List<Object> _menu_notas = new ArrayList<Object>();
-			_menu_notas.add(Notas.class);
 			_menu_notas.add(ImportarXML.class);
+			_menu_notas.add(Notas.class);
 			
 		menu_notas[1] = _menu_notas;
 		
 		disposicao.add(menu_notas);
 		
+		Object[] menu_financeiro = new Object[2];
+		menu_financeiro[0] = "Financeiro";
+		
+			List<Object> _menu_financeiro = new ArrayList<Object>();
+			_menu_financeiro.add(CadastroHistorico.class);
+			_menu_financeiro.add(CadastroOperacao.class);
+			
+		menu_financeiro[1] = _menu_financeiro;
+			
+		disposicao.add(menu_financeiro);
+			
 		return disposicao;
 		
 	}

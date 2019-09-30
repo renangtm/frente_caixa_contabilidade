@@ -118,6 +118,8 @@ public class ICMS51 extends Icms {
 	public Object clone(){
 		
 		ICMS51 i = new ICMS51();
+		
+		i.setOrigem(this.getOrigem());
 		i.alicotaIcms=this.alicotaIcms;
 		i.modalidadeBC=this.modalidadeBC;
 		i.percentualDiferimento=this.percentualDiferimento;

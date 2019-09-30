@@ -18,9 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import br.com.afgtec.arquivos.Arquivo;
+import br.com.afgtec.impostos.Imposto;
+import br.com.afgtec.pessoa.Empresa;
 import br.com.afgtec.pessoa.Pessoa;
 import br.com.afgtec.pessoa.PessoaJuridica;
-import br.com.afgtec.pessoa.Transportadora;
+import br.com.afgtec.transportadora.Transportadora;
 
 @Entity
 public class Nota {
@@ -29,15 +31,18 @@ public class Nota {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	@Column
+	private int ficha;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_pessoa")
 	private PessoaJuridica emitente;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "id_transportadora")
 	private Transportadora transportadora;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "id_destinatario")
 	private Pessoa destinatario;
 
@@ -46,7 +51,7 @@ public class Nota {
 
 	@Column
 	private Calendar data_saida_entrada;
-	
+
 	@Column
 	private int serie;
 
@@ -58,20 +63,20 @@ public class Nota {
 
 	@Column
 	private String chave_referenciada;
-	
-	@ManyToOne
-	@JoinColumn(name="id_xml")
+
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "id_xml")
 	private Arquivo xml;
 
-	@ManyToOne
-	@JoinColumn(name="id_danfe")
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "id_danfe")
 	private Arquivo danfe;
 
-
+	@Enumerated(EnumType.ORDINAL)
 	@Column
 	private SaidaEntrada operacao;
-	
-	@OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<ProdutoNota> produtos;
 
@@ -84,7 +89,7 @@ public class Nota {
 	@Enumerated(EnumType.ORDINAL)
 	@Column
 	private StatusNota status;
-	
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column
 	private ModeloNota modelo;
@@ -95,47 +100,147 @@ public class Nota {
 	@Enumerated(EnumType.ORDINAL)
 	@Column
 	private TipoNota tipo;
-	
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column
-	private FormaPagamentoNota forma_pagamento;
+	private FormaPagamento forma_pagamento;
 
-	@OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<Vencimento> vencimentos;
 
 	@Column
 	private String natureza_operacao;
 
-	
+	@Column
+	private double valorMeioDePagamento;
+
+	@Column
+	private int credenciadoraCartao;
+
+	@Column
+	private String numeroAutorizacaoOperacaoCartaoCreditoDebito;
+
+	@Column
+	private String cnpjCredenciadoraCartao;
+
+	@ManyToOne
+	@JoinColumn(name = "id_empresa")
+	private Empresa empresa;
+
+	public OperacaoLogistica getOperacaoLogistica() {
+
+		boolean dentro_estado = true;
+
+		if (this.getDestinatario() != null) {
+
+			dentro_estado = this.getDestinatario().getEndereco().getCidade().getEstado()
+					.equals(this.getEmitente().getEndereco().getCidade().getEstado());
+
+		}
+
+		if (this.getTipo().equals(TipoNota.NORMAL)) {
+
+			if (dentro_estado) {
+
+				return OperacaoLogistica.VENDA_DENTRO_ESTADO;
+
+			} else {
+
+				return OperacaoLogistica.VENDA_FORA_ESTADO;
+
+			}
+
+		} else if (this.getTipo().equals(TipoNota.DEVOLUCAO)) {
+
+			return OperacaoLogistica.DEVOLUCAO;
+
+		}
+
+		return OperacaoLogistica.VENDA_DENTRO_ESTADO;
+
+	}
+
+	public double getTotalIpi() {
+
+		return this.produtos.stream()
+				.mapToDouble(x -> (x.getProduto().getNcm().getAlicota_ipi() / 100) * x.getValor() * x.getQuantidade())
+				.sum();
+
+	}
+
+	public void atualizarRegrasFiscais() {
+
+		this.produtos.stream().forEach(p -> {
+
+			ImpostoFactory impf = new ImpostoFactory(p.getProduto().getCategoria().getTabelaAlicota(), this.tipo)
+					.setDestinatario(this.getDestinatario()).setEmitente(this.getEmitente()).setProduto(p.getProduto());
+
+			Imposto imp = impf.getImposto();
+
+			p.setImposto(imp);
+
+			imp.calcularSobre(p.getValor() * p.getQuantidade());
+
+			p.setCfop(p.getProduto().getCategoria().getTabelaCfop().getCFOP(this.getOperacaoLogistica()));
+			
+		});
+
+	}
+
 	public Nota() {
-		
-		
+
 		this.tipo = TipoNota.NORMAL;
 		this.status = StatusNota.ATIVA;
 		this.produtos = new ArrayList<ProdutoNota>();
 		this.vencimentos = new ArrayList<Vencimento>();
-		
-		this.transportadora = new Transportadora();
+
 		this.emitente = new PessoaJuridica();
-		
+
 		this.data_emissao = Calendar.getInstance();
-		
+		this.data_saida_entrada = Calendar.getInstance();
+
 	}
-	
-	
-	
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public int getFicha() {
+		return ficha;
+	}
+
+	public void setFicha(int ficha) {
+		this.ficha = ficha;
+	}
+
+	public String getNumeroAutorizacaoOperacaoCartaoCreditoDebito() {
+		return numeroAutorizacaoOperacaoCartaoCreditoDebito;
+	}
+
+	public void setNumeroAutorizacaoOperacaoCartaoCreditoDebito(String numeroAutorizacaoOperacaoCartaoCreditoDebito) {
+		this.numeroAutorizacaoOperacaoCartaoCreditoDebito = numeroAutorizacaoOperacaoCartaoCreditoDebito;
+	}
+
+	public String getCnpjCredenciadoraCartao() {
+		return cnpjCredenciadoraCartao;
+	}
+
+	public void setCnpjCredenciadoraCartao(String cnpjCredenciadoraCartao) {
+		this.cnpjCredenciadoraCartao = cnpjCredenciadoraCartao;
+	}
+
 	public String getChave_referenciada() {
 		return chave_referenciada;
 	}
 
-
-
 	public void setChave_referenciada(String chave_referenciada) {
 		this.chave_referenciada = chave_referenciada;
 	}
-
-
 
 	public SaidaEntrada getOperacao() {
 		return operacao;
@@ -145,43 +250,29 @@ public class Nota {
 		this.operacao = operacao;
 	}
 
-
-
 	public Calendar getData_saida_entrada() {
 		return data_saida_entrada;
 	}
-
-
 
 	public void setData_saida_entrada(Calendar data_saida_entrada) {
 		this.data_saida_entrada = data_saida_entrada;
 	}
 
-
-
 	public ModeloNota getModelo() {
 		return modelo;
 	}
-
-
 
 	public void setModelo(ModeloNota modelo) {
 		this.modelo = modelo;
 	}
 
-
-
-	public FormaPagamentoNota getForma_pagamento() {
+	public FormaPagamento getForma_pagamento() {
 		return forma_pagamento;
 	}
 
-
-
-	public void setForma_pagamento(FormaPagamentoNota forma_pagamento) {
+	public void setForma_pagamento(FormaPagamento forma_pagamento) {
 		this.forma_pagamento = forma_pagamento;
 	}
-
-
 
 	public Pessoa getDestinatario() {
 		return destinatario;
@@ -189,48 +280,6 @@ public class Nota {
 
 	public void setDestinatario(Pessoa dest) {
 		this.destinatario = dest;
-	}
-
-	public double getTotal() {
-
-		return this.produtos.stream().map(x -> x.getQuantidade() * x.getValor()).mapToDouble(x -> (double) x).sum();
-
-	}
-
-	public double getBaseCalculo() {
-
-		return this.produtos.stream().map(x -> x.getBase_calculo()).mapToDouble(x -> (double) x).sum();
-
-	}
-
-	public double getIcms() {
-
-		return this.produtos.stream().map(x -> x.getIcms()).mapToDouble(x -> (double) x).sum();
-
-	}
-
-	public double getPis() {
-
-		return this.produtos.stream().map(x -> x.getPis()).mapToDouble(x -> (double) x).sum();
-
-	}
-
-	public double getCofins() {
-
-		return this.produtos.stream().map(x -> x.getCofins()).mapToDouble(x -> (double) x).sum();
-
-	}
-
-	public double getIpi() {
-
-		return this.produtos.stream().map(x -> x.getIpi()).mapToDouble(x -> (double) x).sum();
-
-	}
-
-	public double getIcmsDesonerado() {
-
-		return this.produtos.stream().map(x -> x.getIcms_desonerado()).mapToDouble(x -> (double) x).sum();
-
 	}
 
 	public String getNatureza_operacao() {
@@ -321,7 +370,6 @@ public class Nota {
 		this.danfe = danfe;
 	}
 
-
 	public List<ProdutoNota> getProdutos() {
 		return produtos;
 	}
@@ -368,6 +416,145 @@ public class Nota {
 
 	public void setVencimentos(List<Vencimento> vencimentos) {
 		this.vencimentos = vencimentos;
+	}
+
+	// ----------------------
+
+	public double getValorMeioDePagamento() {
+		return valorMeioDePagamento;
+	}
+
+	public void setValorMeioDePagamento(double valorMeioDePagamento) {
+		this.valorMeioDePagamento = valorMeioDePagamento;
+	}
+
+	public int getCredenciadoraCartao() {
+		return credenciadoraCartao;
+	}
+
+	public void setCredenciadoraCartao(int credenciadoraCartao) {
+		this.credenciadoraCartao = credenciadoraCartao;
+	}
+
+	public double getIcmsTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getIcms().getValorIcms()).sum();
+
+	}
+
+	public double getBaseCalculoIcmsTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getIcms().getValorBaseCalculo()).sum();
+
+	}
+
+	public double getIcmsDesoneradoTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getIcms().getValorIcmsDesonerado()).sum();
+
+	}
+
+	public double getBaseCalculoSTTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getIcms().getBaseCalculoST()).sum();
+
+	}
+
+	public double getIcmsSTTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getIcms().getValorIcmsST()).sum();
+
+	}
+
+	public double getValorTotalProdutosServicos() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getValor() * p.getQuantidade()).sum();
+
+	}
+
+	public double getValorTotalNota() {
+
+		return this.produtos.stream()
+				.mapToDouble(p -> p.getValor() * p.getQuantidade() - p.getDesconto() + p.getOutro()).sum();
+
+	}
+
+	public double getFreteTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getFrete()).sum();
+
+	}
+
+	public double getSeguroTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getSeguro()).sum();
+
+	}
+
+	public double getAcrescimoTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getOutro()).sum();
+
+	}
+
+	public double getDescontoTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getDesconto()).sum();
+
+	}
+
+	public double getPisTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getPis().getValor()).sum();
+
+	}
+
+	public double getCofinsTotal() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getCofins().getValor()).sum();
+
+	}
+
+	public double valorTributos() {
+
+		return this.produtos.stream().mapToDouble(p -> p.getImposto().getTotalImpostos()).sum();
+
+	}
+
+	public double getDescontoSubtotalItens() {
+
+		return Math.max(0, this.getDescontoTotal() - this.getAcrescimoTotal());
+
+	}
+
+	public double getAcrescimoSubtotalItens() {
+
+		return Math.max(0, this.getAcrescimoTotal() - this.getDescontoTotal());
+
+	}
+
+	public double getTroco() {
+
+		return this.valorMeioDePagamento - this.getValorTotalNota();
+
+	}
+
+	public double getISSQNtot() {
+
+		return 0;
+
+	}
+
+	public double getBaseCalculoISSQNTotal() {
+
+		return 0;
+
+	}
+
+	public double getTotalISS() {
+
+		return 0;
+
 	}
 
 }

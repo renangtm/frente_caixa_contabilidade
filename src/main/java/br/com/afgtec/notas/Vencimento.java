@@ -1,13 +1,18 @@
 package br.com.afgtec.notas;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import br.com.afgtec.financeiro.Movimento;
 
 @Entity
 public class Vencimento {
@@ -21,6 +26,15 @@ public class Vencimento {
 	
 	@Column
 	private double valor;
+	
+	@OneToMany(mappedBy="vencimento")
+	private List<Movimento> movimentos;
+	
+	public Vencimento(){
+		
+		this.movimentos = new ArrayList<Movimento>();
+		
+	}
 	
 	public int getId() {
 		return id;
@@ -46,6 +60,10 @@ public class Vencimento {
 		this.valor = valor;
 	}
 
-	
+	public double getPendencia(){
+		
+		return this.valor-this.movimentos.stream().mapToDouble(m->m.getValor()).sum();
+		
+	}
 	
 }

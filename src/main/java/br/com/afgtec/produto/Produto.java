@@ -47,6 +47,12 @@ public class Produto implements ItemQuantificavel{
 	@Column
 	private double valor;
 	
+	@Column
+	private boolean apareceLoja;
+	
+	@Column
+	private double porcentagemLoja;
+	
 	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_quantidade")
 	private Estoque estoque;
@@ -69,13 +75,12 @@ public class Produto implements ItemQuantificavel{
 	@Column
 	private double volume;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_categoria")
 	private Categoria categoria;
 	
 	@Column
 	private String imagem;
-	
 	
 	public NCM getNcm() {
 		return ncm;
@@ -99,6 +104,24 @@ public class Produto implements ItemQuantificavel{
 		
 		return this.imagem;
 		
+	}
+	
+	
+
+	public boolean isApareceLoja() {
+		return apareceLoja;
+	}
+
+	public void setApareceLoja(boolean apareceLoja) {
+		this.apareceLoja = apareceLoja;
+	}
+
+	public double getPorcentagemLoja() {
+		return porcentagemLoja;
+	}
+
+	public void setPorcentagemLoja(double porcentagemLoja) {
+		this.porcentagemLoja = porcentagemLoja;
 	}
 
 	public void setCodigo_barra(String codigo_barra) {
@@ -175,6 +198,7 @@ public class Produto implements ItemQuantificavel{
 		this.estoque = new Estoque();
 		this.unidade_peso = UnidadePeso.GR;
 		this.unidade_volume = UnidadeVolume.CM3;
+		this.categoria = new Categoria();
 		
 	}
 

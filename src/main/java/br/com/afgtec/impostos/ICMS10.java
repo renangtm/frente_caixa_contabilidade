@@ -162,6 +162,7 @@ public class ICMS10 extends Icms {
 
 		ICMS10 i = new ICMS10();
 
+		i.setOrigem(this.getOrigem());
 		i.alicotaIcmsST = this.alicotaIcmsST;
 		i.modalidadeBC = this.modalidadeBC;
 		i.modalidadeBCST = this.modalidadeBCST;

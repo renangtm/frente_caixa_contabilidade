@@ -16,7 +16,9 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import br.com.afgtec.pessoa.Usuario;
+import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.produto.ProdutoService;
+import br.com.afgtec.usuario.Usuario;
 import br.com.codigo.CodigoBarra;
 import br.com.entidades.Icones;
 import br.com.venda.ProdutoVenda;
@@ -58,13 +60,15 @@ public class FrenteCaixa extends Modulo{
 	
 	public boolean focus = true;
 	
+	private Empresa empresa;
+	
 	public void novaVenda() {
 		
 		this.venda = new Venda();
 		
 		this.venda.setData(Calendar.getInstance());
 		this.venda.setOperador(this.operador);
-		this.venda.setEmpresa(this.operador.getEmpresa());
+		this.venda.setEmpresa(this.empresa);
 		this.venda.setStatus(StatusVenda.EM_EXECUCAO);
 		
 		this.printVenda();
@@ -90,7 +94,7 @@ public class FrenteCaixa extends Modulo{
 		
 		try{
 		
-			codigo = new CodigoBarra(str,this.operador.getEmpresa().getPadroesCodigo());
+			codigo = new CodigoBarra(str,this.empresa.getPadroesCodigo(), new ProdutoService(et));
 		
 		}catch(Exception ex){
 			
@@ -112,6 +116,7 @@ public class FrenteCaixa extends Modulo{
 			pv.setQuantidade(codigo.getQuantidade());
 			pv.setValor(codigo.getProduto().getValor());
 			pv.setVenda(this.venda);
+			
 			
 			this.venda.getProdutos().add(pv);
 			
@@ -142,7 +147,12 @@ public class FrenteCaixa extends Modulo{
 	
 	public void init(Usuario operador){
 
-		this.setTitle(operador.getEmpresa().getNome()+" - Operador: "+operador.getNome());
+		this.operador = et.merge(operador);
+		this.empresa = this.operador.getPf().getEmpresa();
+		et.detach(this.operador);
+		et.merge(this.empresa);
+		
+		this.setTitle(operador.getPf().getEmpresa().getPj().getNome()+" - Operador: "+operador.getPf().getNome());
 		
 		this.operador = operador;
 		

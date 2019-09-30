@@ -16,9 +16,9 @@ public class CodigoBarra {
 
 	private Produto produto;
 	
-	public CodigoBarra(String codigo) {
+	public CodigoBarra(String codigo,ProdutoService ps) {
 
-		this.ps = new ProdutoService();
+		this.ps = ps;
 
 		this.codigoBarra = codigo;
 		this.quantidade = 1;
@@ -33,9 +33,9 @@ public class CodigoBarra {
 		
 	}
 
-	public CodigoBarra(String codigo, List<PadraoCodigo> padroes) {
+	public CodigoBarra(String codigo, List<PadraoCodigo> padroes,ProdutoService ps) {
 		
-		this.ps = new ProdutoService();
+		this.ps = ps;
 		
 		try{
 			

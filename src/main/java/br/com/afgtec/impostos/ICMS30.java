@@ -166,7 +166,8 @@ public class ICMS30 extends Icms{
 		
 		if(this.icmsOriginal != null)
 			i.icmsOriginal=(Icms)this.icmsOriginal.clone();
-		
+					
+		i.setOrigem(this.getOrigem());
 		i.motivo=this.motivo;
 		i.valorIcmsDesonerado=this.valorIcmsDesonerado;
 		i.alicotaIcmsST=this.alicotaIcmsST;

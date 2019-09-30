@@ -84,6 +84,7 @@ public class ICMS00 extends Icms{
 	public Object clone(){
 		
 		ICMS00 i = new ICMS00(); 
+		i.setOrigem(this.getOrigem());
 		i.modalidadeBC=this.modalidadeBC;
 		i.porcentagemBC=this.porcentagemBC;
 		i.porcentagemICMS=this.porcentagemICMS;

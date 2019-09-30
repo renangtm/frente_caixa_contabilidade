@@ -11,6 +11,21 @@ public class Masks {
 	private Masks() {
 
 	};
+	
+	public static MaskFormatter cep() {
+
+		try {
+
+			return new MaskFormatter("#####-###");
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
 
 	public static MaskFormatter cpf() {
 

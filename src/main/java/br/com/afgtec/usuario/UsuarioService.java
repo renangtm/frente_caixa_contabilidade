@@ -4,16 +4,18 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.pessoa.Usuario;
-
 public class UsuarioService {
 
+	private EntityManager et;
+	
+	public UsuarioService(EntityManager et) {
+		
+		this.et = et;
+		
+	}
 	
 	@SuppressWarnings("unchecked")
 	public Usuario getUsuario(String login,String senha) {
-		
-		EntityManager et = ET.nova();
 		
 		List<Usuario> usuarios = (List<Usuario>)(List<?>)et.createQuery("SELECT u FROM Usuario u WHERE u.usuario = :usuario AND u.senha = :senha")
 		.setParameter("usuario", login)

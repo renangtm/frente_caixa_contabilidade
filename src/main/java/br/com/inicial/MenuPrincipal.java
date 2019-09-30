@@ -26,7 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import br.com.afgtec.pessoa.Usuario;
+import br.com.afgtec.usuario.Usuario;
 import br.com.entidades.Icones;
 import br.com.entidades.Loading;
 import br.com.entidades.Med;
@@ -63,7 +63,7 @@ public class MenuPrincipal extends Tela {
 	
 	public MenuPrincipal(Usuario usuario) throws IOException{
 
-		super("RTC - Empresa: " + usuario.getEmpresa().getNome() + ", CNPJ: ", 0, 0, 100, 100,
+		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: ", 0, 0, 100, 100,
 				false);
 		
 		this.usuario = usuario;
@@ -129,7 +129,7 @@ public class MenuPrincipal extends Tela {
 		
 		try {
 		
-			logoCliente.setIcon(new ImageIcon(usuario.getEmpresa().getLogo().getArquivo()));
+			logoCliente.setIcon(new ImageIcon(usuario.getPf().getEmpresa().getLogo().getArquivo()));
 		
 		}catch(Exception ex) {
 			
@@ -282,7 +282,7 @@ public class MenuPrincipal extends Tela {
 
 			JComponent lblK2 = new JButton();
 			lblK2.setBorder(null);
-			lblK2.setOpaque(false);
+			lblK2.setOpaque(true);
 			boolean bt = true;
 			try {
 				@SuppressWarnings("unused")
@@ -305,6 +305,7 @@ public class MenuPrincipal extends Tela {
 			} catch (Exception ex) {
 				((JButton) lbl2).setHorizontalAlignment(JLabel.CENTER);
 				((JButton) lbl2).setVerticalAlignment(JLabel.CENTER);
+				lbl2.setForeground(new Color(70, 70, 70));
 			}
 
 			lbl.add(lbl2);
@@ -453,6 +454,7 @@ public class MenuPrincipal extends Tela {
 									
 									mod.setVisible(true);
 									
+									mod.centralizar();
 									
 
 								} catch (Exception ee) {

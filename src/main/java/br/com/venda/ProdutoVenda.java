@@ -34,12 +34,6 @@ public class ProdutoVenda {
 	@Enumerated(EnumType.ORDINAL)
 	protected TipoQuantidade tipoReservaInfluenciada;
 	
-	@Column
-	protected double quantidadeInfluenciada;
-	
-	@Column
-	@Enumerated(EnumType.ORDINAL)
-	protected TipoQuantidade tipoQuantidadeInfluenciada;
 	
 	@Column
 	@Enumerated(EnumType.ORDINAL)
@@ -71,11 +65,8 @@ public class ProdutoVenda {
 		
 		this.produto = produto;
 		this.tipoQuantidade = produto.getEstoque().getTipo();
-		this.tipoQuantidadeInfluenciada = produto.getEstoque().getTipo();
 		this.tipoReservaInfluenciada = produto.getEstoque().getTipo();
-		this.quantidadeInfluenciada = 0;
 		
-		System.out.println(this.tipoQuantidadeInfluenciada.name());
 		
 	}
 

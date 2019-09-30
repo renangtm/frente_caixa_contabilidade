@@ -3,6 +3,7 @@ package br.com.afgtec.pessoa;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import afgtec.endereco.Endereco;
+import br.com.afgtec.cliente.Cliente;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -30,15 +32,88 @@ public class Pessoa {
 	@Column
 	private String email;
 	
-	@OneToOne(cascade=CascadeType.ALL)
+	@Column
+	private String whatsapp;
+	
+	@Column
+	private String skype;
+	
+	@OneToOne(mappedBy="pessoa")
+	private Cliente cliente;
+	
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="id_empresa")
+	private Empresa empresa;
+	
+	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_endereco")
 	private Endereco endereco;
 	
 	public Pessoa() {
 		
-		this.endereco = new Endereco();
-		
 	}
+	
+	
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+
+
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+
+
+	public String getWhatsapp() {
+		return whatsapp;
+	}
+
+
+
+	public void setWhatsapp(String whatsapp) {
+		this.whatsapp = whatsapp;
+	}
+
+
+
+	public String getSkype() {
+		return skype;
+	}
+
+
+
+	public void setSkype(String skype) {
+		this.skype = skype;
+	}
+
+
+
+	public String getNome() {
+		return nome;
+	}
+
+
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+
 
 	public int getId() {
 		return id;

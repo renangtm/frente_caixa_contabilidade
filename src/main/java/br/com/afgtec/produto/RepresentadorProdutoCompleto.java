@@ -11,9 +11,6 @@ public class RepresentadorProdutoCompleto extends Representador<Produto>{
 	@Campo(nome="Nome",editavel=true,ordem="{{et}}.nome")
 	private String nome;
 	
-	@Campo(nome="Categoria",editavel=false,ordem="{{et}}.categoria.nome")
-	private String categoria;
-	
 	@Campo(nome="Estoque",editavel=true,ordem="{{et}}.estoque.quantidade")
 	private double estoque;
 	
@@ -26,17 +23,19 @@ public class RepresentadorProdutoCompleto extends Representador<Produto>{
 	@Campo(nome="Custo (R$)",editavel=true,ordem="{{et}}.custo")
 	private double custo;
 	
+	@Campo(nome="Loja Virtual",editavel=false,ordem="{{et}}.apareceLoja")
+	private String loja;
 	
 	public RepresentadorProdutoCompleto(Produto p) {
 		super(p);
 		
 		this.codigo = p.getCodigo_barra();
 		this.nome = p.getNome();
-		this.categoria = p.getCategoria().getNome();
 		this.estoque = p.getEstoque().getQuantidade();
 		this.disponivel = p.getEstoque().getDisponivel();
 		this.valor = p.getValor();
 		this.custo = p.getCusto();
+		this.loja = p.isApareceLoja()?"SIM":"NAO";
 		
 	}
 	

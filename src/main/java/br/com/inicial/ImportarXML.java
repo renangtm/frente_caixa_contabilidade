@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 
-import br.com.afgtec.pessoa.Usuario;
+import br.com.afgtec.usuario.Usuario;
 import br.com.entidades.Icones;
 
 public class ImportarXML extends Modulo{

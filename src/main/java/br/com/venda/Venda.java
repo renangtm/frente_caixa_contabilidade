@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,8 +20,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import br.com.afgtec.notas.Nota;
 import br.com.afgtec.pessoa.Empresa;
-import br.com.afgtec.pessoa.Usuario;
+import br.com.afgtec.usuario.Usuario;
 
 @Entity
 @Table(name="vendas")
@@ -37,6 +39,10 @@ public class Venda {
 	@ManyToOne
 	@JoinColumn(name="id_operador")
 	private Usuario operador;
+	
+	@OneToMany(fetch=FetchType.LAZY)
+	@JoinColumn(name="id_venda")
+	private List<Nota> notas;
 	
 	@Column
 	@Enumerated(EnumType.ORDINAL)
@@ -56,6 +62,16 @@ public class Venda {
 		
 	}
 	
+
+	public List<Nota> getNotas() {
+		return notas;
+	}
+
+	public void setNotas(List<Nota> notas) {
+		this.notas = notas;
+	}
+
+
 
 	public double getTotal() {
 		

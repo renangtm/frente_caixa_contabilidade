@@ -1,5 +1,6 @@
 package br.com.afgtec.notas;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
+import br.com.afgtec.impostos.Imposto;
 import br.com.afgtec.produto.Produto;
 
 @Entity
@@ -31,16 +34,10 @@ public class ProdutoNota {
 	private CFOP cfop;
 	
 	@Column
+	private double quantidade;     
+	
+	@Column
 	private double valor;
-	
-	@Column
-	private double icms;
-	
-	@Column
-	private double base_calculo;
-	
-	@Column
-	private double cofins;
 	
 	@Column
 	private double frete;
@@ -52,19 +49,14 @@ public class ProdutoNota {
 	private double desconto;
 	
 	@Column
+	private double outro;
+	
+	@Column
 	private boolean compoeValorTotal;
 	
-	@Column
-	private double pis;
-	
-	@Column
-	private double ipi;
-	
-	@Column
-	private double icms_desonerado;
-	
-	@Column
-	private double quantidade;
+	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
+	@JoinColumn(name="id_imposto")
+	private Imposto imposto;
 	
 	@Column
 	protected double influenciaEstoques;
@@ -77,7 +69,7 @@ public class ProdutoNota {
 		return this.observacoes;
 		
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -85,77 +77,29 @@ public class ProdutoNota {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public Nota getNota() {
 		return nota;
 	}
-	
+
 	public void setNota(Nota nota) {
 		this.nota = nota;
 	}
-	
+
 	public Produto getProduto() {
 		return produto;
 	}
-	
+
 	public void setProduto(Produto produto) {
 		this.produto = produto;
 	}
-	
-	public double getValor() {
-		return valor;
-	}
-	
-	public void setValor(double valor) {
-		this.valor = valor;
-	}
-	
-	public double getIcms() {
-		return icms;
+
+	public CFOP getCfop() {
+		return cfop;
 	}
 
-	public void setIcms(double icms) {
-		this.icms = icms;
-	}
-
-	public double getBase_calculo() {
-		return base_calculo;
-	}
-
-	public void setBase_calculo(double base_calculo) {
-		this.base_calculo = base_calculo;
-	}
-
-	public double getCofins() {
-		return cofins;
-	}
-
-	public void setCofins(double cofins) {
-		this.cofins = cofins;
-	}
-
-	public double getPis() {
-		return pis;
-	}
-
-	public void setPis(double pis) {
-		this.pis = pis;
-	}
-
-	public double getIpi() {
-		return ipi;
-	}
-
-	public void setIpi(double ipi) {
-		this.ipi = ipi;
-	}
-
-	public double getIcms_desonerado() {
-		return icms_desonerado;
-	}
-
-	public void setIcms_desonerado(double icms_desonerado) {
-		this.icms_desonerado = icms_desonerado;
+	public void setCfop(CFOP cfop) {
+		this.cfop = cfop;
 	}
 
 	public double getQuantidade() {
@@ -165,7 +109,66 @@ public class ProdutoNota {
 	public void setQuantidade(double quantidade) {
 		this.quantidade = quantidade;
 	}
-	
+
+	public double getValor() {
+		return valor;
+	}
+
+	public void setValor(double valor) {
+		this.valor = valor;
+	}
+
+	public double getFrete() {
+		return frete;
+	}
+
+	public void setFrete(double frete) {
+		this.frete = frete;
+	}
+
+	public double getSeguro() {
+		return seguro;
+	}
+
+	public void setSeguro(double seguro) {
+		this.seguro = seguro;
+	}
+
+	public double getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(double desconto) {
+		this.desconto = desconto;
+	}
+
+	public double getOutro() {
+		return outro;
+	}
+
+	public void setOutro(double outro) {
+		this.outro = outro;
+	}
+
+	public boolean isCompoeValorTotal() {
+		return compoeValorTotal;
+	}
+
+	public void setCompoeValorTotal(boolean compoeValorTotal) {
+		this.compoeValorTotal = compoeValorTotal;
+	}
+
+	public Imposto getImposto() {
+		return imposto;
+	}
+
+	public void setImposto(Imposto imposto) {
+		this.imposto = imposto;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
+	}
 	
 	
 }

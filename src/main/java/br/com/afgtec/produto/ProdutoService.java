@@ -8,14 +8,20 @@ import javax.persistence.Query;
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Service;
 import br.com.afgtec.pessoa.Empresa;
-import br.com.afgtec.pessoa.Usuario;
+import br.com.afgtec.usuario.Usuario;
 import br.com.afgtec.usuario.UsuarioService;
 
 public class ProdutoService implements Service<Produto>{
 
-	public Produto getProduto(String codigo) {
+	private EntityManager et;
+	
+	public ProdutoService(EntityManager et) {
 		
-		EntityManager et = ET.nova();
+		this.et = et;
+		
+	}
+	
+	public Produto getProduto(String codigo) {
 		
 		@SuppressWarnings("unchecked")
 		List<Produto> produtos = (List<Produto>)(List<?>)et.createQuery("SELECT p FROM Produto p WHERE p.codigo_barra = :codigo")
@@ -44,12 +50,12 @@ public class ProdutoService implements Service<Produto>{
 	
 	public static void main(String[] args) {
 		
-		UsuarioService us = new UsuarioService();
+		UsuarioService us = new UsuarioService(ET.nova());
 		
 		Usuario u = us.getUsuario("teste", "teste");
 		
-		ProdutoService ps = new ProdutoService();
-		ps.setEmpresa(u.getEmpresa());
+		ProdutoService ps = new ProdutoService(ET.nova());
+		ps.setEmpresa(u.getPf().getEmpresa());
 		
 		System.out.println(ps.getCount("")+"");
 		
@@ -64,13 +70,9 @@ public class ProdutoService implements Service<Produto>{
 			
 		}
 		
-		EntityManager et = ET.nova();
-		
-		Query qr = et.createQuery("SELECT COUNT(*) FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome OR p.categoria.nome LIKE :categoria)");
+		Query qr = et.createQuery("SELECT COUNT(*) FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome)");
 		qr.setParameter("empresa", this.empresa.getId());
 		qr.setParameter("nome", "%"+filtro+"%");
-		qr.setParameter("categoria", "%"+filtro+"%");
-		
 		
 		@SuppressWarnings("unchecked")
 		List<Long> lista = (List<Long>)(List<?>)qr.getResultList();
@@ -91,12 +93,10 @@ public class ProdutoService implements Service<Produto>{
 		
 		ordem = ordem.replaceAll("\\{\\{et\\}\\}", "p");
 		
-		EntityManager et = ET.nova();
 		
-		Query qr = et.createQuery("SELECT p FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome OR p.categoria.nome LIKE :categoria)"+(ordem != ""?" ORDER BY "+ordem:""));
+		Query qr = et.createQuery("SELECT p FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome)"+(ordem != ""?" ORDER BY "+ordem:""));
 		qr.setParameter("empresa", this.empresa.getId());
 		qr.setParameter("nome", "%"+filtro+"%");
-		qr.setParameter("categoria", "%"+filtro+"%");
 		qr.setFirstResult(x1);
 		qr.setMaxResults(x2-x1);
 		

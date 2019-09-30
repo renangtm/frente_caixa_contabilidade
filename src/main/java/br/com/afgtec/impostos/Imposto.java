@@ -1,7 +1,6 @@
 package br.com.afgtec.impostos;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,21 +16,65 @@ public class Imposto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column
-	private double valorTotal;
-
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_icms")
 	private Icms icms;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_pis")
+	private Pis pis;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_cofins")
+	private Cofins cofins;
 
 	@Override
 	public Object clone() {
 
 		Imposto i = new Imposto();
-		i.valorTotal = this.valorTotal;
 		i.icms = (Icms) this.icms.clone();
+		i.pis = (Pis) this.pis.clone();
+		i.cofins = (Cofins) this.cofins;
 
 		return i;
+
+	}
+
+	public Icms getIcms() {
+		return icms;
+	}
+
+	public void setIcms(Icms icms) {
+		this.icms = icms;
+	}
+
+	public Pis getPis() {
+		return pis;
+	}
+
+	public void setPis(Pis pis) {
+		this.pis = pis;
+	}
+
+	public Cofins getCofins() {
+		return cofins;
+	}
+
+	public void setCofins(Cofins cofins) {
+		this.cofins = cofins;
+	}
+
+	public void calcularSobre(double valor) {
+
+		this.icms.calcularSobre(valor);
+		this.pis.calcularSobre(valor);
+		this.cofins.calcularSobre(valor);
+
+	}
+
+	public double getTotalImpostos() {
+
+		return this.icms.getValorIcms() + this.icms.getValorIcmsST() + this.pis.getValor() + this.cofins.getValor();
 
 	}
 

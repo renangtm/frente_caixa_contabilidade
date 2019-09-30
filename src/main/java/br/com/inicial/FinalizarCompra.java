@@ -39,6 +39,7 @@ public class FinalizarCompra extends Tela{
 	
 	private ImpressorCupomVenda icp;
 	
+	
 	public void finalizar() {
 		
 		this.setVisible(false);
@@ -69,11 +70,15 @@ public class FinalizarCompra extends Tela{
 						
 						try {
 						
-							new VendaService().persistirVenda(venda);;
+							new VendaService(fc.et).persistirVenda(venda);
+							
+							fc.et.getTransaction().begin();
+							fc.et.getTransaction().commit();
+							
 						
 						}catch(Exception ex) {
 							
-							ex.printStackTrace();
+							ex.printStackTrace(); 
 							
 							fc.lblNome.setText("OCORREU UM PROBLEMA, O ESTABELECIMENTO ESTA SEM SERVIÇO...");
 							

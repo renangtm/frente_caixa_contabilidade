@@ -75,6 +75,8 @@ public class ICMS40 extends Icms {
 
 		ICMS40 i = new ICMS40();
 		
+		i.setOrigem(this.getOrigem());
+		
 		if(this.icmsOriginal != null)
 			i.icmsOriginal = (Icms) this.icmsOriginal.clone();
 		

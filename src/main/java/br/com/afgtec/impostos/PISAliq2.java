@@ -42,6 +42,14 @@ public class PISAliq2 extends Pis{
 		return alicotaPis;
 	}
 
+	
+	
+
+
+	public void setAlicotaPis(double alicotaPis) {
+		this.alicotaPis = alicotaPis;
+	}
+
 
 
 	public double getValorBaseCalculo() {
@@ -53,7 +61,7 @@ public class PISAliq2 extends Pis{
 	@Override
 	public void calcularSobre(double valor){
 		
-		this.valorBaseCalculo =  valor*(this.porcentagemBaseCalculo/100);
+		this.valorBaseCalculo =  valor*(100/100);
 		this.valorPis = this.valorBaseCalculo*(this.alicotaPis/100);
 		
 	}
@@ -68,7 +76,7 @@ public class PISAliq2 extends Pis{
 	@Override
 	public Object clone(){
 		
-		PISAliq1 p = new PISAliq1();
+		PISAliq2 p = new PISAliq2();
 		p.alicotaPis=this.alicotaPis;
 		p.porcentagemBaseCalculo=this.porcentagemBaseCalculo;
 		p.valorBaseCalculo=this.valorBaseCalculo;

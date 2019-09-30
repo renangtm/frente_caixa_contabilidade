@@ -2,6 +2,8 @@ package br.com.afgtec.notas;
 
 import java.sql.Date;
 
+import com.ibm.icu.text.NumberFormat;
+
 import br.com.agrofauna.utilidades.Campo;
 import br.com.agrofauna.utilidades.Representador;
 
@@ -16,7 +18,8 @@ public class RepresentadorVencimento extends Representador<Vencimento>{
 	@Campo(nome="Valor",editavel=false)
 	private String valor;
 	
-	
+	@Campo(nome="Pendente",editavel=false)
+	private String baixa;
 	
 	public RepresentadorVencimento(Vencimento v) {
 		super(v);
@@ -24,6 +27,18 @@ public class RepresentadorVencimento extends Representador<Vencimento>{
 		this.codigo = v.getId()+"";
 		this.data = new java.sql.Date(v.getData().getTimeInMillis());
 		this.valor = v.getValor()+"";
+		
+		double p = v.getPendencia();
+		
+		if(p == 0){
+			
+			this.baixa = "OK";
+			
+		}else{
+			
+			this.baixa = "R$ "+NumberFormat.getCurrencyInstance().format(p);
+			
+		}
 		
 	}
 	

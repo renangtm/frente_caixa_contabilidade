@@ -11,8 +11,11 @@ public class RepresentadorNotaCompleto extends Representador<Nota>{
 	@Campo(nome="Emitente",ordem="{{et}}.pessoa.nome")
 	private String pessoa;
 	
-	@Campo(nome="Transportadora",editavel=false,ordem="{{et}}.transportadora.nome")
+	@Campo(nome="Transportadora",editavel=false,ordem="{{et}}.transportadora.pj.nome")
 	private String transportadora;
+	
+	@Campo(nome="Destinatario",editavel=false,ordem="{{et}}.destinatario.nome")
+	private String destinatario;
 	
 	@Campo(nome="Numero",ordem="{{et}}.numero")
 	private int numero;
@@ -31,12 +34,41 @@ public class RepresentadorNotaCompleto extends Representador<Nota>{
 		super(n);
 		
 		this.codigo = n.getId()+"";
-		this.pessoa = n.getEmitente().getRazao_social();
-		this.transportadora= n.getTransportadora().getRazao_social();
+		this.pessoa = n.getEmitente().getNome();
+		
+		this.transportadora = "";
+		this.destinatario = "";
+		
+		if(n.getTransportadora() != null) {
+			this.transportadora= n.getTransportadora().getPj().getNome();
+		}
+		if(n.getDestinatario() != null) {
+			this.destinatario = n.getDestinatario().getNome();
+		}
 		this.numero = n.getNumero();
-		this.total = n.getTotal();
+		this.total = n.getValorTotalNota();
 		this.serie = n.getSerie();
 		this.status = n.getStatus().name();
+		
+		if(this.transportadora == null) {
+
+			this.transportadora = "Sem transportadora";
+			
+		}else if(this.transportadora.isEmpty()) {
+			
+			this.transportadora = "Sem transportadora";
+			
+		}
+		
+		if(this.destinatario == null) {
+
+			this.destinatario = "Sem destinatario";
+			
+		}else if(this.destinatario.isEmpty()) {
+			
+			this.destinatario = "Sem destinatario";
+			
+		}
 		
 	}
 	

@@ -1,62 +1,75 @@
 package br.com.venda;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
-import br.com.afgtec.base.ET;
 import br.com.afgtec.produto.Estoque;
 
 public class VendaService {
 	
-	public synchronized void persistirVenda(Venda venda) throws SemEstoqueException{
+	private EntityManager et;
+	
+	public VendaService(EntityManager et) {
 		
-		EntityManager et = ET.nova();		
+		this.et = et;
 		
-		for(ProdutoVenda pv:venda.getProdutos()){
-			
-			pv.quantidadeInfluenciada = pv.tipoQuantidadeInfluenciada.para(pv.tipoQuantidade, pv.getProduto(), pv.quantidadeInfluenciada);
-			pv.tipoQuantidadeInfluenciada = pv.tipoQuantidade;
-			
-			pv.reservaInfluenciada = pv.tipoReservaInfluenciada.para(pv.tipoQuantidade, pv.getProduto(), pv.reservaInfluenciada);
+	}
+
+	public synchronized void persistirVenda(Venda venda) throws SemEstoqueException {
+
+		List<Estoque> alterados = new ArrayList<Estoque>();
+
+		for (ProdutoVenda pv : venda.getProdutos()) {
+
+			pv.reservaInfluenciada = pv.tipoReservaInfluenciada.para(pv.getProduto().getEstoque().getTipo(),
+					pv.getProduto(), pv.reservaInfluenciada);
 			pv.tipoReservaInfluenciada = pv.tipoReservaInfluenciada;
-			
-			
-			double influenciaEst = venda.getStatus().isQuantidade()?pv.getQuantidade():0 - pv.quantidadeInfluenciada;
-			double influenciaRes = venda.getStatus().isDisponivel()?pv.getQuantidade():0 - pv.reservaInfluenciada;
-			
-			Estoque estoque = et.merge(pv.getProduto().getEstoque());
+
+			double influenciaRes = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0) - pv.reservaInfluenciada;
+
+			Estoque estoque = pv.getProduto().getEstoque();
 			et.refresh(estoque);
-			
-			double influenciaRealEst = pv.tipoQuantidade.para(estoque.getTipo(), pv.getProduto(), influenciaEst);
+
 			double influenciaRealRes = pv.tipoQuantidade.para(estoque.getTipo(), pv.getProduto(), influenciaRes);
-			
-			try{
-				
+
+			try {
+
 				estoque.rmvDisponivel(influenciaRealRes);
-				estoque.rmvQuantidade(influenciaRealEst);
-				
-			}catch(Exception ex){
-			
+				alterados.add(estoque);
+
+			} catch (Exception ex) {
+
+				for (Estoque est : alterados) {
+
+					et.refresh(est);
+					et.detach(est);
+
+				}
+
 				throw new SemEstoqueException(pv.getProduto());
-				
+
 			}
-			
+
+		}
+
+		for (ProdutoVenda pv : venda.getProdutos()) {
+
+			pv.reservaInfluenciada = venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0;
+
 		}
 		
-		for(ProdutoVenda pv:venda.getProdutos()){
+		if(venda.getId() == 0) {
 			
-			pv.reservaInfluenciada = venda.getStatus().isDisponivel()?pv.getQuantidade():0;
-			pv.quantidadeInfluenciada = venda.getStatus().isQuantidade()?pv.getQuantidade():0;
+			et.persist(venda);
+			
+		}else {
+			
+			et.merge(venda);
 			
 		}
-		
-		et.getTransaction().begin();
-		
-		@SuppressWarnings("unused")
-		Venda mv = et.merge(venda);
-		
-		et.getTransaction().commit();
-		
-		
+
 	}
 
 }

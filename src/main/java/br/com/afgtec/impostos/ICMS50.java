@@ -74,6 +74,8 @@ public class ICMS50 extends Icms {
 	public Object clone() {
 
 		ICMS50 i = new ICMS50();
+
+		i.setOrigem(this.getOrigem());
 		
 		if(this.icmsOriginal != null)
 			i.icmsOriginal = (Icms) this.icmsOriginal.clone();

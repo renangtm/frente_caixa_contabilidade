@@ -1,53 +1,70 @@
 package br.com.afgtec.notas;
 
-
 import br.com.agrofauna.utilidades.Campo;
 import br.com.agrofauna.utilidades.Representador;
 
-public class RepresentadorProdutoNota extends Representador<ProdutoNota>{
+public class RepresentadorProdutoNota extends Representador<ProdutoNota> {
 
-	@Campo(nome="Codigo",editavel=false)
+	@Campo(nome = "Codigo", editavel = false)
 	private String codigo;
-	
-	@Campo(nome="Nome",editavel=false)
+
+	@Campo(nome = "Nome", editavel = false)
 	private String nome;
-	
-	@Campo(nome="Valor",editavel=false)
+
+	@Campo(nome = "Valor", editavel = true)
 	private double valor;
-	
-	@Campo(nome="Base Calculo",editavel=false)
+
+	@Campo(nome = "Quantidade", editavel = true)
+	private double quantidade;
+
+	@Campo(nome = "Base Calculo", editavel = false)
 	private double base_calculo;
-	
-	@Campo(nome="Icms",editavel=false)
+
+	@Campo(nome = "Icms", editavel = false)
 	private double icms;
-	
-	@Campo(nome="Ipi",editavel=false)
-	private double ipi;
-	
-	@Campo(nome="Pis",editavel=false)
+
+	@Campo(nome = "CFOP", editavel=false)
+	private String cfop;
+
+	@Campo(nome = "Pis", editavel = false)
 	private double pis;
 	
-	@Campo(nome="Cofins",editavel=false)
+	@SuppressWarnings("unused")
+	private String cstCofins;
+
+	@Campo(nome = "Cofins", editavel = false)
 	private double cofins;
 	
-	
+	@SuppressWarnings("unused")
+	private double subTotal;
+
 	public RepresentadorProdutoNota(ProdutoNota v) {
 		super(v);
-		
-		this.codigo = v.getId()+"";
+
+		this.codigo = v.getId() + "";
 		this.nome = v.getProduto().getNome();
 		this.valor = v.getValor();
-		this.base_calculo = v.getBase_calculo();
-		this.icms = v.getIcms();
-		this.ipi = v.getIpi();
-		this.pis = v.getPis();
-		this.cofins = v.getCofins();
+		this.base_calculo = v.getImposto().getIcms().getValorBaseCalculo()
+				+ v.getImposto().getIcms().getBaseCalculoST();
+		this.icms = v.getImposto().getIcms().getValorIcms();
+		this.pis = v.getImposto().getPis().getValor();
+		this.cofins = v.getImposto().getCofins().getValor();
+
+		this.cstCofins = v.getImposto().getCofins().getCst();
+		this.quantidade = v.getQuantidade();
+		this.cfop = v.getCfop().getNumero();
+		
+		this.subTotal = this.valor*this.quantidade;
 		
 	}
-	
+
 	@Override
-	public void atualizar(){
-	
+	public void atualizar() {
+
+		this.objetoOriginal.setQuantidade(this.quantidade);
+		this.objetoOriginal.setValor(this.valor);
+		this.subTotal = this.valor*this.quantidade;
+		
 	}
 
 }

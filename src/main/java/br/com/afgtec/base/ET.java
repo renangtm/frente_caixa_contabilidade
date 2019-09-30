@@ -11,7 +11,7 @@ public class ET {
 	@SuppressWarnings("unused")
 	private static HashMap<EntityManager,EntityManagerFactory> mp = new HashMap<EntityManager,EntityManagerFactory>(); 
 
-	private static EntityManager em;
+	private static EntityManagerFactory etf = Persistence.createEntityManagerFactory("rtc_contabil");
 	
 	private ET(){
 		
@@ -20,16 +20,7 @@ public class ET {
 	
 	public static EntityManager nova(){
 		
-		if(em == null) {
-		
-			EntityManagerFactory etf = Persistence.createEntityManagerFactory("rtc_contabil");
-			EntityManager et = etf.createEntityManager();
-			
-			em = et;
-			
-		}
-		
-		return em;
+		return etf.createEntityManager();
 		
 	}
 	

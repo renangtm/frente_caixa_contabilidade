@@ -41,6 +41,8 @@ public class ICMS60 extends Icms{
 	public Object clone(){
 		
 		ICMS60 icms = new ICMS60();
+		
+		icms.setOrigem(this.getOrigem());
 		icms.valorBCIcmsSTRetido=this.valorBCIcmsSTRetido;
 		icms.valorIcmsSTRetido=this.valorIcmsSTRetido;
 		
