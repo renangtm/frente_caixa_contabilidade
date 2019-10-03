@@ -20,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import afgtec.emissao.SAT;
+import br.com.afgtec.base.CFG;
 import br.com.afgtec.base.ET;
 import br.com.afgtec.usuario.Usuario;
 import br.com.afgtec.usuario.UsuarioService;
@@ -30,6 +32,7 @@ public class Login extends Tela {
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 1L;
 
 	private JLabel lblLogin;
@@ -144,7 +147,11 @@ public class Login extends Tela {
 					}
 
 					try {
+						
+						CFG.moduloSat = new SAT(usuario.getPf().getEmpresa());
+						
 						new MenuPrincipal(usuario);
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

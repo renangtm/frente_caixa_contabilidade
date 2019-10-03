@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.hibernate.Session;
+
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Service;
 import br.com.afgtec.pessoa.Empresa;
@@ -108,6 +110,12 @@ public class ProdutoService implements Service<Produto>{
 	public Produto getPeloCodigo(String str) {
 		// TODO Auto-generated method stub
 		return this.getProduto(str);
+	}
+
+	@Override
+	public void lixeira(Produto obj) {
+		// TODO Auto-generated method stub
+		((Session)this.et.getDelegate()).evict(obj);
 	}
 
 	

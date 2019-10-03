@@ -1,12 +1,18 @@
 package br.com.afgtec.notas;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.hibernate.Session;
+
 import br.com.afgtec.base.Service;
 import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.produto.Estoque;
+import br.com.venda.SemEstoqueException;
 
 public class NotaService implements Service<Nota> {
 
@@ -33,13 +39,64 @@ public class NotaService implements Service<Nota> {
 
 	}
 
-	public void mergeNota(Nota nota) {
+	public void mergeNota(Nota nota) throws Exception {
 
 		if (!this.verificarIntegridadeNota(nota)) {
 
 			throw new RuntimeException("Nota sme integridade");
 
 		}
+
+		Map<ProdutoNota, Double[]> alteracoes = new HashMap<ProdutoNota, Double[]>();
+
+		for (ProdutoNota pn : nota.getProdutos()) {
+
+			try {
+
+				double meta = 0;
+
+				if (nota.getStatus().equals(StatusNota.ATIVA)) {
+
+					if (nota.getOperacao().equals(SaidaEntrada.SAIDA)) {
+
+						meta = pn.getQuantidade() * -1;
+
+					} else {
+
+						meta = pn.getQuantidade();
+
+					}
+
+				}
+
+				double dif = meta - pn.influenciaEstoques;
+
+				Estoque est = pn.getProduto().getEstoque();
+				et.refresh(est);
+
+				double realDif = pn.getTipoInfluenciaEstoque().para(est.getTipo(), pn.getProduto(), dif);
+
+				est.addQuantidades(realDif, realDif);
+
+				alteracoes.put(pn, new Double[] { realDif, pn.influenciaEstoques });
+
+				pn.influenciaEstoques = meta;
+
+			} catch (Exception ex) {
+
+				for (ProdutoNota pa : alteracoes.keySet()) {
+
+					pa.getProduto().getEstoque().rmvQuantidades(alteracoes.get(pa)[0], alteracoes.get(pa)[0]);
+					pa.influenciaEstoques = alteracoes.get(pa)[1];
+
+				}
+
+				throw new SemEstoqueException(pn.getProduto());
+
+			}
+
+		}
+		// ------------------
 
 		if (nota.getId() == 0) {
 
@@ -108,6 +165,12 @@ public class NotaService implements Service<Nota> {
 
 		return (Nota) notas.get(0);
 
+	}
+
+	@Override
+	public void lixeira(Nota obj) {
+		// TODO Auto-generated method stub
+		((Session) this.et.getDelegate()).evict(obj);
 	}
 
 }

@@ -3,6 +3,8 @@ package br.com.afgtec.notas;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +15,7 @@ import javax.persistence.OneToOne;
 
 import br.com.afgtec.impostos.Imposto;
 import br.com.afgtec.produto.Produto;
+import br.com.afgtec.unidades.TipoQuantidade;
 
 @Entity
 public class ProdutoNota {
@@ -32,7 +35,7 @@ public class ProdutoNota {
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_cfop")
 	private CFOP cfop;
-	
+
 	@Column
 	private double quantidade;     
 	
@@ -61,6 +64,10 @@ public class ProdutoNota {
 	@Column
 	protected double influenciaEstoques;
 	
+	@Enumerated(EnumType.ORDINAL)
+	@Column
+	protected TipoQuantidade tipoInfluenciaEstoque;
+	
 	@Column
 	private String observacoes;
 
@@ -69,6 +76,20 @@ public class ProdutoNota {
 		return this.observacoes;
 		
 	}
+	
+	
+
+	public double getInfluenciaEstoques() {
+		return influenciaEstoques;
+	}
+
+
+
+	public TipoQuantidade getTipoInfluenciaEstoque() {
+		return tipoInfluenciaEstoque;
+	}
+
+
 
 	public int getId() {
 		return id;

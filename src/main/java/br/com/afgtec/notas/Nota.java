@@ -180,7 +180,7 @@ public class Nota {
 
 			p.setImposto(imp);
 
-			imp.calcularSobre(p.getValor() * p.getQuantidade());
+			imp.calcularSobre(p.getValor() * p.getQuantidade() + p.getFrete() + p.getOutro());
 
 			p.setCfop(p.getProduto().getCategoria().getTabelaCfop().getCFOP(this.getOperacaoLogistica()));
 			
@@ -192,9 +192,14 @@ public class Nota {
 
 		this.tipo = TipoNota.NORMAL;
 		this.status = StatusNota.ATIVA;
+		this.operacao = SaidaEntrada.ENTRADA;
 		this.produtos = new ArrayList<ProdutoNota>();
 		this.vencimentos = new ArrayList<Vencimento>();
 
+		this.forma_pagamento = FormaPagamento.DINHEIRO;
+		
+		this.modelo = ModeloNota.NFCE;
+		
 		this.emitente = new PessoaJuridica();
 
 		this.data_emissao = Calendar.getInstance();
@@ -475,7 +480,7 @@ public class Nota {
 	public double getValorTotalNota() {
 
 		return this.produtos.stream()
-				.mapToDouble(p -> p.getValor() * p.getQuantidade() - p.getDesconto() + p.getOutro()).sum();
+				.mapToDouble(p -> p.getValor() * p.getQuantidade() - p.getDesconto() + p.getOutro() + p.getSeguro() + p.getFrete()).sum();
 
 	}
 

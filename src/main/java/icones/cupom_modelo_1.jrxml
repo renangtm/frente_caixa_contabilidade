@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="200" pageHeight="842" columnWidth="180" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
+	<property name="ireport.zoom" value="1.210000000000015"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="181"/>
+	<parameter name="qrCode" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.Object"/>
+	<parameter name="nomeEmpresa" class="java.lang.String"/>
+	<parameter name="cnpjEmpresa" class="java.lang.String"/>
+	<parameter name="ieEmpresa" class="java.lang.String"/>
+	<parameter name="cidadeEmpresa" class="java.lang.String"/>
+	<parameter name="numeroCupom" class="java.lang.String"/>
+	<parameter name="cpfCnpjConsumidor" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.Double"/>
+	<parameter name="desconto" class="java.lang.Double"/>
+	<parameter name="chave" class="java.lang.String"/>
+	<parameter name="numeroSat" class="java.lang.String"/>
+	<parameter name="troco" class="java.lang.Double"/>
+	<parameter name="formaPagamento" class="java.lang.String"/>
+	<parameter name="valorPagamento" class="java.lang.Double"/>
+	<parameter name="ruaEmpresa" class="java.lang.String"/>
+	<parameter name="cepEmpresa" class="java.lang.String"/>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="quantidade" class="java.lang.Double"/>
+	<field name="unidade" class="java.lang.String"/>
+	<field name="valor_unitario" class="java.lang.Double"/>
+	<field name="icms" class="java.lang.Double"/>
+	<field name="valor" class="java.lang.Double"/>
+	<field name="desconto" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="78" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="63" height="56" uuid="25949cd1-d3df-423a-9b69-e34029a210ac"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="68" y="0" width="110" height="15" uuid="23d52a38-69a6-456e-b58d-1b7b5dbe672a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nomeEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="24" y="60" width="63" height="17" uuid="581f541a-cc4a-4e15-a9c7-cb880e0cb815"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cnpjEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="105" y="61" width="73" height="17" uuid="9ed2a1ee-9adb-42aa-9e63-aa30a30dfcd7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ieEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="68" y="15" width="110" height="15" uuid="f638d787-8e7c-4419-beec-9e5aa98c67c3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cidadeEmpresa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="60" width="24" height="17" uuid="3887438e-20d0-4ceb-8fd9-393f893df9a9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[CNPJ:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="87" y="60" width="18" height="17" uuid="a5fbc3a7-27db-4da8-8b09-af39a9832484"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[IE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="68" y="30" width="110" height="15" uuid="d718de7b-c271-4b90-9d01-3cb670341299"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ruaEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="68" y="45" width="110" height="15" uuid="177d5926-1f99-4d12-94de-5750f251f99c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cepEmpresa}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="53" splitType="Stretch">
+			<staticText>
+				<reportElement x="11" y="1" width="85" height="17" uuid="b614f8a7-0ed2-4531-b05d-5b72d45e8e44"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cupom No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="96" y="0" width="52" height="17" uuid="73bd4563-8aee-496d-972b-632b0e88fbb5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{numeroCupom}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="17" width="177" height="17" uuid="86c83682-0322-4bcb-b6be-9c125b15bcd1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CUPOM FISCAL ELETRÔNICO - SAT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="35" width="68" height="17" uuid="c7aaf478-4631-4a71-89c9-47b9e9faba94"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CPF/CNPJ Cons.:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="180" height="1" uuid="adab19e1-54f4-4398-9f1e-0741fd06a859"/>
+			</line>
+			<line>
+				<reportElement x="0" y="34" width="180" height="1" uuid="02ac07f9-1692-44bf-a84a-e7aa26be97a4"/>
+			</line>
+			<textField>
+				<reportElement x="68" y="35" width="112" height="17" uuid="c7f8fefa-0c42-4567-aa16-596b3c596d9a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cpfCnpjConsumidor}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="52" width="180" height="1" uuid="bd332f84-02b4-4dfe-be02-2fedee5379df"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="178" height="24" uuid="4ff44445-864c-4522-b200-6d4f520b5c68"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[COD | DESC | QTD | UN | VL UN R$ | ST | ALIQ | VL ITEM R$]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{nome}.length()<20 && $F{desconto}==0]]></printWhenExpression>
+			<textField>
+				<reportElement x="0" y="2" width="178" height="17" uuid="19d609a1-03ce-49bd-bef1-e3d8999517c8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo} + " " + $F{nome} + " " +
+new DecimalFormat("#,##0.00").format($F{quantidade})+" "+$F{unidade} + " X " +
+new DecimalFormat("#,##0.00").format($F{valor_unitario}) + " T " + new DecimalFormat("#,##0.00").format($F{icms})+"% "+
+new DecimalFormat("#,##0.00").format($F{valor_unitario}*$F{quantidade})]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="52" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{nome}.length()<20 && $F{desconto}>0]]></printWhenExpression>
+			<staticText>
+				<reportElement x="0" y="19" width="63" height="18" uuid="e67ce64c-9896-49af-90fb-555d6bdf549b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[desconto:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="94" y="19" width="84" height="17" uuid="58e6e201-2ebf-4d3d-a9ff-d344d004d238"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["- " + $F{desconto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="2" width="178" height="17" uuid="bf862332-58f3-4cba-b825-0a3a325ca44c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo} + " " + $F{nome} + " " +
+new DecimalFormat("#,##0.00").format($F{quantidade})+" "+$F{unidade} + " X " +
+new DecimalFormat("#,##0.00").format($F{valor_unitario}) + " T " + new DecimalFormat("#,##0.00").format($F{icms})+"% "+
+new DecimalFormat("#,##0.00").format($F{valor_unitario}*$F{quantidade})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="94" y="36" width="84" height="14" uuid="fa54882a-4254-4fdd-929d-3bcd3ce45070"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+(($F{quantidade}*$F{valor_unitario}) - $F{desconto})]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="40" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{nome}.length()>20]]></printWhenExpression>
+			<textField>
+				<reportElement x="0" y="2" width="191" height="17" uuid="28e1d192-a72e-48d7-ae8e-7cf176ec58a6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo} + " " + $F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="15" y="19" width="163" height="20" uuid="cf5ca078-f5c0-4627-a77b-44fcbb8eae44"/>
+				<textElement textAlignment="Right" rotation="None">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{quantidade})+" "+$F{unidade} + " X " +
+new DecimalFormat("#,##0.00").format($F{valor_unitario}) + " T " + new DecimalFormat("#,##0.00").format($F{icms})+"% "+
+new DecimalFormat("#,##0.00").format($F{valor_unitario}*$F{quantidade})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="50" splitType="Immediate">
+			<textField>
+				<reportElement x="81" y="17" width="97" height="17" uuid="334cffe4-4f6b-442e-b721-5e6cb13e57ea"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["- " + new DecimalFormat("#,##0.00").format($P{desconto})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="63" height="17" uuid="159e632d-2949-49c2-b3ea-042e6a80e047"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Subtotal:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="16" width="63" height="18" uuid="122fab44-6ccb-4b48-8eba-1b88b062e560"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Descontos:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="32" width="63" height="18" uuid="81244b2c-e426-46bf-9e4a-75f621dad131"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL R$]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="81" y="34" width="97" height="15" uuid="41d26960-3d28-4028-a251-f9dae2289dcc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{total} - $P{desconto})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="0" width="97" height="17" uuid="3f4c5941-4d62-4678-9e87-e4fa66bdce1a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{total})]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="346" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="180" height="1" uuid="1ad27c96-6c51-4019-8d57-878b8d54555e"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="20" width="63" height="17" uuid="8991211a-fdc9-4627-939d-73c78042892b">
+					<printWhenExpression><![CDATA[$P{troco}>0]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Troco R$]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="86" y="20" width="92" height="17" uuid="1d3d708d-3e41-4964-8b81-082812216e94">
+					<printWhenExpression><![CDATA[$P{troco}>0]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{troco})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="37" width="180" height="1" uuid="0f03fd00-7ada-419a-b1b1-046c41a9e573"/>
+			</line>
+			<componentElement>
+				<reportElement x="0" y="104" width="178" height="39" isPrintInFirstWholeBand="true" uuid="4766a10c-d8f4-42c6-9301-af5af97eb0b0"/>
+				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="1.0" textPosition="none">
+					<jr:codeExpression><![CDATA[$P{chave}]]></jr:codeExpression>
+				</jr:Code128>
+			</componentElement>
+			<textField>
+				<reportElement x="0" y="76" width="178" height="17" uuid="2f7bbfb8-26dc-407e-a629-e705388ae401"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{chave}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="15" y="59" width="156" height="17" uuid="205e3017-b255-4992-899f-33a7faf23391"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="15" y="41" width="63" height="18" uuid="551a8714-b2d6-4810-90ad-8edb25cc280c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SAT No.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="78" y="41" width="100" height="18" uuid="52567fbd-0a39-4be7-8c82-d396c0df3a1e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{numeroSat}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RealHeight" hAlign="Center" vAlign="Middle">
+				<reportElement x="0" y="143" width="178" height="190" uuid="0cbb7e34-0ada-46c4-a8ca-439b1bc97f20"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+    $P{qrCode},
+    com.google.zxing.BarcodeFormat.QR_CODE,190,190))]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="1" width="86" height="20" uuid="7678ea18-7465-400a-b875-6489a358da87"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{formaPagamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="86" y="3" width="92" height="17" uuid="512cb548-f0f6-4a43-ad5a-0d8074b6dbde"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{valorPagamento})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="14" splitType="Immediate"/>
+	</summary>
+</jasperReport>

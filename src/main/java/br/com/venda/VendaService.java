@@ -1,51 +1,62 @@
 package br.com.venda;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
 import br.com.afgtec.produto.Estoque;
 
 public class VendaService {
-	
+
 	private EntityManager et;
-	
+
 	public VendaService(EntityManager et) {
-		
+
 		this.et = et;
-		
+
 	}
 
 	public synchronized void persistirVenda(Venda venda) throws SemEstoqueException {
 
-		List<Estoque> alterados = new ArrayList<Estoque>();
+		Map<ProdutoVenda, Double[]> alteracoes = new HashMap<ProdutoVenda, Double[]>();
 
 		for (ProdutoVenda pv : venda.getProdutos()) {
 
-			pv.reservaInfluenciada = pv.tipoReservaInfluenciada.para(pv.getProduto().getEstoque().getTipo(),
-					pv.getProduto(), pv.reservaInfluenciada);
-			pv.tipoReservaInfluenciada = pv.tipoReservaInfluenciada;
+			double meta = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0);
 
-			double influenciaRes = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0) - pv.reservaInfluenciada;
+			double infres = meta - pv.reservaInfluenciada;
 
 			Estoque estoque = pv.getProduto().getEstoque();
 			et.refresh(estoque);
 
-			double influenciaRealRes = pv.tipoQuantidade.para(estoque.getTipo(), pv.getProduto(), influenciaRes);
+			double influenciaRealRes = pv.tipoQuantidade.para(estoque.getTipo(), pv.getProduto(), infres);
 
 			try {
 
 				estoque.rmvDisponivel(influenciaRealRes);
-				alterados.add(estoque);
-
+				
+				Double[] alteracao = {
+						influenciaRealRes,
+						pv.reservaInfluenciada
+				};
+				
+				alteracoes.put(pv, alteracao);
+				
+				pv.reservaInfluenciada = meta;
+				
 			} catch (Exception ex) {
-
-				for (Estoque est : alterados) {
-
-					et.refresh(est);
-					et.detach(est);
-
+				
+				//Ao ter um erro, voltamos o que havia sido feito
+				
+				for(ProdutoVenda pa:alteracoes.keySet()){
+					
+					double removidoDisponivel = alteracoes.get(pa)[0];
+					double influenciaAnterior = alteracoes.get(pa)[1];
+					
+					pa.getProduto().getEstoque().addDisponivel(removidoDisponivel);
+					pa.reservaInfluenciada = influenciaAnterior;
+					
 				}
 
 				throw new SemEstoqueException(pv.getProduto());
@@ -54,20 +65,14 @@ public class VendaService {
 
 		}
 
-		for (ProdutoVenda pv : venda.getProdutos()) {
+		if (venda.getId() == 0) {
 
-			pv.reservaInfluenciada = venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0;
-
-		}
-		
-		if(venda.getId() == 0) {
-			
 			et.persist(venda);
-			
-		}else {
-			
+
+		} else {
+
 			et.merge(venda);
-			
+
 		}
 
 	}

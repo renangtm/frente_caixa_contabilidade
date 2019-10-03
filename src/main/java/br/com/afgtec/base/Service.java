@@ -10,4 +10,6 @@ public interface Service<T> {
 	
 	public T getPeloCodigo(String str);
 	
+	public void lixeira(T obj);
+	
 }

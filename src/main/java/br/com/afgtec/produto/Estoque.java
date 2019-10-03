@@ -29,7 +29,31 @@ public class Estoque {
 	@Column
 	private double disponivel;
 	
+	public void addQuantidades(double disponivel, double quantidade) throws Exception{
+			
+		this.setQuantidades(this.disponivel+disponivel, this.quantidade+quantidade);
+		
+	}
+	
+	public void rmvQuantidades(double disponivel, double quantidade) throws Exception{
+		
+		this.setQuantidades(this.disponivel-disponivel, this.quantidade-quantidade);
+		
+	}
+	
 	public void setQuantidades(double disponivel, double quantidade) throws Exception{
+		
+		if(disponivel < 0){
+			
+			throw new Exception("Disponivel < que 0");
+			
+		}
+		
+		if(quantidade < 0){
+			
+			throw new Exception("Quantidade < que 0");
+			
+		}
 		
 		if(quantidade<disponivel){
 			
@@ -74,6 +98,12 @@ public class Estoque {
 	
 	public double rmvQuantidade(double qtd) {
 		
+		if(qtd < 0) {
+			
+			return this.addQuantidade(qtd*-1);
+			
+		}
+		
 		if(qtd > this.quantidade) {
 			
 			throw new RuntimeException("Essa quantidade excede o limite");
@@ -94,6 +124,12 @@ public class Estoque {
 	
 	public double addQuantidade(double qtd) {
 		
+		if(qtd < 0) {
+			
+			return this.rmvQuantidade(qtd*-1);
+			
+		}
+		
 		this.quantidade += qtd;
 		
 		return this.quantidade;
@@ -102,6 +138,12 @@ public class Estoque {
 
 	
 	public double addDisponivel(double qtd) {
+		
+		if(qtd < 0) {
+			
+			return this.rmvDisponivel(qtd*-1);
+			
+		}
 		
 		if(this.disponivel + qtd > this.quantidade) {
 			
@@ -116,6 +158,12 @@ public class Estoque {
 	}
 	
 	public double rmvDisponivel(double qtd) {
+		
+		if(qtd < 0) {
+			
+			return this.addDisponivel(qtd*-1);
+			
+		}
 		
 		if(qtd > this.disponivel) {
 			

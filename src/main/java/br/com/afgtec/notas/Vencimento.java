@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import br.com.afgtec.financeiro.Movimento;
@@ -27,6 +31,10 @@ public class Vencimento {
 	@Column
 	private double valor;
 	
+	@ManyToOne(fetch=FetchType.LAZY,cascade={CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
+	@JoinColumn(name="id_nota")
+	private Nota nota;
+	
 	@OneToMany(mappedBy="vencimento")
 	private List<Movimento> movimentos;
 	
@@ -36,6 +44,32 @@ public class Vencimento {
 		
 	}
 	
+	
+	
+	public Nota getNota() {
+		return nota;
+	}
+
+
+
+	public void setNota(Nota nota) {
+		this.nota = nota;
+	}
+
+
+
+	public List<Movimento> getMovimentos() {
+		return movimentos;
+	}
+
+
+
+	public void setMovimentos(List<Movimento> movimentos) {
+		this.movimentos = movimentos;
+	}
+
+
+
 	public int getId() {
 		return id;
 	}

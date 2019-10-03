@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import br.com.afgtec.financeiro.Banco;
 import br.com.afgtec.notas.Nota;
 import br.com.afgtec.produto.Produto;
 import br.com.codigo.PadraoCodigo;
@@ -41,14 +40,11 @@ public class Empresa{
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
 	private List<Nota> notas;
 	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
-	private List<Banco> bancos;
-	
 	@OneToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_parametros")
 	private ParametrosEmissao parametrosEmissao;
 	
-	@OneToOne
+	@OneToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_logo")
 	private Logo logo;
 	
@@ -59,21 +55,10 @@ public class Empresa{
 	public Empresa(){
 		
 		this.pj = new PessoaJuridica();
+		this.logo = new Logo();
 		
 	}
 	
-	
-	
-	public List<Banco> getBancos() {
-		return bancos;
-	}
-
-
-
-	public void setBancos(List<Banco> bancos) {
-		this.bancos = bancos;
-	}
-
 
 
 	public ParametrosEmissao getParametrosEmissao() {

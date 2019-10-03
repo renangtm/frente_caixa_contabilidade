@@ -31,6 +31,8 @@ public class Modulo extends Tela {
 	
 	protected EntityManager et;
 
+	protected List<EntityManager> managers = new ArrayList<EntityManager>();
+	
 	public boolean validarFormulario() {
 
 		return this.validarContainer(this.getContentPane());
@@ -153,6 +155,7 @@ public class Modulo extends Tela {
 			public void windowClosed(WindowEvent arg0) {
 				
 				et.close();
+				managers.forEach(e->e.close());
 				
 			}
 

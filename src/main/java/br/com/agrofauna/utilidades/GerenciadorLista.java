@@ -50,6 +50,8 @@ public class GerenciadorLista<T> {
 
 	private String ordem = "";
 
+	private boolean evict = true;
+	
 	public ListModelGenerica<T> getModel() {
 
 		return this.model;
@@ -194,16 +196,16 @@ public class GerenciadorLista<T> {
 			if (this.provedor == null) {
 
 				if (this.rep == null) {
-
+				
 					this.model = new ListModelGenerica<T>(this.service.getElementos(this.pagina * this.porPagina,
 							(this.pagina + 1) * this.porPagina, filtro, this.ordem), this.classe);
 
 				} else {
-
+					
 					this.model = new ListModelGenerica<T>(this.service.getElementos(this.pagina * this.porPagina,
 							(this.pagina + 1) * this.porPagina, filtro, this.ordem), this.classe, this.classe_rep,
 							this.rep);
-
+					
 				}
 
 			} else {
@@ -389,12 +391,30 @@ public class GerenciadorLista<T> {
 			this.tabela.setRowSorter(sorter);
 
 		} else {
+			
+			if(this.evict) {
+				
+				this.model.getListaCompleta().forEach(this.service::lixeira);
 
+			}
+			
 			this.model.setLista(this.service.getElementos(this.pagina * this.porPagina,
 					(this.pagina + 1) * this.porPagina, filtro, this.ordem));
 
 		}
 
 	}
+	
+	public boolean isEvict() {
+		
+		return this.evict;
+		
+	}
 
+	public void setEvict(boolean ev) {
+		
+		this.evict = ev;
+		
+	}
+	
 }

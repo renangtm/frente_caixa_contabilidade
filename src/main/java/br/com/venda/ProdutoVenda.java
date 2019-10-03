@@ -29,12 +29,7 @@ public class ProdutoVenda {
 
 	@Column
 	protected double reservaInfluenciada;
-	
-	@Column
-	@Enumerated(EnumType.ORDINAL)
-	protected TipoQuantidade tipoReservaInfluenciada;
-	
-	
+		
 	@Column
 	@Enumerated(EnumType.ORDINAL)
 	protected TipoQuantidade tipoQuantidade;
@@ -65,8 +60,13 @@ public class ProdutoVenda {
 		
 		this.produto = produto;
 		this.tipoQuantidade = produto.getEstoque().getTipo();
-		this.tipoReservaInfluenciada = produto.getEstoque().getTipo();
 		
+		
+	}
+	
+	public TipoQuantidade getTipoQuantidade(){
+		
+		return this.tipoQuantidade;
 		
 	}
 
