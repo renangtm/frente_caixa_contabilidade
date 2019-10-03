@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 
 import br.com.afgtec.notas.Nota;
 import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.pessoa.Pessoa;
 import br.com.afgtec.usuario.Usuario;
 
 @Entity
@@ -44,6 +45,10 @@ public class Venda {
 	@JoinColumn(name="id_venda")
 	private List<Nota> notas;
 	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="id_pessoa")
+	private Pessoa cliente;
+	
 	@Column
 	@Enumerated(EnumType.ORDINAL)
 	private StatusVenda status;
@@ -56,12 +61,29 @@ public class Venda {
 	@JoinColumn(name="id_empresa")
 	private Empresa empresa;
 	
+	
 	public Venda() {
 		
 		this.produtos = new ArrayList<ProdutoVenda>();
+		this.status = StatusVenda.EM_EXECUCAO;
+		this.notas = new ArrayList<Nota>();
+		this.data = Calendar.getInstance();
 		
 	}
 	
+	
+	
+	public Pessoa getCliente() {
+		return cliente;
+	}
+
+
+
+	public void setCliente(Pessoa cliente) {
+		this.cliente = cliente;
+	}
+
+
 
 	public List<Nota> getNotas() {
 		return notas;
@@ -75,7 +97,7 @@ public class Venda {
 
 	public double getTotal() {
 		
-		return this.produtos.stream().map(x->x.getQuantidade()*x.getValor()).reduce(0.0, (a,b)->a+b);
+		return this.produtos.stream().mapToDouble(x->x.getQuantidade()*x.getValor()).sum();
 		
 	}
 	

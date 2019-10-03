@@ -11,18 +11,37 @@ public class VendaService {
 
 	private EntityManager et;
 
+	Map<ProdutoVenda, Double[]> alteracoes;
+	
 	public VendaService(EntityManager et) {
 
 		this.et = et;
-
+		this.alteracoes = new HashMap<ProdutoVenda, Double[]>();
+		
 	}
 
-	public synchronized void persistirVenda(Venda venda) throws SemEstoqueException {
-
-		Map<ProdutoVenda, Double[]> alteracoes = new HashMap<ProdutoVenda, Double[]>();
+	public void reverterPersistencia(){
+		
+		for(ProdutoVenda pa:alteracoes.keySet()){
+			
+			double removidoDisponivel = alteracoes.get(pa)[0];
+			double influenciaAnterior = alteracoes.get(pa)[1];
+			
+			pa.getProduto().getEstoque().addDisponivel(removidoDisponivel);
+			pa.reservaInfluenciada = influenciaAnterior;
+			
+		}
+		
+		this.alteracoes = new HashMap<ProdutoVenda, Double[]>();
+		
+	}
+	
+	public synchronized Venda persistirVenda(Venda venda) throws SemEstoqueException {
 
 		for (ProdutoVenda pv : venda.getProdutos()) {
-
+			
+			pv.setProduto(et.merge(pv.getProduto()));
+			
 			double meta = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0);
 
 			double infres = meta - pv.reservaInfluenciada;
@@ -49,32 +68,31 @@ public class VendaService {
 				
 				//Ao ter um erro, voltamos o que havia sido feito
 				
-				for(ProdutoVenda pa:alteracoes.keySet()){
-					
-					double removidoDisponivel = alteracoes.get(pa)[0];
-					double influenciaAnterior = alteracoes.get(pa)[1];
-					
-					pa.getProduto().getEstoque().addDisponivel(removidoDisponivel);
-					pa.reservaInfluenciada = influenciaAnterior;
-					
-				}
+				this.reverterPersistencia();
 
 				throw new SemEstoqueException(pv.getProduto());
 
 			}
 
 		}
-
+		
+		
+		venda.setEmpresa(et.merge(venda.getEmpresa()));
+		venda.getNotas().forEach(et::merge);
+		venda.setOperador(et.merge(venda.getOperador()));
+		
 		if (venda.getId() == 0) {
 
 			et.persist(venda);
 
 		} else {
 
-			et.merge(venda);
+			return et.merge(venda);
 
 		}
 
+		return venda;
+		
 	}
 
 }

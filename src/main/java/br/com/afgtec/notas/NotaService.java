@@ -20,10 +20,13 @@ public class NotaService implements Service<Nota> {
 
 	private EntityManager et;
 
+	private Map<ProdutoNota, Double[]> alteracoes;
+	
 	public void setEmpresa(Empresa emp) {
 
 		this.empresa = emp;
-
+		this.alteracoes  = new HashMap<ProdutoNota, Double[]>();
+		
 	}
 
 	public NotaService(EntityManager et) {
@@ -39,6 +42,26 @@ public class NotaService implements Service<Nota> {
 
 	}
 
+	public void reverter(){
+		
+		for (ProdutoNota pa : alteracoes.keySet()) {
+
+			try {
+				
+				pa.getProduto().getEstoque().rmvQuantidades(alteracoes.get(pa)[0], alteracoes.get(pa)[0]);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			pa.influenciaEstoques = alteracoes.get(pa)[1];
+
+		}
+		
+		this.alteracoes  = new HashMap<ProdutoNota, Double[]>();
+		
+	}
+	
 	public void mergeNota(Nota nota) throws Exception {
 
 		if (!this.verificarIntegridadeNota(nota)) {
@@ -47,10 +70,12 @@ public class NotaService implements Service<Nota> {
 
 		}
 
-		Map<ProdutoNota, Double[]> alteracoes = new HashMap<ProdutoNota, Double[]>();
+		
 
 		for (ProdutoNota pn : nota.getProdutos()) {
 
+			pn.setProduto(et.merge(pn.getProduto()));
+			
 			try {
 
 				double meta = 0;
@@ -84,12 +109,7 @@ public class NotaService implements Service<Nota> {
 
 			} catch (Exception ex) {
 
-				for (ProdutoNota pa : alteracoes.keySet()) {
-
-					pa.getProduto().getEstoque().rmvQuantidades(alteracoes.get(pa)[0], alteracoes.get(pa)[0]);
-					pa.influenciaEstoques = alteracoes.get(pa)[1];
-
-				}
+				this.reverter();
 
 				throw new SemEstoqueException(pn.getProduto());
 
@@ -97,7 +117,16 @@ public class NotaService implements Service<Nota> {
 
 		}
 		// ------------------
-
+		
+		nota.setEmitente(et.merge(nota.getEmitente()));
+		nota.setEmpresa(et.merge(nota.getEmpresa()));
+		
+		if(nota.getTransportadora()!=null)
+			nota.setTransportadora(et.merge(nota.getTransportadora()));
+		
+		if(nota.getDestinatario() != null)
+			nota.setDestinatario(et.merge(nota.getDestinatario()));
+		
 		if (nota.getId() == 0) {
 
 			this.et.persist(nota);

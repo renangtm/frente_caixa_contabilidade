@@ -15,10 +15,22 @@ public class FormaPagamentoVendaService {
 				return "Dinheiro";
 			}
 
-			public void efetuarPagamento(double valor, Visor visor, AoFinalizar aoFinalizar) {
-				
-				aoFinalizar.sucesso();
-				
+			@Override
+			public int codigoCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return -1;
+			}
+
+			@Override
+			public br.com.afgtec.notas.FormaPagamento getFormaPagamento() {
+				// TODO Auto-generated method stub
+				return br.com.afgtec.notas.FormaPagamento.DINHEIRO;
+			}
+
+			@Override
+			public String cnpjCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return "";
 			}
 			
 		};
@@ -31,19 +43,22 @@ public class FormaPagamentoVendaService {
 				return "Debito";
 			}
 
-			public void efetuarPagamento(double valor, Visor visor, AoFinalizar aoFinalizar) {
-				
-				visor.escrever("Insira o cartao");
-				
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				aoFinalizar.falha();
-				
+			@Override
+			public int codigoCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public br.com.afgtec.notas.FormaPagamento getFormaPagamento() {
+				// TODO Auto-generated method stub
+				return br.com.afgtec.notas.FormaPagamento.OUTROS;
+			}
+
+			@Override
+			public String cnpjCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return "";
 			}
 			
 		};
@@ -54,20 +69,23 @@ public class FormaPagamentoVendaService {
 				// TODO Auto-generated method stub
 				return "Credito Visa";
 			}
+			
+			@Override
+			public int codigoCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
 
-			public void efetuarPagamento(double valor, Visor visor, AoFinalizar aoFinalizar) {
-				
-				visor.escrever("Insira o cartao");
-				
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				aoFinalizar.falha();
-				
+			@Override
+			public br.com.afgtec.notas.FormaPagamento getFormaPagamento() {
+				// TODO Auto-generated method stub
+				return br.com.afgtec.notas.FormaPagamento.OUTROS;
+			}
+
+			@Override
+			public String cnpjCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return "";
 			}
 			
 		};

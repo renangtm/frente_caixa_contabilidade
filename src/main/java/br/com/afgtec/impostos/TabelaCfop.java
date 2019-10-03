@@ -40,10 +40,10 @@ public class TabelaCfop {
 			return this.itens.stream().filter(i->i.getOperacao().equals(op)).findFirst().get().getCfop();
 		
 		}catch(Exception ex){
+		
+			throw new RuntimeException("CFOP nao encontrado");
 			
 		}
-		
-		return null;
 		
 	}
 
