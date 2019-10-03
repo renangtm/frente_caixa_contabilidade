@@ -4,8 +4,9 @@
   <artifactId>RtcContabil</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>RtcContabil</name>
-  <description>Rtc voltado para a contabilidade</description>
+  <description>Rtc voltado para o financeiro</description>
   
+
   <dependencies>
   	<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
 	<dependency>
@@ -14,6 +15,61 @@
 	    <version>6.0.0.Alpha2</version>
 	    <type>pom</type>
 	</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-bridge -->
+	<dependency>
+	    <groupId>org.apache.xmlgraphics</groupId>
+	    <artifactId>batik-bridge</artifactId>
+	    <version>1.7</version>
+	</dependency>
+
+	
+	<dependency>
+    <groupId>net.sf.barcode4j</groupId>
+    <artifactId>barcode4j</artifactId>
+    <version>2.1</version>
+</dependency>
+	
+	<!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+<dependency>
+    <groupId>com.google.zxing</groupId>
+    <artifactId>core</artifactId>
+    <version>3.3.1</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/net.sourceforge.barbecue/barbecue -->
+<dependency>
+    <groupId>net.sourceforge.barbecue</groupId>
+    <artifactId>barbecue</artifactId>
+    <version>1.5-beta1</version>
+</dependency>
+
+
+<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+<dependency>
+    <groupId>com.google.zxing</groupId>
+    <artifactId>javase</artifactId>
+    <version>3.3.1</version>
+</dependency>
+
+	
+	
+	<!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+<dependency>
+    <groupId>net.java.dev.jna</groupId>
+    <artifactId>jna</artifactId>
+    <version>5.4.0</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
+<dependency>
+    <groupId>net.sf.jasperreports</groupId>
+    <artifactId>jasperreports</artifactId>
+    <version>5.6.0</version>
+</dependency>
+
+
+	
 	
 	<!-- https://mvnrepository.com/artifact/xstream/xstream -->
 		<dependency>
