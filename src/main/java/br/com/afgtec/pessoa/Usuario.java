@@ -56,11 +56,13 @@ public class Usuario extends PessoaFisica{
 		
 	}
 	
-	public String getUsuario() {
+	
+
+	public String getLogin() {
 		return usuario;
 	}
 
-	public void setUsuario(String usuario) {
+	public void setLogin(String usuario) {
 		this.usuario = usuario;
 	}
 
