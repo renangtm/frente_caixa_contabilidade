@@ -113,6 +113,7 @@ public class ProdutoNota {
 
 	public void setProduto(Produto produto) {
 		this.produto = produto;
+		this.tipoInfluenciaEstoque = produto.getEstoque().getTipo();
 	}
 
 	public CFOP getCfop() {

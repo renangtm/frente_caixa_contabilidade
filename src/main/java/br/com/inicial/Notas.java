@@ -537,6 +537,8 @@ public class Notas extends Modulo {
 
 			}
 
+			
+			
 			ProdutoNota pn = new ProdutoNota();
 			pn.setNota(this.nota);
 			pn.setProduto(aAdicionar);

@@ -24,6 +24,12 @@ import br.com.entidades.Icones;
 import br.com.venda.ProdutoVenda;
 import br.com.venda.StatusVenda;
 import br.com.venda.Venda;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import java.awt.SystemColor;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JSeparator;
 
 public class FrenteCaixa extends Modulo {
 
@@ -34,112 +40,160 @@ public class FrenteCaixa extends Modulo {
 
 	private Usuario operador;
 
-	private JLabel logo;
-
-	public JTextField txtCodigo;
-
-	private JLabel lblIQtd;
-	private JLabel lblQtd;
-
-	private JLabel lblX;
-
-	private JLabel lblIValor;
-	private JLabel lblValor;
-
-	private JLabel lblIgual;
-
-	private JLabel lblITotal;
-	private JLabel lblTotal;
-
-	public JLabel lblNome;
-	private JLabel lblINome;
-
-	private JEditorPane txtLog;
-
-	private Venda venda;
-
-	public boolean focus = true;
-
 	private Empresa empresa;
-
-	public void novaVenda() {
-
-		this.venda = new Venda();
-
-		this.venda.setData(Calendar.getInstance());
-		this.venda.setOperador(this.operador);
-		this.venda.setEmpresa(this.empresa);
-		this.venda.setStatus(StatusVenda.EM_EXECUCAO);
-
-		this.printVenda();
-
-	}
-
-	public void bipe(String str) {
-
-		if (str.isEmpty() && this.venda.getTotal() > 0) {
-
-			this.focus = false;
-
-			new FinalizarCompra(this.venda, this);
-
-			return;
-
-		}
-
-		this.txtCodigo.setText("");
-
-		CodigoBarra codigo = null;
-
-		try {
-
-			codigo = new CodigoBarra(str, this.empresa.getPadroesCodigo(), new ProdutoService(et));
-
-		} catch (Exception ex) {
-
-			ex.printStackTrace();
-			return;
-
-		}
-
-		int i = 0;
-		if ((i = this.venda.getProdutos().stream().map(x -> x.getProduto().getId()).collect(Collectors.toList())
-				.indexOf(codigo.getProduto().getId())) >= 0) {
-
-			this.venda.getProdutos().get(i)
-					.setQuantidade(this.venda.getProdutos().get(i).getQuantidade() + codigo.getProduto().getEstoque()
-							.getTipo().para(this.venda.getProdutos().get(i).getTipoQuantidade(), codigo.getProduto(),
-									codigo.getQuantidade()));
-
-		} else {
-
-			ProdutoVenda pv = new ProdutoVenda();
-			pv.setProduto(codigo.getProduto());
-			pv.setQuantidade(codigo.getQuantidade());
-			pv.setValor(codigo.getProduto().getValor());
-			pv.setVenda(this.venda);
-
-			this.venda.getProdutos().add(pv);
-
-		}
-
-		this.printVenda();
-
-		this.lblQtd.setText(codigo.getQuantidade() + " " + codigo.getProduto().getEstoque().getTipo().name());
-
-		NumberFormat cifra = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-
-		this.lblValor.setText(cifra.format(codigo.getProduto().getValor()));
-
-		this.lblTotal.setText(cifra.format(codigo.getProduto().getValor() * codigo.getQuantidade()));
-
-		this.lblNome.setText(codigo.getProduto().getNome().toUpperCase());
-
-	}
+	private JTextField txtPesquisar;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	private JTextField textField_4;
+	private JTextField textField_5;
+	private JTextField textField_6;
 
 	public FrenteCaixa() {
 
 		super("Frente de Caixa", 0, 0, 100, 100, false);
+		getContentPane().setBackground(Color.WHITE);
+		getContentPane().setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 67, 323, 593);
+		getContentPane().add(scrollPane);
+		
+		JLabel lblNewLabel = new JLabel("Pesquisar:");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(10, 11, 88, 14);
+		getContentPane().add(lblNewLabel);
+		
+		txtPesquisar = new JTextField();
+		txtPesquisar.setBounds(10, 36, 451, 20);
+		getContentPane().add(txtPesquisar);
+		txtPesquisar.setColumns(10);
+		
+		JLabel lblDescricao = new JLabel("Descricao:");
+		lblDescricao.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblDescricao.setBounds(359, 67, 88, 14);
+		getContentPane().add(lblDescricao);
+		
+		JLabel lblNewLabel_1 = new JLabel("New label");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblNewLabel_1.setBackground(new Color(0, 153, 255));
+		lblNewLabel_1.setForeground(Color.WHITE);
+		lblNewLabel_1.setOpaque(true);
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(359, 92, 525, 45);
+		getContentPane().add(lblNewLabel_1);
+		
+		JLabel lblCliente = new JLabel("Cliente:");
+		lblCliente.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblCliente.setBounds(471, 11, 88, 14);
+		getContentPane().add(lblCliente);
+		
+		textField = new JTextField();
+		textField.setEnabled(false);
+		textField.setColumns(10);
+		textField.setBounds(471, 36, 360, 20);
+		getContentPane().add(textField);
+		
+		JButton btnNewButton = new JButton("...");
+		btnNewButton.setBounds(841, 35, 43, 23);
+		getContentPane().add(btnNewButton);
+		
+		JLabel lblValorUnitario = new JLabel("Valor Unitario:");
+		lblValorUnitario.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblValorUnitario.setBounds(359, 148, 88, 14);
+		getContentPane().add(lblValorUnitario);
+		
+		JLabel lblQuantidade = new JLabel("Quantidade:");
+		lblQuantidade.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblQuantidade.setBounds(546, 148, 88, 14);
+		getContentPane().add(lblQuantidade);
+		
+		JLabel lblTotal = new JLabel("Sub Total");
+		lblTotal.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblTotal.setBounds(718, 148, 88, 14);
+		getContentPane().add(lblTotal);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(359, 173, 146, 55);
+		getContentPane().add(textField_1);
+		textField_1.setColumns(10);
+		
+		textField_2 = new JTextField();
+		textField_2.setColumns(10);
+		textField_2.setBounds(546, 173, 146, 55);
+		getContentPane().add(textField_2);
+		
+		textField_3 = new JTextField();
+		textField_3.setEnabled(false);
+		textField_3.setColumns(10);
+		textField_3.setBounds(718, 173, 166, 55);
+		getContentPane().add(textField_3);
+		
+		JLabel lblNewLabel_2 = new JLabel("X");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_2.setBounds(511, 173, 25, 55);
+		getContentPane().add(lblNewLabel_2);
+		
+		JLabel label = new JLabel("=");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setFont(new Font("Tahoma", Font.BOLD, 24));
+		label.setBounds(693, 173, 25, 55);
+		getContentPane().add(label);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(359, 239, 525, 307);
+		getContentPane().add(scrollPane_1);
+		
+		textField_4 = new JTextField();
+		textField_4.setEnabled(false);
+		textField_4.setColumns(10);
+		textField_4.setBounds(652, 573, 232, 87);
+		getContentPane().add(textField_4);
+		
+		JLabel lblTotal_1 = new JLabel("Total");
+		lblTotal_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblTotal_1.setBounds(654, 557, 88, 14);
+		getContentPane().add(lblTotal_1);
+		
+		JLabel lblFormaDePagamento = new JLabel("Forma de Pagamento");
+		lblFormaDePagamento.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblFormaDePagamento.setBounds(359, 557, 196, 14);
+		getContentPane().add(lblFormaDePagamento);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(359, 573, 275, 20);
+		getContentPane().add(comboBox);
+		
+		textField_5 = new JTextField();
+		textField_5.setColumns(10);
+		textField_5.setBounds(359, 623, 118, 37);
+		getContentPane().add(textField_5);
+		
+		textField_6 = new JTextField();
+		textField_6.setColumns(10);
+		textField_6.setBounds(487, 623, 147, 37);
+		getContentPane().add(textField_6);
+		
+		JLabel lblDinheiro = new JLabel("Dinheiro");
+		lblDinheiro.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblDinheiro.setBounds(359, 604, 118, 14);
+		getContentPane().add(lblDinheiro);
+		
+		JLabel lblTroco = new JLabel("Troco");
+		lblTroco.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblTroco.setBounds(487, 604, 118, 14);
+		getContentPane().add(lblTroco);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 671, 874, 2);
+		getContentPane().add(separator);
+		
+		JLabel lblFFinalizar = new JLabel("F4 - Finalizar pedido");
+		lblFFinalizar.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblFFinalizar.setBounds(10, 684, 549, 14);
+		getContentPane().add(lblFFinalizar);
 
 		this.setVisible(true);
 
@@ -150,165 +204,12 @@ public class FrenteCaixa extends Modulo {
 		this.operador = et.merge(operador);
 		this.empresa = this.operador.getPf().getEmpresa();
 		et.detach(this.operador);
-		et.merge(this.empresa);
+		this.empresa=et.merge(this.empresa);
 
 		this.setTitle(operador.getPf().getEmpresa().getPj().getNome() + " - Operador: " + operador.getPf().getNome());
 
-		this.operador = operador;
-
-		this.logo = new JLabel();
-		this.logo.setIcon(new ImageIcon(Icones.getLogo()));
-		this.add(this.logo);
-		this.lr.setDimensoesComponente(this.logo, 80, 90, 17, 7);
-
-		this.txtCodigo = new JTextField();
-		this.add(this.txtCodigo);
-		this.lr.setDimensoesComponente(this.txtCodigo, 3, 3, 84, 6);
-
-		this.txtCodigo.setFont(new Font("Arial", Font.BOLD, 17));
-
-		this.txtCodigo.setBorder(BorderFactory.createCompoundBorder(this.txtCodigo.getBorder(),
-				BorderFactory.createEmptyBorder(5, 10, 5, 5)));
-
-		this.txtCodigo.addFocusListener(new FocusListener() {
-
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void focusLost(FocusEvent arg0) {
-
-				if (focus)
-					txtCodigo.requestFocus();
-
-			}
-
-		});
-
-		this.txtCodigo.requestFocus();
-
-		this.txtCodigo.addActionListener(e -> bipe(txtCodigo.getText()));
-
-		this.lblINome = new JLabel("Produto:");
-		this.add(this.lblINome);
-		this.lr.setDimensoesComponente(this.lblINome, 3, 12, 70, 5);
-
-		this.lblNome = new JLabel();
-		this.add(this.lblNome);
-		this.lblNome.setFont(new Font("Arial", Font.BOLD, 25));
-		this.lblNome.setOpaque(true);
-		this.lblNome.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4, true));
-		this.lblNome.setBackground(Color.white);
-		this.lr.setDimensoesComponente(this.lblNome, 3, 16, 70, 7);
-
-		this.lblIQtd = new JLabel("Quantidade:");
-		this.add(this.lblIQtd);
-		this.lr.setDimensoesComponente(this.lblIQtd, 3, 25, 15, 5);
-
-		this.lblIValor = new JLabel("Valor:");
-		this.add(this.lblIValor);
-		this.lr.setDimensoesComponente(this.lblIValor, 31, 25, 20, 5);
-
-		this.lblITotal = new JLabel("Sub Total:");
-		this.add(this.lblITotal);
-		this.lr.setDimensoesComponente(this.lblITotal, 61, 25, 35, 5);
-
-		this.lblQtd = new JLabel();
-		this.lblQtd.setFont(new Font("Arial", Font.BOLD, 25));
-		this.lblQtd.setOpaque(true);
-		this.lblQtd.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4, true));
-		this.lblQtd.setBackground(Color.white);
-		this.add(this.lblQtd);
-		this.lr.setDimensoesComponente(this.lblQtd, 3, 32, 15, 10);
-
-		this.lblX = new JLabel("X");
-		this.add(this.lblX);
-		this.lblX.setHorizontalAlignment(JLabel.CENTER);
-		this.lblX.setFont(new Font("Arial", Font.BOLD, 30));
-		this.lr.setDimensoesComponente(this.lblX, 18, 32, 12, 10);
-
-		this.lblValor = new JLabel();
-		this.lblValor.setFont(new Font("Arial", Font.BOLD, 25));
-		this.lblValor.setOpaque(true);
-		this.lblValor.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4, true));
-		this.lblValor.setBackground(Color.white);
-		this.add(this.lblValor);
-		this.lr.setDimensoesComponente(this.lblValor, 31, 32, 20, 10);
-
-		this.lblIgual = new JLabel("=");
-		this.add(this.lblIgual);
-		this.lblIgual.setHorizontalAlignment(JLabel.CENTER);
-		this.lblIgual.setFont(new Font("Arial", Font.BOLD, 30));
-		this.lr.setDimensoesComponente(this.lblIgual, 52, 32, 9, 10);
-
-		this.lblTotal = new JLabel();
-		this.lblTotal.setFont(new Font("Arial", Font.BOLD, 25));
-		this.lblTotal.setOpaque(true);
-		this.lblTotal.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4, true));
-		this.lblTotal.setBackground(Color.white);
-		this.add(this.lblTotal);
-		this.lr.setDimensoesComponente(this.lblTotal, 61, 32, 35, 10);
-
-		this.txtLog = new JEditorPane();
-		this.txtLog.setContentType("text/html");
-		this.txtLog.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4, true));
-		this.add(this.txtLog);
-
-		this.lr.setDimensoesComponente(this.txtLog, 3, 45, 94, 40);
-
-		this.novaVenda();
-
-		this.printVenda();
-
-	}
-
-	public void printVenda() {
-
-		NumberFormat cifra = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-
-		String html = "<table style='width:100%'>" + "<tr>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:20px;background-color:SteelBlue;border:1px solid;text-align:center'>Codigo</td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:20px;background-color:SteelBlue;border:1px solid;text-align:center'>Nome</td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:20px;background-color:SteelBlue;border:1px solid;text-align:center'>Qtd</td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:20px;background-color:SteelBlue;border:1px solid;text-align:center'>Valor</td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:20px;background-color:SteelBlue;border:1px solid;text-align:center'>Sub Total</td>"
-				+ "</tr>";
-
-		for (ProdutoVenda pv : this.venda.getProdutos()) {
-
-			String linha = "<tr>"
-					+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'>codigo</td>"
-					+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'>nome</td>"
-					+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'>quantidade</td>"
-					+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'>valor</td>"
-					+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'>subtotal</td>"
-					+ "</tr>";
-
-			linha = linha.replaceAll("codigo", pv.getProduto().getId() + "")
-					.replaceAll("nome", pv.getProduto().getNome().toUpperCase())
-					.replaceAll("quantidade", pv.getQuantidade() + "" + pv.getProduto().getEstoque().getTipo().name())
-					.replaceAll("valor", cifra.format(pv.getValor()).replace('$', 'S'))
-					.replaceAll("subtotal", cifra.format(pv.getValor() * pv.getQuantidade()).replace('$', 'S'));
-
-			html += linha;
-
-		}
-
-		html += "<tr>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'></td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'></td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'></td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'>Total: </td>"
-				+ "<td style='padding:10px;font-weigth:bold;font-size:15px;background-color:SteelBlue;text-align:center'>"
-				+ cifra.format(this.venda.getTotal()) + "</td>" + "</tr>";
-
-		html += "</table>";
-
-		this.txtLog.setText(html);
-
+		
+		
 	}
 
 	public static ImageIcon logo() {
@@ -326,5 +227,4 @@ public class FrenteCaixa extends Modulo {
 		return "Frente de caixa";
 
 	}
-
 }
