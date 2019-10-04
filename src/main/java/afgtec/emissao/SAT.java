@@ -129,16 +129,21 @@ public class SAT {
 
 			InterfaceSat is = InterfaceSatFactory.get();
 
-			String[] ret = is.ConsultarSAT(this.gerarNumeroSessao()).split("\\|");
+			String r = is.ConsultarSAT(this.gerarNumeroSessao());
+			System.out.println(r);
+			String[] ret = r.split("\\|");
 
 			if (ret[1].equals("08000")) {
-
+				
 				return true;
 
 			}
 
 		} catch (Exception ex) {
 
+			
+			ex.printStackTrace();
+			
 		}
 
 		return false;

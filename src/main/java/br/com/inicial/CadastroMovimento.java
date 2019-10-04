@@ -571,9 +571,10 @@ public class CadastroMovimento extends Modulo {
 	 * Create the frame.
 	 */
 	public CadastroMovimento() {
+		setTitle("Financeiro");
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 888, 810);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 888, 715);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -591,7 +592,7 @@ public class CadastroMovimento extends Modulo {
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Dados do Banco",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(10, 57, 417, 141);
+		panel.setBounds(10, 57, 417, 126);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -630,66 +631,62 @@ public class CadastroMovimento extends Modulo {
 		panel.add(txtConta);
 
 		btnConfirmarBanco = new JButton("Confirmar");
-		btnConfirmarBanco.setBounds(298, 107, 105, 23);
+		btnConfirmarBanco.setBounds(298, 91, 105, 23);
 		panel.add(btnConfirmarBanco);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 231, 417, 180);
+		scrollPane.setBounds(10, 222, 417, 159);
 		contentPane.add(scrollPane);
 		
 		tblMovimentos = new JTable();
 		scrollPane.setViewportView(tblMovimentos);
 
-		btnExcluirMovimento = new JButton("Excluir Movimento");
-		btnExcluirMovimento.setBounds(10, 436, 121, 23);
-		contentPane.add(btnExcluirMovimento);
-
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Fechamentos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(656, 57, 216, 379);
+		panel_1.setBounds(656, 57, 216, 343);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 25, 196, 294);
+		scrollPane_1.setBounds(10, 25, 196, 230);
 		panel_1.add(scrollPane_1);
 
 		tblFechamento = new JTable();
 		scrollPane_1.setViewportView(tblFechamento);
 
 		btnFechar = new JButton("Fechar");
-		btnFechar.setBounds(117, 345, 89, 23);
+		btnFechar.setBounds(117, 307, 89, 23);
 		panel_1.add(btnFechar);
 
 		JLabel lblNewLabel_2 = new JLabel("Pesquisar Movimento:");
-		lblNewLabel_2.setBounds(10, 209, 143, 14);
+		lblNewLabel_2.setBounds(10, 197, 143, 14);
 		contentPane.add(lblNewLabel_2);
 
 		txtPesquisar = new JTextField();
-		txtPesquisar.setBounds(164, 206, 263, 20);
+		txtPesquisar.setBounds(164, 194, 263, 20);
 		contentPane.add(txtPesquisar);
 		txtPesquisar.setColumns(10);
 
 		slPg = new JSlider();
-		slPg.setBounds(10, 413, 321, 26);
+		slPg.setBounds(11, 386, 321, 26);
 		contentPane.add(slPg);
 
 		lblPg = new JLabel("New label");
-		lblPg.setBounds(380, 422, 46, 14);
+		lblPg.setBounds(381, 395, 46, 14);
 		contentPane.add(lblPg);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Movimento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(437, 57, 220, 379);
+		panel_2.setBounds(437, 57, 220, 343);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 		
 				btNovoMovimento = new JButton("Novo Movimento");
-				btNovoMovimento.setBounds(72, 345, 138, 23);
+				btNovoMovimento.setBounds(101, 305, 109, 23);
 				panel_2.add(btNovoMovimento);
 				
 				btnConfirmar = new JButton("Confirmar");
-				btnConfirmar.setBounds(101, 311, 109, 23);
+				btnConfirmar.setBounds(101, 271, 109, 23);
 				panel_2.add(btnConfirmar);
 				
 				JLabel lblNewLabel_3 = new JLabel("Ficha:");
@@ -701,7 +698,7 @@ public class CadastroMovimento extends Modulo {
 				panel_2.add(btSlNota);
 				
 				JLabel lblV = new JLabel("Valor:");
-				lblV.setBounds(10, 54, 36, 14);
+				lblV.setBounds(10, 50, 36, 14);
 				panel_2.add(lblV);
 				
 				JLabel lblD = new JLabel("Data:");
@@ -732,73 +729,77 @@ public class CadastroMovimento extends Modulo {
 				panel_2.add(separator_2);
 				
 				JLabel lblNewLabel_4 = new JLabel("V. Mov:");
-				lblNewLabel_4.setBounds(10, 110, 46, 14);
+				lblNewLabel_4.setBounds(10, 100, 46, 14);
 				panel_2.add(lblNewLabel_4);
 				
 				txtValorMovimento = new JFormattedTextField();
-				txtValorMovimento.setBounds(66, 107, 138, 20);
+				txtValorMovimento.setBounds(72, 100, 138, 20);
 				panel_2.add(txtValorMovimento);
 				
 				txtValorMovimento.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
 				
 				JLabel lblDtMov = new JLabel("Dt. Mov:");
-				lblDtMov.setBounds(10, 141, 46, 14);
+				lblDtMov.setBounds(10, 134, 46, 14);
 				panel_2.add(lblDtMov);
 				
 				txtDataMovimento = new JFormattedTextField();
-				txtDataMovimento.setBounds(66, 138, 138, 20);
+				txtDataMovimento.setBounds(72, 131, 138, 20);
 				panel_2.add(txtDataMovimento);
 				
 				Masks.data().install(txtDataMovimento);
 				
 				JLabel lblNewLabel_5 = new JLabel("Op.:");
-				lblNewLabel_5.setBounds(10, 236, 46, 14);
+				lblNewLabel_5.setBounds(10, 218, 46, 14);
 				panel_2.add(lblNewLabel_5);
 				
 				cboOperacao = new JComboBox<Operacao>();
-				cboOperacao.setBounds(61, 233, 149, 20);
+				cboOperacao.setBounds(61, 215, 149, 20);
 				panel_2.add(cboOperacao);
 				
 				JLabel lblHist = new JLabel("Hist.:");
-				lblHist.setBounds(10, 261, 46, 14);
+				lblHist.setBounds(10, 243, 46, 14);
 				panel_2.add(lblHist);
 				
 				cboHistorico = new JComboBox<Historico>();
-				cboHistorico.setBounds(61, 258, 149, 20);
+				cboHistorico.setBounds(61, 240, 149, 20);
 				panel_2.add(cboHistorico);
 				
 				lblProgresso = new JLabel("");
 				lblProgresso.setForeground(Color.BLUE);
 				lblProgresso.setFont(new Font("Tahoma", Font.BOLD, 11));
 				lblProgresso.setHorizontalAlignment(SwingConstants.CENTER);
-				lblProgresso.setBounds(10, 271, 152, 29);
+				lblProgresso.setBounds(10, 271, 85, 29);
 				panel_2.add(lblProgresso);
 				
 				lblDesc = new JLabel("Desc:");
-				lblDesc.setBounds(10, 208, 46, 14);
+				lblDesc.setBounds(10, 190, 46, 14);
 				panel_2.add(lblDesc);
 				
 				lblJuros = new JLabel("Juros:");
-				lblJuros.setBounds(10, 177, 46, 14);
+				lblJuros.setBounds(10, 165, 46, 14);
 				panel_2.add(lblJuros);
 				
 				txtJuros = new JFormattedTextField();
-				txtJuros.setBounds(66, 174, 138, 20);
+				txtJuros.setBounds(72, 162, 138, 20);
 				panel_2.add(txtJuros);
 				
 				txtJuros.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
 				
 				txtDesc = new JFormattedTextField();
-				txtDesc.setBounds(66, 205, 138, 20);
+				txtDesc.setBounds(72, 190, 138, 20);
 				panel_2.add(txtDesc);
 				
 				txtDesc.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
+				
+						btnExcluirMovimento = new JButton("Excluir Movimento");
+						btnExcluirMovimento.setBounds(10, 271, 80, 23);
+						panel_2.add(btnExcluirMovimento);
 				
 				this.txtSaldo.setEnabled(false);
 				
 				panel_3 = new JPanel();
 				panel_3.setBorder(new TitledBorder(null, "Contas a Pagar", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-				panel_3.setBounds(10, 470, 417, 300);
+				panel_3.setBounds(10, 423, 417, 257);
 				contentPane.add(panel_3);
 				panel_3.setLayout(null);
 				
@@ -807,57 +808,57 @@ public class CadastroMovimento extends Modulo {
 				panel_3.add(scrollPane_2);
 				
 				JScrollPane scrollPane_3 = new JScrollPane();
-				scrollPane_3.setBounds(10, 24, 397, 194);
+				scrollPane_3.setBounds(10, 24, 397, 169);
 				panel_3.add(scrollPane_3);
 				
 				tblContasPagar = new JTable();
 				scrollPane_3.setViewportView(tblContasPagar);
 				
 				JLabel lblNewLabel_6 = new JLabel("Pesquisar");
-				lblNewLabel_6.setBounds(10, 229, 46, 14);
+				lblNewLabel_6.setBounds(10, 204, 46, 14);
 				panel_3.add(lblNewLabel_6);
 				
 				txtPesquisaContasPagar = new JTextField();
 				txtPesquisaContasPagar.setColumns(10);
-				txtPesquisaContasPagar.setBounds(63, 229, 344, 20);
+				txtPesquisaContasPagar.setBounds(63, 204, 344, 20);
 				panel_3.add(txtPesquisaContasPagar);
 				
 				slContasPagar = new JSlider();
-				slContasPagar.setBounds(10, 251, 321, 26);
+				slContasPagar.setBounds(10, 226, 321, 26);
 				panel_3.add(slContasPagar);
 				
 				lblPgContasPagar = new JLabel("New label");
-				lblPgContasPagar.setBounds(361, 260, 46, 14);
+				lblPgContasPagar.setBounds(361, 235, 46, 14);
 				panel_3.add(lblPgContasPagar);
 				
 				panel_4 = new JPanel();
 				panel_4.setBorder(new TitledBorder(null, "Contas a Receber", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-				panel_4.setBounds(437, 470, 430, 300);
+				panel_4.setBounds(437, 423, 430, 257);
 				contentPane.add(panel_4);
 				panel_4.setLayout(null);
 				
 				JScrollPane scrollPane_4 = new JScrollPane();
-				scrollPane_4.setBounds(10, 24, 410, 194);
+				scrollPane_4.setBounds(10, 24, 410, 167);
 				panel_4.add(scrollPane_4);
 				
 				tblContasReceber = new JTable();
 				scrollPane_4.setViewportView(tblContasReceber);
 				
 				JLabel label = new JLabel("Pesquisar");
-				label.setBounds(10, 228, 46, 14);
+				label.setBounds(10, 202, 46, 14);
 				panel_4.add(label);
 				
 				txtContasReceber = new JTextField();
 				txtContasReceber.setColumns(10);
-				txtContasReceber.setBounds(63, 228, 344, 20);
+				txtContasReceber.setBounds(63, 202, 344, 20);
 				panel_4.add(txtContasReceber);
 				
 				slContasReceber = new JSlider();
-				slContasReceber.setBounds(10, 250, 321, 26);
+				slContasReceber.setBounds(10, 224, 321, 26);
 				panel_4.add(slContasReceber);
 				
 				lblPgContasReceber = new JLabel("New label");
-				lblPgContasReceber.setBounds(361, 259, 46, 14);
+				lblPgContasReceber.setBounds(361, 233, 46, 14);
 				panel_4.add(lblPgContasReceber);
 				
 	}

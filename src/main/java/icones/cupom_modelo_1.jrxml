@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="200" pageHeight="842" columnWidth="180" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
 	<property name="ireport.zoom" value="1.210000000000015"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="181"/>
+	<property name="ireport.y" value="373"/>
 	<parameter name="qrCode" class="java.lang.String"/>
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="nomeEmpresa" class="java.lang.String"/>
@@ -303,7 +303,7 @@ new DecimalFormat("#,##0.00").format($F{valor_unitario}*$F{quantidade})]]></text
 			<textField>
 				<reportElement x="0" y="76" width="178" height="17" uuid="2f7bbfb8-26dc-407e-a629-e705388ae401"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					<font size="7" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{chave}]]></textFieldExpression>
 			</textField>

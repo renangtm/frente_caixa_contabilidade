@@ -33,11 +33,11 @@ public class Produto implements ItemQuantificavel{
 	private int id;
 	
 	@Column
-	@Campo(nome="Codigo",editavel=false)
+	@Campo(nome="Codigo",editavel=false,tamanho=20)
 	private String codigo_barra;
 	
 	@Column
-	@Campo(nome="Nome",editavel=false)
+	@Campo(nome="Nome",editavel=false,tamanho=80)
 	private String nome;
 	
 	@ManyToOne(fetch=FetchType.EAGER)

@@ -50,6 +50,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
+import java.awt.Font;
+import javax.swing.JTextField;
 
 public class Produtos extends Modulo {
 
@@ -209,7 +211,8 @@ public class Produtos extends Modulo {
 
 		this.grProdutos.setLblSlider(this.sliderPagina);
 		this.grProdutos.setLblPagina(this.lblNumeroPagina);
-
+		this.grProdutos.setFiltro(this.txtPesquisar);
+		
 		this.grProdutos.atualizar();
 
 		this.btnBtncm.addActionListener(a -> {
@@ -381,7 +384,10 @@ public class Produtos extends Modulo {
 					return;
 				}
 
-				if (!validarFormulario())
+				if (
+						!vc(pnlInfoProd) ||
+						!vc(pnlMedidas) ||
+						!vc(pnlEstoque))
 					return;
 
 				try {
@@ -481,7 +487,7 @@ public class Produtos extends Modulo {
 		sliderPagina = new javax.swing.JSlider();
 		lblNumeroPagina = new javax.swing.JLabel();
 		jLabel3 = new javax.swing.JLabel();
-		jPanel1 = new javax.swing.JPanel();
+		pnlInfoProd = new javax.swing.JPanel();
 		jLabel4 = new javax.swing.JLabel();
 		jLabel5 = new javax.swing.JLabel();
 		jLabel6 = new javax.swing.JLabel();
@@ -495,7 +501,7 @@ public class Produtos extends Modulo {
 		txtValor = new javax.swing.JFormattedTextField();
 		jPanel2 = new javax.swing.JPanel();
 		lblImagem = new javax.swing.JLabel();
-		jPanel3 = new javax.swing.JPanel();
+		pnlMedidas = new javax.swing.JPanel();
 		jLabel10 = new javax.swing.JLabel();
 		jLabel11 = new javax.swing.JLabel();
 		jLabel12 = new javax.swing.JLabel();
@@ -504,7 +510,7 @@ public class Produtos extends Modulo {
 		txtVolume = new javax.swing.JFormattedTextField();
 		cboUnidadeVolume = new javax.swing.JComboBox<>();
 		cboUnidadePeso = new javax.swing.JComboBox<>();
-		jPanel4 = new javax.swing.JPanel();
+		pnlEstoque = new javax.swing.JPanel();
 		jLabel14 = new javax.swing.JLabel();
 		jLabel15 = new javax.swing.JLabel();
 		cboUnidadeEstoque = new javax.swing.JComboBox<>();
@@ -534,7 +540,7 @@ public class Produtos extends Modulo {
 		jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 		jLabel3.setText("Altere a pagina deslizando");
 
-		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Informações do Produto"));
+		pnlInfoProd.setBorder(javax.swing.BorderFactory.createTitledBorder("Informações do Produto"));
 
 		jLabel4.setText("Nome:");
 
@@ -548,7 +554,7 @@ public class Produtos extends Modulo {
 
 		btnBtncm = new JButton("...");
 		
-		btDadosContabeis = new JButton("Dados Contabeis");
+		btDadosContabeis = new JButton("Regras Fiscais");
 		
 		lblPorcentagemLoja = new JLabel();
 		lblPorcentagemLoja.setText("Porcentagem Loja:");
@@ -557,24 +563,24 @@ public class Produtos extends Modulo {
 		
 		txtPorcentagemLoja = new JFormattedTextField();
 
-		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-		jPanel1Layout.setHorizontalGroup(
-			jPanel1Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel1Layout.createSequentialGroup()
+		javax.swing.GroupLayout gl_pnlInfoProd = new javax.swing.GroupLayout(pnlInfoProd);
+		gl_pnlInfoProd.setHorizontalGroup(
+			gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnlInfoProd.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel1Layout.createSequentialGroup()
+					.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlInfoProd.createSequentialGroup()
 							.addComponent(jLabel4)
 							.addGap(18)
 							.addComponent(txtNome, 257, 257, 257)
 							.addContainerGap())
-						.addGroup(jPanel1Layout.createSequentialGroup()
-							.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(jPanel1Layout.createSequentialGroup()
+						.addGroup(gl_pnlInfoProd.createSequentialGroup()
+							.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnlInfoProd.createSequentialGroup()
 									.addComponent(jLabel6)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(txtCodigoBarra, 216, 216, 216))
-								.addGroup(jPanel1Layout.createSequentialGroup()
+								.addGroup(gl_pnlInfoProd.createSequentialGroup()
 									.addComponent(jLabel7)
 									.addGap(6)
 									.addComponent(txtValor, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
@@ -583,20 +589,20 @@ public class Produtos extends Modulo {
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addComponent(txtCusto, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)))
 							.addGap(10))
-						.addGroup(Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-							.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-								.addGroup(jPanel1Layout.createSequentialGroup()
+						.addGroup(Alignment.TRAILING, gl_pnlInfoProd.createSequentialGroup()
+							.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_pnlInfoProd.createSequentialGroup()
 									.addComponent(btDadosContabeis)
 									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-										.addGroup(jPanel1Layout.createSequentialGroup()
+									.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_pnlInfoProd.createSequentialGroup()
 											.addComponent(lblPorcentagemLoja, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
 											.addPreferredGap(ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
 											.addComponent(txtPorcentagemLoja, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
-										.addGroup(jPanel1Layout.createSequentialGroup()
+										.addGroup(gl_pnlInfoProd.createSequentialGroup()
 											.addComponent(chkApareceLoja)
 											.addPreferredGap(ComponentPlacement.RELATED, 0, Short.MAX_VALUE))))
-								.addGroup(jPanel1Layout.createSequentialGroup()
+								.addGroup(gl_pnlInfoProd.createSequentialGroup()
 									.addComponent(jLabel5)
 									.addPreferredGap(ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
 									.addComponent(txtNcm, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE)
@@ -604,40 +610,40 @@ public class Produtos extends Modulo {
 									.addComponent(btnBtncm, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
 							.addGap(28))))
 		);
-		jPanel1Layout.setVerticalGroup(
-			jPanel1Layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(jPanel1Layout.createSequentialGroup()
+		gl_pnlInfoProd.setVerticalGroup(
+			gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnlInfoProd.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
+					.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE)
 						.addComponent(jLabel4)
 						.addComponent(txtNome, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
+					.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE)
 						.addComponent(jLabel5)
 						.addComponent(txtNcm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnBtncm, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
+					.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE)
 						.addComponent(jLabel6)
 						.addComponent(txtCodigoBarra, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
+					.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE)
 						.addComponent(jLabel7)
 						.addComponent(txtCusto, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(jLabel8)
 						.addComponent(txtValor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
-					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
 						.addComponent(btDadosContabeis, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-						.addGroup(jPanel1Layout.createSequentialGroup()
-							.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
+						.addGroup(gl_pnlInfoProd.createSequentialGroup()
+							.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE)
 								.addComponent(lblPorcentagemLoja)
 								.addComponent(txtPorcentagemLoja, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 							.addComponent(chkApareceLoja)))
 					.addContainerGap())
 		);
-		jPanel1.setLayout(jPanel1Layout);
+		pnlInfoProd.setLayout(gl_pnlInfoProd);
 
 		jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Imagem"));
 
@@ -652,7 +658,7 @@ public class Produtos extends Modulo {
 						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addContainerGap()));
 
-		jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Medidas"));
+		pnlMedidas.setBorder(javax.swing.BorderFactory.createTitledBorder("Medidas"));
 
 		jLabel10.setText("Peso:");
 
@@ -666,48 +672,48 @@ public class Produtos extends Modulo {
 
 		txtVolume.setToolTipText("");
 
-		javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-		jPanel3.setLayout(jPanel3Layout);
-		jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jLabel10)
+		javax.swing.GroupLayout gl_pnlMedidas = new javax.swing.GroupLayout(pnlMedidas);
+		pnlMedidas.setLayout(gl_pnlMedidas);
+		gl_pnlMedidas.setHorizontalGroup(gl_pnlMedidas.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(gl_pnlMedidas.createSequentialGroup().addContainerGap()
+						.addGroup(gl_pnlMedidas.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(gl_pnlMedidas.createSequentialGroup().addComponent(jLabel10)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(txtPeso))
-								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jLabel11)
+								.addGroup(gl_pnlMedidas.createSequentialGroup().addComponent(jLabel11)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(cboUnidadePeso, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
 												Short.MAX_VALUE))
-								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jLabel13)
+								.addGroup(gl_pnlMedidas.createSequentialGroup().addComponent(jLabel13)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(txtVolume))
-								.addGroup(jPanel3Layout.createSequentialGroup().addComponent(jLabel12)
+								.addGroup(gl_pnlMedidas.createSequentialGroup().addComponent(jLabel12)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 										.addComponent(cboUnidadeVolume, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
 												Short.MAX_VALUE)))
 						.addContainerGap()));
-		jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel3Layout.createSequentialGroup().addContainerGap()
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+		gl_pnlMedidas.setVerticalGroup(gl_pnlMedidas.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(gl_pnlMedidas.createSequentialGroup().addContainerGap()
+						.addGroup(gl_pnlMedidas.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jLabel11).addComponent(cboUnidadePeso,
 										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+						.addGroup(gl_pnlMedidas.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jLabel10).addComponent(txtPeso, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+						.addGroup(gl_pnlMedidas.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jLabel12).addComponent(cboUnidadeVolume,
 										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+						.addGroup(gl_pnlMedidas.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jLabel13).addComponent(txtVolume, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(12, Short.MAX_VALUE)));
 
-		jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Estoque"));
+		pnlEstoque.setBorder(javax.swing.BorderFactory.createTitledBorder("Estoque"));
 
 		jLabel14.setText("Unid. Estq:");
 
@@ -719,126 +725,121 @@ public class Produtos extends Modulo {
 
 		txtDisp.setToolTipText("");
 
-		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-		jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel4Layout
+		javax.swing.GroupLayout gl_pnlEstoque = new javax.swing.GroupLayout(pnlEstoque);
+		gl_pnlEstoque.setHorizontalGroup(gl_pnlEstoque.createParallelGroup(Alignment.LEADING).addGroup(gl_pnlEstoque
 				.createSequentialGroup().addContainerGap()
-				.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel4Layout.createSequentialGroup().addComponent(jLabel14).addGap(2)
+				.addGroup(gl_pnlEstoque.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlEstoque.createSequentialGroup().addComponent(jLabel14).addGap(2)
 								.addComponent(cboUnidadeEstoque, 0, 199, Short.MAX_VALUE))
-						.addGroup(jPanel4Layout.createSequentialGroup().addComponent(jLabel15)
+						.addGroup(gl_pnlEstoque.createSequentialGroup().addComponent(jLabel15)
 								.addPreferredGap(ComponentPlacement.UNRELATED)
 								.addComponent(txtEstoque, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
 								.addPreferredGap(ComponentPlacement.RELATED, 56, Short.MAX_VALUE).addComponent(jLabel16)
 								.addPreferredGap(ComponentPlacement.RELATED)
 								.addComponent(txtDisp, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)))
 				.addContainerGap()));
-		jPanel4Layout
-				.setVerticalGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanel4Layout.createParallelGroup(Alignment.BASELINE).addComponent(jLabel14)
+		gl_pnlEstoque
+				.setVerticalGroup(gl_pnlEstoque.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlEstoque.createSequentialGroup().addContainerGap()
+								.addGroup(gl_pnlEstoque.createParallelGroup(Alignment.BASELINE).addComponent(jLabel14)
 										.addComponent(cboUnidadeEstoque, GroupLayout.PREFERRED_SIZE,
 												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addGroup(jPanel4Layout.createParallelGroup(Alignment.BASELINE).addComponent(jLabel15)
+								.addGroup(gl_pnlEstoque.createParallelGroup(Alignment.BASELINE).addComponent(jLabel15)
 										.addComponent(jLabel16)
 										.addComponent(txtDisp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)
 										.addComponent(txtEstoque, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE))
 								.addContainerGap(13, Short.MAX_VALUE)));
-		jPanel4.setLayout(jPanel4Layout);
+		pnlEstoque.setLayout(gl_pnlEstoque);
 
 		btConfirmar.setText("Confirmar");
 
 		btNovoProduto.setText("Novo Produto");
+		
+		lblPesquisar = new JLabel();
+		lblPesquisar.setText("Pesquisar:");
+		lblPesquisar.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		txtPesquisar = new JTextField();
+		txtPesquisar.setColumns(10);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout
-						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(jScrollPane1)
-						.addGroup(layout.createSequentialGroup().addGap(4, 4, 4)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-										.addGroup(layout.createSequentialGroup()
-												.addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addGroup(layout.createSequentialGroup()
-												.addComponent(btNovoProduto, javax.swing.GroupLayout.PREFERRED_SIZE,
-														153, javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(btConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 240,
-														javax.swing.GroupLayout.PREFERRED_SIZE)))
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+		layout.setHorizontalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE)
 						.addGroup(layout.createSequentialGroup()
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-										.addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 469,
-												Short.MAX_VALUE)
-										.addComponent(jSeparator2))
-								.addGap(0, 0, Short.MAX_VALUE))
-						.addGroup(layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE).addComponent(jLabel3)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(sliderPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 420,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-								.addComponent(lblNumeroPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 54,
-										javax.swing.GroupLayout.PREFERRED_SIZE)))
-						.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-				.createSequentialGroup().addContainerGap()
-				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-						.addComponent(lblNumeroPagina, javax.swing.GroupLayout.PREFERRED_SIZE, 23,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addGroup(layout.createSequentialGroup().addComponent(jLabel1)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup()
-												.addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addGroup(layout.createSequentialGroup().addGroup(layout
-												.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-												.addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addGroup(layout
-														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
-																false)
-														.addComponent(btNovoProduto,
-																javax.swing.GroupLayout.DEFAULT_SIZE, 35,
-																Short.MAX_VALUE)
-														.addComponent(btConfirmar, javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE))))
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-										.addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addComponent(sliderPagina, javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE))))
-				.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+							.addGap(4)
+							.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(pnlInfoProd, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(btNovoProduto, GroupLayout.PREFERRED_SIZE, 153, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btConfirmar, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE)))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(layout.createParallelGroup(Alignment.LEADING)
+								.addComponent(pnlEstoque, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+								.addComponent(pnlMedidas, GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+						.addGroup(layout.createSequentialGroup()
+							.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+								.addComponent(jSeparator2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(0, 395, Short.MAX_VALUE))
+						.addGroup(layout.createSequentialGroup()
+							.addGap(0, 227, Short.MAX_VALUE)
+							.addComponent(jLabel3)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(sliderPagina, GroupLayout.PREFERRED_SIZE, 420, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(lblNumeroPagina, GroupLayout.PREFERRED_SIZE, 54, GroupLayout.PREFERRED_SIZE))
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(lblPesquisar, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(txtPesquisar, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		layout.setVerticalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(jLabel1)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(jSeparator2, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(pnlMedidas, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(pnlEstoque, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(layout.createSequentialGroup()
+							.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(pnlInfoProd, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(btNovoProduto, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+								.addComponent(btConfirmar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+					.addGap(8)
+					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPesquisar, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtPesquisar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNumeroPagina, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+						.addComponent(jLabel3, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+						.addComponent(sliderPagina, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(35, Short.MAX_VALUE))
+		);
+		getContentPane().setLayout(layout);
 
 		setSize(new java.awt.Dimension(816, 538));
 		setLocationRelativeTo(null);
@@ -874,10 +875,10 @@ public class Produtos extends Modulo {
 	javax.swing.JLabel jLabel6;
 	javax.swing.JLabel jLabel7;
 	javax.swing.JLabel jLabel8;
-	javax.swing.JPanel jPanel1;
+	javax.swing.JPanel pnlInfoProd;
 	javax.swing.JPanel jPanel2;
-	javax.swing.JPanel jPanel3;
-	javax.swing.JPanel jPanel4;
+	javax.swing.JPanel pnlMedidas;
+	javax.swing.JPanel pnlEstoque;
 	javax.swing.JScrollPane jScrollPane1;
 	javax.swing.JScrollPane jScrollPane4;
 	javax.swing.JScrollPane jScrollPane5;
@@ -909,5 +910,7 @@ public class Produtos extends Modulo {
 	private JLabel lblPorcentagemLoja;
 	private JCheckBox chkApareceLoja;
 	private JFormattedTextField txtPorcentagemLoja;
+	private JLabel lblPesquisar;
+	private JTextField txtPesquisar;
 
 }

@@ -26,6 +26,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import br.com.afgtec.base.CFG;
 import br.com.afgtec.usuario.Usuario;
@@ -275,6 +277,23 @@ public class MenuPrincipal extends Tela {
 	}
 
 	private void formarMenu(List<Object> o, int y_base, int level, int h) {
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (InstantiationException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IllegalAccessException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
 
 		if (o.size() == 0)
 			return;
@@ -318,10 +337,14 @@ public class MenuPrincipal extends Tela {
 
 			lbl.setLayout(null);
 
+			
+			
 			JComponent lblK2 = new JButton();
 			lblK2.setBorder(null);
 			lblK2.setOpaque(true);
+			lblK2.setForeground(new Color(255, 255, 255));
 			boolean bt = true;
+			
 			try {
 				@SuppressWarnings("unused")
 				Object[] sub_menu = (Object[]) item;
@@ -343,7 +366,6 @@ public class MenuPrincipal extends Tela {
 			} catch (Exception ex) {
 				((JButton) lbl2).setHorizontalAlignment(JLabel.CENTER);
 				((JButton) lbl2).setVerticalAlignment(JLabel.CENTER);
-				lbl2.setForeground(new Color(70, 70, 70));
 			}
 
 			lbl.add(lbl2);
@@ -452,6 +474,8 @@ public class MenuPrincipal extends Tela {
 			}
 			lbl.requestFocus();
 			JComponent actr = lbl;
+			
+			
 			if (bt) {
 				((JButton) lbl2).addActionListener(new ActionListener() {
 
@@ -598,6 +622,22 @@ public class MenuPrincipal extends Tela {
 		}
 
 		esconde();
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (InstantiationException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IllegalAccessException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
 	}
 

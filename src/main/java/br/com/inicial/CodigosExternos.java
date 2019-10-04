@@ -13,12 +13,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import br.com.afgtec.base.ET;
+import br.com.afgtec.pessoa.Empresa;
 import br.com.afgtec.unidades.TipoQuantidade;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.ListModelGenerica;
 import br.com.agrofauna.utilidades.ProvedorDeEventos;
 import br.com.codigo.PadraoCodigo;
 import br.com.entidades.Icones;
+import java.awt.Dimension;
 
 public class CodigosExternos extends Modulo{
 
@@ -33,11 +35,7 @@ public class CodigosExternos extends Modulo{
 	
 	private void setPadraoCodigo(PadraoCodigo p){
 		
-		EntityManager et = ET.nova();
-		
 		this.padrao = p;
-		
-		et.detach(p);
 		
 		this.btNovo.setEnabled(p.getId() > 0);
 		
@@ -55,15 +53,14 @@ public class CodigosExternos extends Modulo{
 	}
 	 
 	public CodigosExternos() {
-		super();
+	
+		setResizable(false);
 		
 		this.inicializarComponentes();
 		
 	}
 	
 	private void atualizarLista(){
-		
-		EntityManager et = ET.nova();
 		
 		this.model = new ListModelGenerica<PadraoCodigo>(operador.getPf().getEmpresa().getPadroesCodigo(),PadraoCodigo.class,
 				new ProvedorDeEventos<PadraoCodigo>(){
@@ -94,15 +91,16 @@ public class CodigosExternos extends Modulo{
 		
 	}
 	
+	private Empresa empresa;
+	
 	public void init(Usuario operador){
 
 		this.setTitle(operador.getPf().getEmpresa()+" - Operador: "+operador.getPf().getNome()+" - Codigos Externos");
 		
-		EntityManager et = ET.nova();
-		
-		et.refresh(operador.getPf().getEmpresa());
-		
-		this.operador = operador;
+		this.operador = et.merge(operador);
+		this.empresa = this.operador.getPf().getEmpresa();
+		et.detach(this.operador);
+		this.empresa = et.merge(this.empresa);
 		
 		this.atualizarLista();
 			
@@ -506,7 +504,7 @@ public class CodigosExternos extends Modulo{
                 .addContainerGap())
         );
 
-        setSize(new java.awt.Dimension(399, 538));
+        setSize(new Dimension(340, 538));
         setLocationRelativeTo(null);
 	}
 	

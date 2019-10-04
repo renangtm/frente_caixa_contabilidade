@@ -65,7 +65,7 @@ public class Login extends Tela {
 		}
 
 		this.setVisible(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.habilitado = 0;
 
 		this.imgc = new JLabel();

@@ -35,7 +35,6 @@ public class DisposicaoModulos {
 		menu_notas[0] = "Notas";
 			
 			List<Object> _menu_notas = new ArrayList<Object>();
-			_menu_notas.add(ImportarXML.class);
 			_menu_notas.add(Notas.class);
 			
 		menu_notas[1] = _menu_notas;
@@ -54,6 +53,8 @@ public class DisposicaoModulos {
 			
 		disposicao.add(menu_financeiro);
 			
+		disposicao.add(ConfiguracoesEmpresa.class);
+		
 		return disposicao;
 		
 	}

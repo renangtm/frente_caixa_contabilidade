@@ -1,6 +1,7 @@
 package br.com.inicial;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.KeyEventDispatcher;
@@ -20,7 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import br.com.afgtec.base.CFG;
+
 import br.com.afgtec.base.ET;
 import br.com.afgtec.financeiro.Banco;
 import br.com.afgtec.financeiro.Historico;
@@ -40,6 +41,7 @@ import br.com.afgtec.unidades.TipoQuantidade;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.GerenciadorLista;
 import br.com.agrofauna.utilidades.ListModelGenerica;
+import br.com.agrofauna.utilidades.PercentageColumnSetter;
 import br.com.codigo.CodigoBarra;
 import br.com.entidades.FormaPagamento;
 import br.com.entidades.FormaPagamentoVendaService;
@@ -54,7 +56,9 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.table.DefaultTableCellRenderer;
 
+import afgtec.emissao.SAT;
 import afgtec.emissao.ValidadorDocumento;
 import afgtec.geradoresCupom.GeradorCupomSATModelo1;
 
@@ -109,6 +113,10 @@ public class FrenteCaixa extends Modulo {
 	private FormaPagamento formaPagamento;
 
 	private JLabel txtDescricaoProduto;
+
+	private PercentageColumnSetter percProd;
+
+	private JScrollPane srcProdutos;
 
 	protected void setDestinatario(Pessoa pessoa) {
 
@@ -171,8 +179,19 @@ public class FrenteCaixa extends Modulo {
 
 			nf.setVenda(this.venda);
 
-			List<Nota> notas = nf.getNotas();
-
+			List<Nota> notas = null;
+			
+			try{
+				
+				notas = nf.getNotas();
+				
+			}catch(Exception exx){
+				
+				erro(exx.getMessage());
+				return;
+				
+			}
+			
 			NotaService ns = new NotaService(et);
 			ns.setEmpresa(this.empresa);
 
@@ -184,6 +203,28 @@ public class FrenteCaixa extends Modulo {
 				throw new RuntimeException("Nao é possivel criar a venda nem a nota");
 
 			}
+			
+			SAT sat = new SAT(venda.getEmpresa());//teste
+		
+			ValidadorDocumento vd = new ValidadorDocumento(ns, sat, new GeradorCupomSATModelo1());
+
+			notas.forEach(n -> {
+
+				try {
+
+					vd.validarFiscalmente(n);
+
+				} catch (Exception ex) {
+					
+					erro("Nao foi possivel emitir o cupom devido a inconsistencias fiscais, contate o seu contador.");
+					
+					ex.printStackTrace();
+
+					return;
+
+				}
+
+			});
 
 			this.venda = vs.persistirVenda(this.venda);
 
@@ -198,24 +239,6 @@ public class FrenteCaixa extends Modulo {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-
-				}
-
-			});
-
-			ValidadorDocumento vd = new ValidadorDocumento(ns, CFG.moduloSat, new GeradorCupomSATModelo1());
-
-			notas.forEach(n -> {
-
-				try {
-
-					vd.validarFiscalmente(n);
-
-				} catch (Exception ex) {
-
-					ex.printStackTrace();
-
-					throw new RuntimeException(ex);
 
 				}
 
@@ -271,9 +294,12 @@ public class FrenteCaixa extends Modulo {
 								et.getTransaction().begin();
 								et.getTransaction().commit();
 								
-								if (ths.size() > 0)
+								if (ths.size() > 0){
 									ths.getFirst().start();
-
+								}else{
+									novaVenda();
+								}
+									
 							}
 
 						}
@@ -334,6 +360,10 @@ public class FrenteCaixa extends Modulo {
 		this.tblVenda.setModel(this.lstProdutoVenda);
 
 		this.mostrarVenda();
+		
+		this.txtSubTotal.setText("");
+		this.txtDinheiro.setText("");
+		this.txtTroco.setText("");
 
 	}
 
@@ -384,6 +414,7 @@ public class FrenteCaixa extends Modulo {
 		this.txtDescricaoProduto.setText("");
 		this.txtQuantidade.setText("0 UN");
 		this.txtValorUnitario.setText("0,00");
+		
 
 		if (this.produtoSelecionado != null) {
 
@@ -412,7 +443,12 @@ public class FrenteCaixa extends Modulo {
 
 		this.lstProdutoVenda.setLista(this.venda.getProdutos());
 		this.lstProdutoVenda.atualizaListaBaseConformeFiltros();
-
+		
+		this.tblProdutos.setDefaultRenderer(String.class, new ProdCellRenderer());
+		
+		percProd = new PercentageColumnSetter(Produto.class);
+		percProd.resize(this.tblProdutos, this.srcProdutos);
+		
 	}
 
 	public void init(Usuario operador) {
@@ -642,7 +678,14 @@ public class FrenteCaixa extends Modulo {
 					return true;
 
 				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
-
+					
+					if(venda.getProdutos().size() == 0){
+						
+						alerta("Coloque produtos na venda");
+						return true;
+						
+					}
+					
 					boolean pf = true;
 
 					if (tbpBP.getSelectedIndex() == 0) {
@@ -650,13 +693,17 @@ public class FrenteCaixa extends Modulo {
 						txtBipe.setText("");
 						tbpBP.setSelectedIndex(1);
 
-						if (formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
-
+					}
+					
+					if (formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+						try{
+							
+							Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
+							
+						}catch(Exception exx){
 							txtDinheiro.requestFocus();
 							pf = false;
-
 						}
-
 					}
 
 					if (pf)
@@ -693,14 +740,14 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
 
-		this.setBounds(0, 0, 908, 700);
+		this.setBounds(0, 0, 908, 652);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 67, 323, 532);
-		getContentPane().add(scrollPane);
+		srcProdutos = new JScrollPane();
+		srcProdutos.setBounds(10, 67, 323, 483);
+		getContentPane().add(srcProdutos);
 
 		tblProdutos = new JTable();
-		scrollPane.setViewportView(tblProdutos);
+		srcProdutos.setViewportView(tblProdutos);
 
 		JLabel lblDescricao = new JLabel("Descricao:");
 		lblDescricao.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -747,17 +794,24 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(lblTotal);
 
 		txtValorUnitario = new JTextField();
+		txtValorUnitario.setFont(new Font("Tahoma", Font.BOLD, 23));
+		txtValorUnitario.setHorizontalAlignment(SwingConstants.CENTER);
 		txtValorUnitario.setBounds(359, 173, 146, 55);
 		getContentPane().add(txtValorUnitario);
 		txtValorUnitario.setColumns(10);
 
 		txtQuantidade = new JTextField();
+		txtQuantidade.setHorizontalAlignment(SwingConstants.CENTER);
+		txtQuantidade.setFont(new Font("Tahoma", Font.BOLD, 23));
 		txtQuantidade.setColumns(10);
 		txtQuantidade.setBounds(546, 173, 146, 55);
 		getContentPane().add(txtQuantidade);
 
 		txtSubTotal = new JTextField();
-		txtSubTotal.setEnabled(false);
+		txtSubTotal.setEditable(false);
+		txtSubTotal.setForeground(new Color(30, 144, 255));
+		txtSubTotal.setFont(new Font("Tahoma", Font.BOLD, 25));
+		txtSubTotal.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSubTotal.setColumns(10);
 		txtSubTotal.setBounds(718, 173, 166, 55);
 		getContentPane().add(txtSubTotal);
@@ -775,7 +829,7 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(label);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(359, 239, 525, 252);
+		scrollPane_1.setBounds(359, 239, 525, 194);
 		getContentPane().add(scrollPane_1);
 
 		tblVenda = new JTable();
@@ -787,21 +841,21 @@ public class FrenteCaixa extends Modulo {
 		txtTotal.setForeground(new Color(124, 252, 0));
 		txtTotal.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTotal.setColumns(10);
-		txtTotal.setBounds(652, 518, 232, 87);
+		txtTotal.setBounds(652, 460, 232, 87);
 		getContentPane().add(txtTotal);
 
 		JLabel lblTotal_1 = new JLabel("Total");
 		lblTotal_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTotal_1.setBounds(654, 502, 88, 14);
+		lblTotal_1.setBounds(654, 444, 88, 14);
 		getContentPane().add(lblTotal_1);
 
 		JLabel lblFormaDePagamento = new JLabel("Forma de Pagamento");
 		lblFormaDePagamento.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblFormaDePagamento.setBounds(359, 502, 196, 14);
+		lblFormaDePagamento.setBounds(359, 444, 196, 14);
 		getContentPane().add(lblFormaDePagamento);
 
 		cboFormaPagto = new JComboBox<FormaPagamento>();
-		cboFormaPagto.setBounds(359, 518, 275, 20);
+		cboFormaPagto.setBounds(359, 460, 275, 20);
 		getContentPane().add(cboFormaPagto);
 
 		txtDinheiro = new JTextField();
@@ -809,7 +863,7 @@ public class FrenteCaixa extends Modulo {
 		txtDinheiro.setFont(new Font("Tahoma", Font.BOLD, 19));
 		txtDinheiro.setHorizontalAlignment(SwingConstants.CENTER);
 		txtDinheiro.setColumns(10);
-		txtDinheiro.setBounds(359, 568, 118, 37);
+		txtDinheiro.setBounds(359, 510, 118, 37);
 		getContentPane().add(txtDinheiro);
 
 		txtTroco = new JTextField();
@@ -817,7 +871,7 @@ public class FrenteCaixa extends Modulo {
 		txtTroco.setFont(new Font("Tahoma", Font.BOLD, 19));
 		txtTroco.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTroco.setColumns(10);
-		txtTroco.setBounds(487, 568, 147, 37);
+		txtTroco.setBounds(487, 510, 147, 37);
 		getContentPane().add(txtTroco);
 
 		JLabel lblDinheiro = new JLabel("Dinheiro");
@@ -831,19 +885,19 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(lblTroco);
 
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 635, 874, 2);
+		separator.setBounds(10, 586, 874, 2);
 		getContentPane().add(separator);
 
 		JLabel lblFFinalizar = new JLabel("F4 - Finalizar pedido");
 		lblFFinalizar.setForeground(new Color(30, 144, 255));
 		lblFFinalizar.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblFFinalizar.setBounds(10, 648, 118, 14);
+		lblFFinalizar.setBounds(10, 599, 118, 14);
 		getContentPane().add(lblFFinalizar);
 
 		JLabel lblFnovoPedido = new JLabel("F3 -Nova Venda");
 		lblFnovoPedido.setForeground(new Color(255, 165, 0));
 		lblFnovoPedido.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblFnovoPedido.setBounds(159, 648, 118, 14);
+		lblFnovoPedido.setBounds(159, 599, 118, 14);
 		getContentPane().add(lblFnovoPedido);
 
 		tbpBP = new JTabbedPane(JTabbedPane.LEFT);
@@ -870,11 +924,11 @@ public class FrenteCaixa extends Modulo {
 		panel_1.add(txtPesquisa);
 
 		lblPg = new JLabel("New label");
-		lblPg.setBounds(287, 610, 46, 14);
+		lblPg.setBounds(287, 561, 46, 14);
 		getContentPane().add(lblPg);
 
 		slider = new JSlider();
-		slider.setBounds(10, 610, 267, 23);
+		slider.setBounds(10, 561, 267, 23);
 		getContentPane().add(slider);
 
 	}
@@ -882,7 +936,7 @@ public class FrenteCaixa extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getDiagrama();
+			return Icones.getCotacoes();
 		} catch (IOException e) {
 			return null;
 		}
@@ -895,3 +949,36 @@ public class FrenteCaixa extends Modulo {
 
 	}
 }
+
+
+class ProdCellRenderer extends DefaultTableCellRenderer{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row,int col) {
+
+	    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+	    
+	    if(col==0){
+	    	((JLabel)c).setHorizontalAlignment(JLabel.CENTER);
+	    }else{
+	    	((JLabel)c).setHorizontalAlignment(JLabel.LEFT);
+	    }
+	    
+	    if(!isSelected){
+		    if (row%2 == 0) {
+		        c.setBackground(Color.LIGHT_GRAY);
+		    }
+		    else {
+		        c.setBackground(Color.WHITE);
+		    }
+	    }
+
+	    return c;
+	}
+	
+}
+

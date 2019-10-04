@@ -52,7 +52,7 @@ public class CadastroCFOP_ extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getRosaVentos();
+			return Icones.getConfig();
 		} catch (IOException e) {
 			return null;
 		}

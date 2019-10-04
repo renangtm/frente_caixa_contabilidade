@@ -10,6 +10,12 @@ public class FormaPagamentoVendaService {
 		
 		FormaPagamento dinheiro = new FormaPagamento() {
 
+			public String toString(){
+				
+				return "Dinheiro";
+				
+			}
+			
 			public String getNome() {
 				// TODO Auto-generated method stub
 				return "Dinheiro";
@@ -38,6 +44,12 @@ public class FormaPagamentoVendaService {
 		
 		FormaPagamento debito = new FormaPagamento() {
 
+			public String toString(){
+				
+				return "Debito";
+				
+			}
+			
 			public String getNome() {
 				// TODO Auto-generated method stub
 				return "Debito";
@@ -64,6 +76,12 @@ public class FormaPagamentoVendaService {
 		};
 		
 		FormaPagamento credito = new FormaPagamento() {
+			
+			public String toString(){
+				
+				return "Credito";
+				
+			}
 
 			public String getNome() {
 				// TODO Auto-generated method stub

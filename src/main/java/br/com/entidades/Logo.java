@@ -17,7 +17,7 @@ public class Logo {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@Column
+	@Column(columnDefinition = "MEDIUMBLOB")
 	private byte[] arquivo;
 
 	public int getId() {
