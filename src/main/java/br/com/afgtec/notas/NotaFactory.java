@@ -157,6 +157,8 @@ public class NotaFactory {
 				v.setNota(nota);
 				v.setValor(valor);
 				
+				System.out.println(v.getValor());
+				
 				vencimentos.add(v);
 				
 			}
@@ -183,11 +185,11 @@ public class NotaFactory {
 				
 				pn.setProduto(p.getProduto());
 				
-				pn.setQuantidade(pn.getQuantidade());
+				pn.setQuantidade(p.getQuantidade());
 				
 				pn.setSeguro(0);
 				
-				pn.setValor(pn.getValor());
+				pn.setValor(p.getValor());
 				
 				produtos.add(pn);
 				

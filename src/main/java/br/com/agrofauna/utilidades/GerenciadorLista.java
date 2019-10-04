@@ -2,6 +2,8 @@ package br.com.agrofauna.utilidades;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,47 +47,74 @@ public class GerenciadorLista<T> {
 
 	private ProvedorDeEventos<T> provedor;
 
+	private int idF = 0;
+	
+	private LinkedList<Thread> ths = new LinkedList<Thread>();
+	
 	private Object rep;
 	private Class<? extends Representador<T>> classe_rep;
 
 	private String ordem = "";
 
 	private boolean evict = true;
-	
+
 	public ListModelGenerica<T> getModel() {
 
 		return this.model;
 
 	}
-
-	public void setFiltro(String filtro) {
-
-		this.filtro = filtro;
-		this.atualizar();
-
-	}
 	
-	public void setFiltro(JTextField filtro) {
+	public synchronized void setFiltro(String f) {
 
-		filtro.addCaretListener(new CaretListener(){
+		
+		Thread th = new Thread(new Runnable() {
 
 			@Override
-			public void caretUpdate(CaretEvent e) {
+			public void run() {
 				
-				new Thread(new Runnable(){
-
-					@Override
-					public void run() {
-						
-						setFiltro(filtro.getText());
-						
-					}
+				filtro = f;
+				
+				atualizar();
+				
+				ths.removeFirst();
+				
+				if(ths.size() > 0) {
 					
-				}).start();
+					ths.getLast().start();
+					
+				}
 				
 			}
 			
+		});
+		
+		if(ths.size()>=2) {
 			
+			ths.removeLast();
+			
+		}
+		
+		ths.add(th);
+		
+		if(ths.getFirst() == th) {
+			
+			th.start();
+			
+		}
+		
+	}
+
+	public void setFiltro(JTextField filtro) {
+
+		filtro.addCaretListener(new CaretListener() {
+
+			@Override
+			public void caretUpdate(CaretEvent e) {
+
+				setFiltro(filtro.getText());
+
+			}
+
 		});
 
 	}
@@ -190,22 +219,21 @@ public class GerenciadorLista<T> {
 
 		}
 
-		
 		if (this.model == null) {
 
 			if (this.provedor == null) {
 
 				if (this.rep == null) {
-				
+
 					this.model = new ListModelGenerica<T>(this.service.getElementos(this.pagina * this.porPagina,
 							(this.pagina + 1) * this.porPagina, filtro, this.ordem), this.classe);
 
 				} else {
-					
+
 					this.model = new ListModelGenerica<T>(this.service.getElementos(this.pagina * this.porPagina,
 							(this.pagina + 1) * this.porPagina, filtro, this.ordem), this.classe, this.classe_rep,
 							this.rep);
-					
+
 				}
 
 			} else {
@@ -391,30 +419,30 @@ public class GerenciadorLista<T> {
 			this.tabela.setRowSorter(sorter);
 
 		} else {
-			
-			if(this.evict) {
-				
+
+			if (this.evict) {
+
 				this.model.getListaCompleta().forEach(this.service::lixeira);
 
 			}
-			
+
 			this.model.setLista(this.service.getElementos(this.pagina * this.porPagina,
 					(this.pagina + 1) * this.porPagina, filtro, this.ordem));
 
 		}
 
 	}
-	
+
 	public boolean isEvict() {
-		
+
 		return this.evict;
-		
+
 	}
 
 	public void setEvict(boolean ev) {
-		
+
 		this.evict = ev;
-		
+
 	}
-	
+
 }

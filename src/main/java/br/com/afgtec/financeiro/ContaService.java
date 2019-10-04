@@ -62,7 +62,7 @@ public class ContaService implements Service<Conta>{
 		
 		ContaService cs = new ContaService(et);
 		cs.setEmpresa(u.getPf().getEmpresa());
-		cs.setTipo(TipoConta.PAGAR);
+		cs.setTipo(TipoConta.RECEBER);
 		
 		int count = cs.getCount("");
 		
@@ -86,7 +86,7 @@ public class ContaService implements Service<Conta>{
 				+ "FROM Vencimento v LEFT JOIN Movimento m ON m.vencimento=v "
 				+ "LEFT JOIN Pessoa p ON p.id = v.nota.destinatario.id "
 				+ "WHERE v.nota.empresa.id = :empresa AND v.nota.operacao = :tipo AND (p.nome like :nome OR p.nome IS NULL) "
-				+ "GROUP BY v HAVING (v.valor-SUM(m.valor+m.juros-m.descontos))>0");
+				+ "GROUP BY v HAVING (v.valor-SUM(COALESCE(m.valor,0)))>0");
 		q.setParameter("empresa", this.empresa.getId());
 		
 		if(this.tipo == TipoConta.PAGAR) {
@@ -106,11 +106,11 @@ public class ContaService implements Service<Conta>{
 	public List<Conta> getElementos(int x1, int x2, String filtro, String ordem) {
 		
 		Query q = this.et.createQuery(
-				"SELECT v,v.valor-SUM(m.valor+m.juros-m.descontos),p,v.nota "
+				"SELECT v,v.valor-SUM(COALESCE(m.valor,0)),p,v.nota "
 				+ "FROM Vencimento v LEFT JOIN Movimento m ON m.vencimento=v "
 				+ "LEFT JOIN Pessoa p ON p.id = v.nota.destinatario.id "
 				+ "WHERE v.nota.empresa.id = :empresa AND v.nota.operacao = :tipo AND (p.nome like :nome OR p.nome IS NULL) "
-				+ "GROUP BY v HAVING (v.valor-SUM(m.valor+m.juros-m.descontos))>0");
+				+ "GROUP BY v HAVING (v.valor-SUM(COALESCE(m.valor,0)))>0");
 		q.setParameter("empresa", this.empresa.getId());
 		
 		if(this.tipo == TipoConta.PAGAR) {

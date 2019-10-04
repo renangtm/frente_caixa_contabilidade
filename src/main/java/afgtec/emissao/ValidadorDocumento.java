@@ -1,16 +1,12 @@
 package afgtec.emissao;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import afgtec.config.Configuracoes;
 import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe;
@@ -480,10 +476,10 @@ public class ValidadorDocumento {
 
 			}
 
-			if (this.moduloSat != null) {
+			if (this.moduloSat != null || true) {
 
 				try {
-
+					/*
 					this.moduloSat.iniciar();
 
 					CFe cfe = this.notaParaCFe(nota);
@@ -528,7 +524,9 @@ public class ValidadorDocumento {
 						b64 += "|"+retorno[i];
 						
 					}
+					*/
 
+					String b64="TESTE MAQUINA TGAMER RENAN SEM SAT";
 					this.gc.gerarCupomFiscal(nota, b64);
 
 				} catch (Exception e) {

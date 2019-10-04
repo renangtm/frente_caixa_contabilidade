@@ -17,12 +17,28 @@ public class ProdutoService implements Service<Produto>{
 
 	private EntityManager et;
 	
+	private boolean comEstoque = false;
+	
 	public ProdutoService(EntityManager et) {
 		
 		this.et = et;
 		
 	}
 	
+	
+	
+	public boolean isComEstoque() {
+		return comEstoque;
+	}
+
+
+
+	public void setComEstoque(boolean comEstoque) {
+		this.comEstoque = comEstoque;
+	}
+
+
+
 	public Produto getProduto(String codigo) {
 		
 		@SuppressWarnings("unchecked")
@@ -72,7 +88,7 @@ public class ProdutoService implements Service<Produto>{
 			
 		}
 		
-		Query qr = et.createQuery("SELECT COUNT(*) FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome)");
+		Query qr = et.createQuery("SELECT COUNT(*) FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome) "+(this.isComEstoque()?" AND p.estoque.disponivel>0":""));
 		qr.setParameter("empresa", this.empresa.getId());
 		qr.setParameter("nome", "%"+filtro+"%");
 		
@@ -96,7 +112,7 @@ public class ProdutoService implements Service<Produto>{
 		ordem = ordem.replaceAll("\\{\\{et\\}\\}", "p");
 		
 		
-		Query qr = et.createQuery("SELECT p FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome)"+(ordem != ""?" ORDER BY "+ordem:""));
+		Query qr = et.createQuery("SELECT p FROM Produto p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome)"+(this.isComEstoque()?" AND p.estoque.disponivel>0":"")+(ordem != ""?" ORDER BY "+ordem:""));
 		qr.setParameter("empresa", this.empresa.getId());
 		qr.setParameter("nome", "%"+filtro+"%");
 		qr.setFirstResult(x1);

@@ -20,13 +20,10 @@ public class NotaService implements Service<Nota> {
 
 	private EntityManager et;
 
-	private Map<ProdutoNota, Double[]> alteracoes;
-	
 	public void setEmpresa(Empresa emp) {
 
 		this.empresa = emp;
-		this.alteracoes  = new HashMap<ProdutoNota, Double[]>();
-		
+
 	}
 
 	public NotaService(EntityManager et) {
@@ -37,45 +34,63 @@ public class NotaService implements Service<Nota> {
 
 	public boolean verificarIntegridadeNota(Nota nota) {
 
+		
 		return Math.abs(
 				nota.getVencimentos().stream().mapToDouble(v -> v.getValor()).sum() - nota.getValorTotalNota()) < 1;
 
 	}
 
-	public void reverter(){
-		
-		for (ProdutoNota pa : alteracoes.keySet()) {
+	public boolean verificacaoPersistencia(Nota nota) {
 
-			try {
-				
-				pa.getProduto().getEstoque().rmvQuantidades(alteracoes.get(pa)[0], alteracoes.get(pa)[0]);
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		for (ProdutoNota pn : nota.getProdutos()) {
+
+			double meta = 0;
+
+			if (nota.getStatus().equals(StatusNota.ATIVA)) {
+
+				if (nota.getOperacao().equals(SaidaEntrada.SAIDA)) {
+
+					meta = pn.getQuantidade() * -1;
+
+				} else {
+
+					meta = pn.getQuantidade();
+
+				}
+
 			}
-			pa.influenciaEstoques = alteracoes.get(pa)[1];
+
+			double dif = meta - pn.influenciaEstoques;
+
+			Estoque est = pn.getProduto().getEstoque();
+			et.refresh(est);
+
+			double realDif = pn.getTipoInfluenciaEstoque().para(est.getTipo(), pn.getProduto(), dif);
+
+			if (est.getQuantidade() + realDif < 0 || est.getDisponivel() + realDif < 0) {
+
+				return false;
+
+			}
 
 		}
-		
-		this.alteracoes  = new HashMap<ProdutoNota, Double[]>();
-		
+
+		return true;
+
 	}
-	
+
 	public void mergeNota(Nota nota) throws Exception {
 
 		if (!this.verificarIntegridadeNota(nota)) {
 
-			throw new RuntimeException("Nota sme integridade");
+			throw new RuntimeException("Nota sem integridade");
 
 		}
-
-		
 
 		for (ProdutoNota pn : nota.getProdutos()) {
 
 			pn.setProduto(et.merge(pn.getProduto()));
-			
+
 			try {
 
 				double meta = 0;
@@ -103,13 +118,9 @@ public class NotaService implements Service<Nota> {
 
 				est.addQuantidades(realDif, realDif);
 
-				alteracoes.put(pn, new Double[] { realDif, pn.influenciaEstoques });
-
 				pn.influenciaEstoques = meta;
 
 			} catch (Exception ex) {
-
-				this.reverter();
 
 				throw new SemEstoqueException(pn.getProduto());
 
@@ -117,15 +128,19 @@ public class NotaService implements Service<Nota> {
 
 		}
 		// ------------------
+
 		
-		nota.setEmitente(et.merge(nota.getEmitente()));
-		nota.setEmpresa(et.merge(nota.getEmpresa()));
+		nota.getProdutos().forEach(x->{
+			
+			if(x.getQuantidade() == 0) {
+				
+				et.remove(x);
+				
+			}
+			
+		});
 		
-		if(nota.getTransportadora()!=null)
-			nota.setTransportadora(et.merge(nota.getTransportadora()));
-		
-		if(nota.getDestinatario() != null)
-			nota.setDestinatario(et.merge(nota.getDestinatario()));
+		nota.getProdutos().removeIf(x->x.getQuantidade()==0);
 		
 		if (nota.getId() == 0) {
 

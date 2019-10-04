@@ -1,14 +1,18 @@
 package br.com.inicial;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.swing.DefaultComboBoxModel;
@@ -18,6 +22,11 @@ import javax.swing.JTextField;
 
 import br.com.afgtec.base.CFG;
 import br.com.afgtec.base.ET;
+import br.com.afgtec.financeiro.Banco;
+import br.com.afgtec.financeiro.Historico;
+import br.com.afgtec.financeiro.Movimento;
+import br.com.afgtec.financeiro.MovimentoService;
+import br.com.afgtec.financeiro.Operacao;
 import br.com.afgtec.notas.Nota;
 import br.com.afgtec.notas.NotaFactory;
 import br.com.afgtec.notas.NotaService;
@@ -36,12 +45,15 @@ import br.com.entidades.FormaPagamento;
 import br.com.entidades.FormaPagamentoVendaService;
 import br.com.entidades.Icones;
 import br.com.venda.ProdutoVenda;
+import br.com.venda.RepresentadorProdutoVenda;
 import br.com.venda.StatusVenda;
 import br.com.venda.Venda;
 import br.com.venda.VendaService;
 
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import afgtec.emissao.ValidadorDocumento;
 import afgtec.geradoresCupom.GeradorCupomSATModelo1;
@@ -93,7 +105,7 @@ public class FrenteCaixa extends Modulo {
 	private Venda venda;
 
 	private JButton btCliente;
-	
+
 	private FormaPagamento formaPagamento;
 
 	private JLabel txtDescricaoProduto;
@@ -105,106 +117,190 @@ public class FrenteCaixa extends Modulo {
 
 	}
 
+	public static void main(String[] args) throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException, UnsupportedLookAndFeelException {
+
+		EntityManager et = ET.nova();
+
+		Usuario u = et.find(Usuario.class, 1);
+
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+
+					FrenteCaixa frame = new FrenteCaixa();
+					frame.setVisible(true);
+					frame.init(u);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
 	protected void finalizarVenda() {
-		
+
 		this.venda.setStatus(StatusVenda.FECHADA);
 		this.venda.setData(Calendar.getInstance());
 		
-		EntityManager et = ET.nova();
+		if(this.venda.getCliente() != null) {
+			
+			this.venda.setCliente(et.merge(this.venda.getCliente()));
+			
+		}
 		
-		VendaService vs = new VendaService(et);
-		
+		this.venda.getProdutos().stream().forEach(p->p.setProduto(et.merge(p.getProduto())));
+
 		try {
-			
+
 			NotaFactory nf = new NotaFactory();
-			
+
 			nf.setFp(this.formaPagamento);
 			nf.setParcelas(1);
 			nf.setPrazoPagamento(0);
 			nf.setTransportadora(null);
-			
-			if(this.formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)){
-			
+
+			if (this.formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+
 				nf.setValorMeioPagamento(Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")));
-				
+
 			}
-			
+
 			nf.setVenda(this.venda);
-			
+
 			List<Nota> notas = nf.getNotas();
-			
-			this.venda = vs.persistirVenda(this.venda);
-			
-			this.venda.setNotas(notas);
-			
+
 			NotaService ns = new NotaService(et);
 			ns.setEmpresa(this.empresa);
-			
+
+			VendaService vs = new VendaService(et);
+
+			if (!vs.verificacaoPersistencia(venda)
+					|| notas.stream().map(ns::verificacaoPersistencia).anyMatch(b -> !b)) {
+
+				throw new RuntimeException("Nao é possivel criar a venda nem a nota");
+
+			}
+
+			this.venda = vs.persistirVenda(this.venda);
+
+			this.venda.setNotas(notas);
+
 			notas.forEach(t -> {
-				
+
 				try {
-					
+
 					ns.mergeNota(t);
-					
+
 				} catch (Exception e) {
-					
-					ns.reverter();
-					
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-					throw new RuntimeException(e);
-					
+
 				}
-				
+
 			});
-			
-			ValidadorDocumento vd = new ValidadorDocumento(
-					ns,
-					CFG.moduloSat,
-					new GeradorCupomSATModelo1());
-			
-			
-			
-			notas.forEach(n->{
-				
-				try{
-				
+
+			ValidadorDocumento vd = new ValidadorDocumento(ns, CFG.moduloSat, new GeradorCupomSATModelo1());
+
+			notas.forEach(n -> {
+
+				try {
+
 					vd.validarFiscalmente(n);
-				
-				}catch(Exception ex){
-					
-					ns.reverter();
-					vs.reverterPersistencia();
-					
+
+				} catch (Exception ex) {
+
 					ex.printStackTrace();
-					
+
 					throw new RuntimeException(ex);
-					
+
 				}
-				
+
 			});
-			
+
 			et.getTransaction().begin();
 			et.getTransaction().commit();
-			
+
+			LinkedList<Thread> ths = new LinkedList<Thread>();
+
+			Banco banco = this.empresa.getPj().getBanco();
+
+			if (banco == null) {
+
+				banco = new Banco();
+				banco.setPj(this.empresa.getPj());
+				banco.setSaldo(0);
+
+				et.persist(banco);
+
+			}
+
+			final Banco bc = banco;
+
+			final MovimentoService mvs = new MovimentoService(et);
+			mvs.setBanco(banco);
+
+			Historico hi = (Historico) et.createQuery("SELECT h FROM Historico h").getResultList().get(0);
+
+			Operacao op = (Operacao) et.createQuery("SELECT o FROM Operacao o WHERE o.credito=true").getResultList().get(0);
+
+			ths.addAll(notas.stream().flatMap(n -> n.getVencimentos().stream()).map(v -> {
+				return new Thread(() -> {
+
+					Movimento m = new Movimento();
+					m.setBanco(bc);
+					m.setData(Calendar.getInstance());
+					m.setDescontos(0);
+					m.setHistorico(hi);
+					m.setOperacao(op);
+					m.setValor(v.getValor());
+					m.setVencimento(v);
+
+					mvs.mergeMovimento(m, true, new MovimentoService.Listener() {
+
+						@Override
+						public void setConclusao(double porcentagem, String observacao) {
+
+							if (porcentagem == 100) {
+
+								ths.removeFirst();
+
+								et.getTransaction().begin();
+								et.getTransaction().commit();
+								
+								if (ths.size() > 0)
+									ths.getFirst().start();
+
+							}
+
+						}
+
+					});
+
+				});
+			}).collect(Collectors.toList()));
+
+			ths.getFirst().start();
+
 		} catch (Exception e) {
-			
-			et.clear();
-			
+
 			e.printStackTrace();
-			
+
 			erro("Ocorreu um problema");
-			
+
 			return;
-			
+
 		}
-		
-		
+
 	}
 
 	protected void setFormaPagamento(FormaPagamento fp) {
-		
+
 		this.formaPagamento = fp;
-		
+
 	}
 
 	protected void novaVenda() {
@@ -214,28 +310,29 @@ public class FrenteCaixa extends Modulo {
 			et.detach(this.venda);
 
 		}
-		
-		this.venda = et.merge(new Venda());
+
+		this.venda = new Venda();
 
 		this.venda.setOperador(this.operador);
 
 		this.venda.setEmpresa(this.empresa);
-		
+
 		this.formaPagamento = this.cboFormaPagto.getItemAt(0);
 
-		this.lstProdutoVenda = new ListModelGenerica<ProdutoVenda>(this.venda.getProdutos(),ProdutoVenda.class);
-		this.lstProdutoVenda.getFiltrosObjeto().add(f->{
-			
-			ProdutoVenda p = (ProdutoVenda)f;
-			
-			return p.getQuantidade()>0;
-			
+		this.lstProdutoVenda = new ListModelGenerica<ProdutoVenda>(this.venda.getProdutos(), ProdutoVenda.class,
+				RepresentadorProdutoVenda.class);
+		this.lstProdutoVenda.getFiltrosObjeto().add(f -> {
+
+			ProdutoVenda p = (ProdutoVenda) f;
+
+			return p.getQuantidade() > 0;
+
 		});
-		
+
 		this.produtoSelecionado = null;
-		
+
 		this.tblVenda.setModel(this.lstProdutoVenda);
-		
+
 		this.mostrarVenda();
 
 	}
@@ -243,20 +340,22 @@ public class FrenteCaixa extends Modulo {
 	protected void addProduto(Produto produto, TipoQuantidade tipo, double quantidade) {
 
 		ProdutoVenda pv = new ProdutoVenda();
-		
+
 		pv.setProduto(produto);
-		
+
 		pv.setVenda(venda);
-		
+
 		pv.setQuantidade(tipo.para(pv.getTipoQuantidade(), produto, quantidade));
-		
+
 		pv.setValor(pv.getTipoQuantidade().para(produto.getEstoque().getTipo(), produto, produto.getValor()));
-		
+
 		this.venda.getProdutos().add(pv);
-		
+
 		this.produtoSelecionado = pv;
-		
+
 		this.txtQuantidade.requestFocus();
+
+		this.mostrarVenda();
 
 	}
 
@@ -270,45 +369,50 @@ public class FrenteCaixa extends Modulo {
 	protected void removerProduto(ProdutoVenda pv) {
 
 		pv.setQuantidade(0);
-		
+
 		this.mostrarVenda();
-		
+
 	}
 
 	protected void mostrarVenda() {
-		
+
 		this.txtCliente.setText("");
-		if(this.venda.getCliente() != null){
+		if (this.venda.getCliente() != null) {
 			this.txtCliente.setText(this.venda.getCliente().getNome());
 		}
-		
+
 		this.txtDescricaoProduto.setText("");
 		this.txtQuantidade.setText("0 UN");
 		this.txtValorUnitario.setText("0,00");
-		
-		if(this.produtoSelecionado != null){
-			
+
+		if (this.produtoSelecionado != null) {
+
 			this.txtDescricaoProduto.setText(this.produtoSelecionado.getProduto().getNome());
-			this.txtQuantidade.setText((this.produtoSelecionado.getQuantidade()+"").replaceAll("\\.", ",")+" "+this.produtoSelecionado.getTipoQuantidade().toString());
-			this.txtValorUnitario.setText((this.produtoSelecionado.getValor()+"").replaceAll("\\.", ","));
-			
-			this.txtSubTotal.setText(((this.produtoSelecionado.getValor()*this.produtoSelecionado.getQuantidade())+"").replaceAll("\\.", ","));
-			
+			this.txtQuantidade.setText((this.produtoSelecionado.getQuantidade() + "").replaceAll("\\.", ",") + " "
+					+ this.produtoSelecionado.getTipoQuantidade().toString());
+			this.txtValorUnitario.setText((this.produtoSelecionado.getValor() + "").replaceAll("\\.", ","));
+
+			this.txtSubTotal
+					.setText(((this.produtoSelecionado.getValor() * this.produtoSelecionado.getQuantidade()) + "")
+							.replaceAll("\\.", ","));
+
 		}
-		
-		this.txtTotal.setText((this.venda.getTotal()+"").replaceAll("\\.", ","));
-		
-		if(this.formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)){
-			try{
-				this.txtTroco.setText((Math.max(0,Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))-this.venda.getTotal())+"").replaceAll("\\.", ","));
-			}catch(Exception ex){
-				
+
+		this.txtTotal.setText((this.venda.getTotal() + "").replaceAll("\\.", ","));
+
+		if (this.formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+			try {
+				this.txtTroco.setText((Math.max(0,
+						Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")) - this.venda.getTotal())
+						+ "").replaceAll("\\.", ","));
+			} catch (Exception ex) {
+
 			}
 		}
-		
+
 		this.lstProdutoVenda.setLista(this.venda.getProdutos());
 		this.lstProdutoVenda.atualizaListaBaseConformeFiltros();
-		
+
 	}
 
 	public void init(Usuario operador) {
@@ -322,9 +426,11 @@ public class FrenteCaixa extends Modulo {
 
 		ProdutoService ps = new ProdutoService(et);
 		ps.setEmpresa(this.empresa);
+		ps.setComEstoque(true);
 
 		this.grProdutos = new GerenciadorLista<Produto>(Produto.class, this.tblProdutos, ps, 30, null, null, null);
 		this.grProdutos.setLblPagina(this.lblPg);
+		this.grProdutos.setLblSlider(this.slider);
 		this.grProdutos.setFiltro(this.txtPesquisa);
 		this.grProdutos.atualizar();
 
@@ -380,6 +486,7 @@ public class FrenteCaixa extends Modulo {
 
 					this.produtoSelecionado = this.lstProdutoVenda.getListaBase().get(this.tblVenda.getSelectedRow());
 					this.mostrarVenda();
+					this.txtQuantidade.requestFocus();
 
 				}
 
@@ -425,6 +532,12 @@ public class FrenteCaixa extends Modulo {
 
 		});
 
+		this.txtDinheiro.addCaretListener(x -> {
+
+			this.mostrarVenda();
+
+		});
+
 		this.tblProdutos.addMouseListener(new MouseListener() {
 
 			@Override
@@ -435,6 +548,7 @@ public class FrenteCaixa extends Modulo {
 					if (tblProdutos.getSelectedRow() >= 0) {
 
 						Produto produto = grProdutos.getModel().getListaBase().get(tblProdutos.getSelectedRow());
+
 						addProduto(produto);
 
 					}
@@ -502,43 +616,57 @@ public class FrenteCaixa extends Modulo {
 
 		}).start();
 
-		this.addKeyListener(new KeyListener() {
+		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		keyManager.addKeyEventDispatcher(new KeyEventDispatcher() {
 
 			@Override
-			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-
-				if (e.getKeyCode() == KeyEvent.VK_F1) {
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F1) {
 
 					tbpBP.setSelectedIndex(0);
 					txtPesquisa.setText("");
 
-				} else if (e.getKeyCode() == KeyEvent.VK_F2) {
+					return true;
+
+				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F2) {
 
 					txtBipe.setText("");
 					tbpBP.setSelectedIndex(1);
 
-				} else if (e.getKeyCode() == KeyEvent.VK_F3) {
+					return true;
+
+				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F3) {
 
 					novaVenda();
 
-				} else if (e.getKeyCode() == KeyEvent.VK_F4) {
+					return true;
 
-					finalizarVenda();
+				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
+
+					boolean pf = true;
+
+					if (tbpBP.getSelectedIndex() == 0) {
+
+						txtBipe.setText("");
+						tbpBP.setSelectedIndex(1);
+
+						if (formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+
+							txtDinheiro.requestFocus();
+							pf = false;
+
+						}
+
+					}
+
+					if (pf)
+						finalizarVenda();
+
+					return true;
 
 				}
 
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-
+				return false;
 			}
 
 		});
@@ -566,7 +694,7 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().setLayout(null);
 
 		this.setBounds(0, 0, 908, 700);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 67, 323, 532);
 		getContentPane().add(scrollPane);

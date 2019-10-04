@@ -11,28 +11,36 @@ public class VendaService {
 
 	private EntityManager et;
 
-	Map<ProdutoVenda, Double[]> alteracoes;
-	
 	public VendaService(EntityManager et) {
 
 		this.et = et;
-		this.alteracoes = new HashMap<ProdutoVenda, Double[]>();
 		
 	}
 
-	public void reverterPersistencia(){
+	public boolean verificacaoPersistencia(Venda venda) {
 		
-		for(ProdutoVenda pa:alteracoes.keySet()){
+		for (ProdutoVenda pv : venda.getProdutos()) {
 			
-			double removidoDisponivel = alteracoes.get(pa)[0];
-			double influenciaAnterior = alteracoes.get(pa)[1];
+			pv.setProduto(et.merge(pv.getProduto()));
 			
-			pa.getProduto().getEstoque().addDisponivel(removidoDisponivel);
-			pa.reservaInfluenciada = influenciaAnterior;
-			
+			double meta = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0);
+
+			double infres = meta - pv.reservaInfluenciada;
+
+			Estoque estoque = pv.getProduto().getEstoque();
+			et.refresh(estoque);
+
+			double influenciaRealRes = pv.tipoQuantidade.para(estoque.getTipo(), pv.getProduto(), infres);
+
+			if(estoque.getDisponivel()<influenciaRealRes) {
+				
+				return false;
+				
+			}
+
 		}
 		
-		this.alteracoes = new HashMap<ProdutoVenda, Double[]>();
+		return true;
 		
 	}
 	
@@ -55,21 +63,10 @@ public class VendaService {
 
 				estoque.rmvDisponivel(influenciaRealRes);
 				
-				Double[] alteracao = {
-						influenciaRealRes,
-						pv.reservaInfluenciada
-				};
-				
-				alteracoes.put(pv, alteracao);
-				
 				pv.reservaInfluenciada = meta;
 				
 			} catch (Exception ex) {
 				
-				//Ao ter um erro, voltamos o que havia sido feito
-				
-				this.reverterPersistencia();
-
 				throw new SemEstoqueException(pv.getProduto());
 
 			}
@@ -77,9 +74,19 @@ public class VendaService {
 		}
 		
 		
-		venda.setEmpresa(et.merge(venda.getEmpresa()));
 		venda.getNotas().forEach(et::merge);
-		venda.setOperador(et.merge(venda.getOperador()));
+		
+		venda.getProdutos().forEach(x->{
+			
+			if(x.getQuantidade() == 0) {
+				
+				et.remove(x);
+				
+			}
+			
+		});
+		
+		venda.getProdutos().removeIf(x->x.getQuantidade()==0);
 		
 		if (venda.getId() == 0) {
 

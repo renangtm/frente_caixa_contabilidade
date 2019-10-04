@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import br.com.afgtec.notas.NCM;
 import br.com.afgtec.pessoa.Empresa;
 import br.com.afgtec.unidades.ItemQuantificavel;
@@ -39,6 +42,7 @@ public class Produto implements ItemQuantificavel{
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_ncm")
+	@Fetch(FetchMode.JOIN)
 	private NCM ncm;
 	
 	@Column
@@ -55,10 +59,12 @@ public class Produto implements ItemQuantificavel{
 	
 	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_quantidade")
+	@Fetch(FetchMode.JOIN)
 	private Estoque estoque;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_empresa")
+	@Fetch(FetchMode.JOIN)
 	private Empresa empresa;
 	
 	@Column
@@ -162,6 +168,10 @@ public class Produto implements ItemQuantificavel{
 	}
 
 	public double getPeso() {
+		
+		if(peso == 0)
+			return 1;
+		
 		return peso;
 	}
 
@@ -170,6 +180,11 @@ public class Produto implements ItemQuantificavel{
 	}
 
 	public double getVolume() {
+		
+		if(this.volume == 0) {
+			return 1;
+		}
+		
 		return volume;
 	}
 

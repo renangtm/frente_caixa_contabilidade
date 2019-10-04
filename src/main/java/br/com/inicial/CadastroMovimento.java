@@ -532,8 +532,8 @@ public class CadastroMovimento extends Modulo {
 		
 		GerenciadorLista<Conta> areceber = new GerenciadorLista<Conta>(Conta.class,this.tblContasReceber,csr,null,new Conta(),RepresentadorConta.class);
 		areceber.setFiltro(this.txtPesquisaContasPagar);
-		areceber.setLblPagina(this.lblPgContasPagar);
-		areceber.setLblSlider(this.slContasPagar);
+		areceber.setLblPagina(this.lblPgContasReceber);
+		areceber.setLblSlider(this.slContasReceber);
 		
 		areceber.atualizar();
 		
