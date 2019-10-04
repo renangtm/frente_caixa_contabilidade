@@ -194,6 +194,8 @@ public class MovimentoService implements Service<Movimento> {
 			}
 
 			movimento.getBanco().setSaldo(currente.getSaldo());
+			
+			movimento.setBanco(et.merge(movimento.getBanco()));
 
 			l.setConclusao(100, "");
 
