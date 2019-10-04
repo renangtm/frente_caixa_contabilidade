@@ -48,6 +48,7 @@ public class DisposicaoModulos {
 			List<Object> _menu_financeiro = new ArrayList<Object>();
 			_menu_financeiro.add(CadastroHistorico.class);
 			_menu_financeiro.add(CadastroOperacao.class);
+			_menu_financeiro.add(CadastroMovimento.class);
 			
 		menu_financeiro[1] = _menu_financeiro;
 			

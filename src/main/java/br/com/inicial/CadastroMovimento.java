@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
@@ -40,6 +41,7 @@ import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.conversores.ConversorDate;
 import br.com.agrofauna.utilidades.GerenciadorLista;
 import br.com.agrofauna.utilidades.ListModelGenerica;
+import br.com.entidades.Icones;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -47,6 +49,7 @@ import java.awt.Color;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -78,6 +81,24 @@ public class CadastroMovimento extends Modulo {
 	/**
 	 * Launch the application.
 	 */
+	
+	
+	public static ImageIcon logo() {
+
+		try {
+			return Icones.getDiagrama();
+		} catch (IOException e) {
+			return null;
+		}
+
+	}
+
+	public static String nome() {
+
+		return "Financeiro";
+
+	}
+	
 	public static void main(String[] args) {
 		
 		EntityManager et = ET.nova();
@@ -131,6 +152,8 @@ public class CadastroMovimento extends Modulo {
 	private JSlider slContasReceber;
 	private JSlider slContasPagar;
 	private JLabel lblPgContasPagar;
+	private GerenciadorLista<Conta> apagar;
+	private GerenciadorLista<Conta> areceber;
 	
 	private void setMovimento(Movimento m) throws ParseException {
 		
@@ -323,6 +346,9 @@ public class CadastroMovimento extends Modulo {
 						
 						this.txtSaldo.setValue(this.banco.getSaldo());
 						
+						this.apagar.atualizar();
+						this.areceber.atualizar();
+						
 					}
 					
 				}else {
@@ -469,7 +495,9 @@ public class CadastroMovimento extends Modulo {
 							this.tblFechamento.setModel(lf);
 							
 							this.txtSaldo.setValue(this.banco.getSaldo());
-
+							
+							this.apagar.atualizar();
+							this.areceber.atualizar();
 							
 						}
 						
@@ -523,14 +551,14 @@ public class CadastroMovimento extends Modulo {
 		csr.setEmpresa(this.empresa);
 		csr.setTipo(TipoConta.RECEBER);
 		
-		GerenciadorLista<Conta> apagar = new GerenciadorLista<Conta>(Conta.class,this.tblContasPagar,csp,null,new Conta(),RepresentadorConta.class);
+		apagar = new GerenciadorLista<Conta>(Conta.class,this.tblContasPagar,csp,null,new Conta(),RepresentadorConta.class);
 		apagar.setFiltro(this.txtPesquisaContasPagar);
 		apagar.setLblPagina(this.lblPgContasPagar);
 		apagar.setLblSlider(this.slContasPagar);
 		
 		apagar.atualizar();
 		
-		GerenciadorLista<Conta> areceber = new GerenciadorLista<Conta>(Conta.class,this.tblContasReceber,csr,null,new Conta(),RepresentadorConta.class);
+		areceber = new GerenciadorLista<Conta>(Conta.class,this.tblContasReceber,csr,null,new Conta(),RepresentadorConta.class);
 		areceber.setFiltro(this.txtPesquisaContasPagar);
 		areceber.setLblPagina(this.lblPgContasReceber);
 		areceber.setLblSlider(this.slContasReceber);
