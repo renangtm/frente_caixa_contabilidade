@@ -12,11 +12,11 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Masks;
-import br.com.afgtec.notas.NCM;
-import br.com.afgtec.notas.NCMService;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.GerenciadorLista;
-import br.com.entidades.Icones;
+import br.com.entidades.ncm.NCM;
+import br.com.entidades.ncm.NCMService;
 
 import javax.swing.JFormattedTextField;
 import javax.persistence.EntityManager;
@@ -57,7 +57,7 @@ public class CadastroNcm extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getConfig();
+			return Resources.getConfig();
 		} catch (IOException e) {
 			return null;
 		}

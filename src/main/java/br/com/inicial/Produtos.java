@@ -19,20 +19,20 @@ import br.com.afgtec.arquivos.ImageLoaderListener;
 import br.com.afgtec.arquivos.UploaderArquivo;
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Masks;
-import br.com.afgtec.notas.NCM;
-import br.com.afgtec.notas.NCMService;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.base.Resources;
+import br.com.afgtec.pessoa.Produto;
 import br.com.afgtec.produto.Categoria;
-import br.com.afgtec.produto.Produto;
 import br.com.afgtec.produto.ProdutoService;
 import br.com.afgtec.produto.RepresentadorProdutoCompleto;
-import br.com.afgtec.unidades.TipoQuantidade;
-import br.com.afgtec.unidades.UnidadePeso;
-import br.com.afgtec.unidades.UnidadeVolume;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.GerenciadorLista;
 import br.com.agrofauna.utilidades.ProvedorDeEventos;
-import br.com.entidades.Icones;
+import br.com.empresa.Empresa;
+import br.com.entidades.ncm.NCM;
+import br.com.entidades.ncm.NCMService;
+import br.com.quantificacao.TipoQuantidade;
+import br.com.quantificacao.UnidadePeso;
+import br.com.quantificacao.UnidadeVolume;
 
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -444,7 +444,7 @@ public class Produtos extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getProdutos();
+			return Resources.getProdutos();
 		} catch (IOException e) {
 			return null;
 		}

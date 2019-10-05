@@ -10,35 +10,35 @@ import javax.swing.border.EmptyBorder;
 
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Masks;
-import br.com.afgtec.notas.ModeloNota;
-import br.com.afgtec.notas.Nota;
-import br.com.afgtec.notas.NotaService;
-import br.com.afgtec.notas.ProdutoNota;
-import br.com.afgtec.notas.RepresentadorNotaCompleto;
-import br.com.afgtec.notas.RepresentadorProdutoNota;
-import br.com.afgtec.notas.RepresentadorVencimento;
-import br.com.afgtec.notas.StatusNota;
-import br.com.afgtec.notas.TipoNota;
-import br.com.afgtec.notas.Vencimento;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.pessoa.Pessoa;
 import br.com.afgtec.pessoa.PessoaFisica;
 import br.com.afgtec.pessoa.PessoaJuridica;
 import br.com.afgtec.pessoa.PessoaJuridicaService;
 import br.com.afgtec.pessoa.PessoaService;
+import br.com.afgtec.pessoa.Produto;
 import br.com.afgtec.pessoa.RepresentadorPessoa;
 import br.com.afgtec.pessoa.RepresentadorPessoaJuridicaSimples;
-import br.com.afgtec.produto.Produto;
 import br.com.afgtec.produto.ProdutoService;
 import br.com.afgtec.transportadora.RepresentadorTransportadoraSimples;
-import br.com.afgtec.transportadora.Transportadora;
 import br.com.afgtec.transportadora.TransportadoraService;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.conversores.ConversorDate;
 import br.com.agrofauna.utilidades.GerenciadorLista;
 import br.com.agrofauna.utilidades.ListModelGenerica;
 import br.com.agrofauna.utilidades.ProvedorDeEventos;
-import br.com.entidades.Icones;
+import br.com.empresa.Empresa;
+import br.com.entidades.nota.ModeloNota;
+import br.com.entidades.nota.Nota;
+import br.com.entidades.nota.NotaService;
+import br.com.entidades.nota.ProdutoNota;
+import br.com.entidades.nota.RepresentadorNotaCompleto;
+import br.com.entidades.nota.RepresentadorProdutoNota;
+import br.com.entidades.nota.RepresentadorVencimento;
+import br.com.entidades.nota.StatusNota;
+import br.com.entidades.nota.TipoNota;
+import br.com.entidades.nota.Vencimento;
+import br.com.transportadora.Transportadora;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -71,7 +71,7 @@ public class Notas extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getPapel();
+			return Resources.getPapel();
 		} catch (IOException e) {
 			return null;
 		}

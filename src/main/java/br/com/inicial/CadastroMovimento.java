@@ -21,27 +21,27 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Masks;
-import br.com.afgtec.financeiro.Banco;
-import br.com.afgtec.financeiro.Conta;
-import br.com.afgtec.financeiro.ContaService;
-import br.com.afgtec.financeiro.Fechamento;
-import br.com.afgtec.financeiro.Historico;
-import br.com.afgtec.financeiro.Movimento;
-import br.com.afgtec.financeiro.MovimentoService;
-import br.com.afgtec.financeiro.Operacao;
-import br.com.afgtec.financeiro.RepresentadorConta;
-import br.com.afgtec.financeiro.RepresentadorFechamento;
-import br.com.afgtec.financeiro.RepresentadorMovimento;
-import br.com.afgtec.financeiro.TipoConta;
-import br.com.afgtec.notas.RepresentadorVencimento;
-import br.com.afgtec.notas.Vencimento;
-import br.com.afgtec.notas.VencimentoService;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.conversores.ConversorDate;
 import br.com.agrofauna.utilidades.GerenciadorLista;
 import br.com.agrofauna.utilidades.ListModelGenerica;
-import br.com.entidades.Icones;
+import br.com.banco.Banco;
+import br.com.banco.Fechamento;
+import br.com.banco.RepresentadorFechamento;
+import br.com.conta.Conta;
+import br.com.conta.ContaService;
+import br.com.conta.RepresentadorConta;
+import br.com.conta.TipoConta;
+import br.com.empresa.Empresa;
+import br.com.entidades.nota.RepresentadorVencimento;
+import br.com.entidades.nota.Vencimento;
+import br.com.entidades.nota.VencimentoService;
+import br.com.historico.Historico;
+import br.com.movimento_financeiro.Movimento;
+import br.com.movimento_financeiro.MovimentoService;
+import br.com.movimento_financeiro.RepresentadorMovimento;
+import br.com.operacao.Operacao;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -86,7 +86,7 @@ public class CadastroMovimento extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getDiagrama();
+			return Resources.getDiagrama();
 		} catch (IOException e) {
 			return null;
 		}

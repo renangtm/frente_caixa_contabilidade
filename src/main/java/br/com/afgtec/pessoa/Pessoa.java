@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 
 import afgtec.endereco.Endereco;
 import br.com.afgtec.cliente.Cliente;
+import br.com.empresa.Empresa;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

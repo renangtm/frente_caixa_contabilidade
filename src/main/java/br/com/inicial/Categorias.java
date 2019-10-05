@@ -27,44 +27,44 @@ import javax.swing.text.DefaultFormatterFactory;
 import afgtec.endereco.Estado;
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Masks;
-import br.com.afgtec.impostos.COFINSAliq1;
-import br.com.afgtec.impostos.COFINSAliq2;
-import br.com.afgtec.impostos.Cofins;
-import br.com.afgtec.impostos.EstadoAliquota;
-import br.com.afgtec.impostos.ICMS00;
-import br.com.afgtec.impostos.ICMS10;
-import br.com.afgtec.impostos.ICMS20;
-import br.com.afgtec.impostos.ICMS30;
-import br.com.afgtec.impostos.ICMS40;
-import br.com.afgtec.impostos.ICMS41;
-import br.com.afgtec.impostos.ICMS50;
-import br.com.afgtec.impostos.ICMS51;
-import br.com.afgtec.impostos.ICMS60;
-import br.com.afgtec.impostos.ICMS70;
-import br.com.afgtec.impostos.ICMS90;
-import br.com.afgtec.impostos.Icms;
-import br.com.afgtec.impostos.ItemTabelaCfop;
-import br.com.afgtec.impostos.PISAliq1;
-import br.com.afgtec.impostos.PISAliq2;
-import br.com.afgtec.impostos.PISOutr;
-import br.com.afgtec.impostos.PISSt;
-import br.com.afgtec.impostos.Pis;
-import br.com.afgtec.impostos.RepresentadorItemTabelaCfop;
-import br.com.afgtec.impostos.TabelaAlicotas;
-import br.com.afgtec.impostos.TabelaCfop;
-import br.com.afgtec.impostos.TabelaIcms;
-import br.com.afgtec.notas.ModalidadeBC;
-import br.com.afgtec.notas.ModalidadeBCST;
-import br.com.afgtec.notas.OperacaoLogistica;
-import br.com.afgtec.notas.OrigemMercadoria;
-import br.com.afgtec.notas.TipoNota;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.base.Resources;
+import br.com.afgtec.pessoa.Produto;
 import br.com.afgtec.produto.Categoria;
-import br.com.afgtec.produto.Produto;
 import br.com.afgtec.produto.ProdutoService;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.ListModelGenerica;
-import br.com.entidades.Icones;
+import br.com.cfop.ItemTabelaCfop;
+import br.com.cfop.RepresentadorItemTabelaCfop;
+import br.com.cfop.TabelaCfop;
+import br.com.empresa.Empresa;
+import br.com.entidades.nota.OperacaoLogistica;
+import br.com.entidades.nota.TipoNota;
+import br.com.imposto.cofins.COFINSAliq1;
+import br.com.imposto.cofins.COFINSAliq2;
+import br.com.imposto.cofins.Cofins;
+import br.com.imposto.pis.PISAliq1;
+import br.com.imposto.pis.PISAliq2;
+import br.com.imposto.pis.PISOutr;
+import br.com.imposto.pis.PISSt;
+import br.com.imposto.pis.Pis;
+import br.com.impostos.icms.EstadoAliquota;
+import br.com.impostos.icms.ICMS00;
+import br.com.impostos.icms.ICMS10;
+import br.com.impostos.icms.ICMS20;
+import br.com.impostos.icms.ICMS30;
+import br.com.impostos.icms.ICMS40;
+import br.com.impostos.icms.ICMS41;
+import br.com.impostos.icms.ICMS50;
+import br.com.impostos.icms.ICMS51;
+import br.com.impostos.icms.ICMS60;
+import br.com.impostos.icms.ICMS70;
+import br.com.impostos.icms.ICMS90;
+import br.com.impostos.icms.Icms;
+import br.com.impostos.icms.ModalidadeBC;
+import br.com.impostos.icms.ModalidadeBCST;
+import br.com.impostos.icms.OrigemMercadoria;
+import br.com.impostos.icms.TabelaAlicotas;
+import br.com.impostos.icms.TabelaIcms;
 
 public class Categorias extends Modulo {
 
@@ -84,7 +84,7 @@ public class Categorias extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getCotacoes();
+			return Resources.getCotacoes();
 		} catch (IOException e) {
 			return null;
 		}

@@ -30,10 +30,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import br.com.afgtec.base.CFG;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
-import br.com.entidades.Icones;
-import br.com.entidades.Loading;
-import br.com.entidades.Med;
 
 class ImagePanel extends JComponent {
     
@@ -76,7 +74,7 @@ public class MenuPrincipal extends Tela {
 		
 		this.setVisible(true);
 		
-		this.setContentPane(new ImagePanel(Icones.getFundo()));
+		this.setContentPane(new ImagePanel(Resources.getFundo()));
 		
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 		
@@ -125,7 +123,7 @@ public class MenuPrincipal extends Tela {
 		 */
 
 		JLabel logo = new JLabel();
-		logo.setIcon(new ImageIcon(Icones.getLogo()));
+		logo.setIcon(new ImageIcon(Resources.getLogo()));
 		getContentPane().add(logo);
 		this.lr.setDimensoesComponente(logo, 70, 85, 30, 15);
 
@@ -139,7 +137,7 @@ public class MenuPrincipal extends Tela {
 		
 		}catch(Exception ex) {
 			
-			logoCliente.setIcon(new ImageIcon(Icones.getLogo()));
+			logoCliente.setIcon(new ImageIcon(Resources.getLogo()));
 			
 		}
 		
@@ -461,7 +459,7 @@ public class MenuPrincipal extends Tela {
 
 				try {
 
-					ImageIcon img = (ImageIcon) Icones.getArvore();
+					ImageIcon img = (ImageIcon) Resources.getArvore();
 					img.setImage(img.getImage().getScaledInstance(30, 30, 100));
 
 					lbl3.setIcon(img);

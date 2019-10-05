@@ -10,17 +10,17 @@ import javax.swing.border.EmptyBorder;
 
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Masks;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.pessoa.PessoaJuridica;
 import br.com.afgtec.pessoa.PessoaJuridicaService;
 import br.com.afgtec.pessoa.RepresentadorPessoaJuridica;
 import br.com.afgtec.transportadora.RepresentadorTransportadora;
-import br.com.afgtec.transportadora.Transportadora;
 import br.com.afgtec.transportadora.TransportadoraService;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.conversores.ConversorDate;
 import br.com.agrofauna.utilidades.GerenciadorLista;
-import br.com.entidades.Icones;
+import br.com.empresa.Empresa;
+import br.com.transportadora.Transportadora;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -87,7 +87,7 @@ public class CadastroTransportadoras extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getCaminhao();
+			return Resources.getCaminhao();
 		} catch (IOException e) {
 			return null;
 		}

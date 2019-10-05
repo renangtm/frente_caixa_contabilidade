@@ -1,6 +1,6 @@
 package afgtec.emissao;
 
-import br.com.afgtec.notas.Nota;
+import br.com.entidades.nota.Nota;
 
 public interface GeradorCupomSAT {
 

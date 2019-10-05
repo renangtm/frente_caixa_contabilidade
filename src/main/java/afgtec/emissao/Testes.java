@@ -11,8 +11,8 @@ import javax.persistence.EntityManager;
 
 import afgtec.geradoresCupom.GeradorCupomSATModelo1;
 import br.com.afgtec.base.ET;
-import br.com.afgtec.notas.Nota;
-import br.com.afgtec.notas.NotaService;
+import br.com.entidades.nota.Nota;
+import br.com.entidades.nota.NotaService;
 
 public class Testes {
 	

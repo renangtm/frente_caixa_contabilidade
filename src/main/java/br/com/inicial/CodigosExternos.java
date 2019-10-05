@@ -13,13 +13,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import br.com.afgtec.base.ET;
-import br.com.afgtec.pessoa.Empresa;
-import br.com.afgtec.unidades.TipoQuantidade;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.ListModelGenerica;
 import br.com.agrofauna.utilidades.ProvedorDeEventos;
-import br.com.codigo.PadraoCodigo;
-import br.com.entidades.Icones;
+import br.com.codigo_barra.PadraoCodigo;
+import br.com.empresa.Empresa;
+import br.com.quantificacao.TipoQuantidade;
+
 import java.awt.Dimension;
 
 public class CodigosExternos extends Modulo{
@@ -188,7 +189,7 @@ public class CodigosExternos extends Modulo{
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getConfig();
+			return Resources.getConfig();
 		} catch (IOException e) {
 			return null;
 		}

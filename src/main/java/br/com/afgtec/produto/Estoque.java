@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import br.com.afgtec.unidades.TipoQuantidade;
+import br.com.quantificacao.TipoQuantidade;
 
 @Entity
 @Table(name="estoque")

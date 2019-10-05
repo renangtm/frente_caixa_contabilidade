@@ -5,8 +5,8 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
-import br.com.entidades.Icones;
 
 public class ImportarXML extends Modulo{
 
@@ -56,7 +56,7 @@ public class ImportarXML extends Modulo{
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getPapel();
+			return Resources.getPapel();
 		} catch (IOException e) {
 			return null;
 		}

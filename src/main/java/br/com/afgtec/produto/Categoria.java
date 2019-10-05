@@ -11,15 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import br.com.afgtec.impostos.COFINSAliq1;
-import br.com.afgtec.impostos.Cofins;
-import br.com.afgtec.impostos.ICMS00;
-import br.com.afgtec.impostos.Icms;
-import br.com.afgtec.impostos.PISAliq1;
-import br.com.afgtec.impostos.Pis;
-import br.com.afgtec.impostos.TabelaAlicotas;
-import br.com.afgtec.impostos.TabelaCfop;
 import br.com.agrofauna.utilidades.Campo;
+import br.com.cfop.TabelaCfop;
+import br.com.imposto.cofins.COFINSAliq1;
+import br.com.imposto.cofins.Cofins;
+import br.com.imposto.pis.PISAliq1;
+import br.com.imposto.pis.Pis;
+import br.com.impostos.icms.ICMS00;
+import br.com.impostos.icms.Icms;
+import br.com.impostos.icms.TabelaAlicotas;
 
 @Entity
 @Table(name = "categoria")

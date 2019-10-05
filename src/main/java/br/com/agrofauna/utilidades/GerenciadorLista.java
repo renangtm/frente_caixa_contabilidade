@@ -2,7 +2,6 @@ package br.com.agrofauna.utilidades;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,8 +45,6 @@ public class GerenciadorLista<T> {
 	private ListModelGenerica<T> model;
 
 	private ProvedorDeEventos<T> provedor;
-
-	private int idF = 0;
 	
 	private LinkedList<Thread> ths = new LinkedList<Thread>();
 	

@@ -3,11 +3,11 @@ package br.com.inicial;
 import java.awt.EventQueue;
 
 import br.com.afgtec.base.ET;
-import br.com.afgtec.pessoa.Empresa;
-import br.com.afgtec.pessoa.ParametrosEmissao;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
-import br.com.entidades.Icones;
-import br.com.entidades.Logo;
+import br.com.empresa.Empresa;
+import br.com.empresa.Logo;
+import br.com.empresa.ParametrosEmissao;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
@@ -50,7 +50,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getConfig();
+			return Resources.getConfig();
 		} catch (IOException e) {
 			return null;
 		}

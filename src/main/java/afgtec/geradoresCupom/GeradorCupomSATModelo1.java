@@ -10,10 +10,10 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import afgtec.emissao.GeradorCupomSAT;
-import br.com.afgtec.notas.Nota;
-import br.com.afgtec.notas.ProdutoNota;
 import br.com.afgtec.pessoa.PessoaFisica;
 import br.com.afgtec.pessoa.PessoaJuridica;
+import br.com.entidades.nota.Nota;
+import br.com.entidades.nota.ProdutoNota;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;

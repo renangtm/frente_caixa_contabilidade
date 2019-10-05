@@ -9,9 +9,10 @@ import org.hibernate.Session;
 
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Service;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.pessoa.Produto;
 import br.com.afgtec.usuario.Usuario;
 import br.com.afgtec.usuario.UsuarioService;
+import br.com.empresa.Empresa;
 
 public class ProdutoService implements Service<Produto>{
 

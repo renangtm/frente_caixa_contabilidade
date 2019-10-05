@@ -10,20 +10,20 @@ import javax.swing.border.EmptyBorder;
 
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Masks;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.cliente.Cliente;
-import br.com.afgtec.financeiro.Banco;
 import br.com.afgtec.fornecedor.Fornecedor;
-import br.com.afgtec.pessoa.Empresa;
 import br.com.afgtec.pessoa.Pessoa;
 import br.com.afgtec.pessoa.PessoaFisica;
 import br.com.afgtec.pessoa.PessoaJuridica;
 import br.com.afgtec.pessoa.PessoaService;
 import br.com.afgtec.pessoa.RepresentadorPessoa;
-import br.com.afgtec.transportadora.Transportadora;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.conversores.ConversorDate;
 import br.com.agrofauna.utilidades.GerenciadorLista;
-import br.com.entidades.Icones;
+import br.com.banco.Banco;
+import br.com.empresa.Empresa;
+import br.com.transportadora.Transportadora;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -113,7 +113,7 @@ public class CadastroPessoa extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getCfg();
+			return Resources.getCfg();
 		} catch (IOException e) {
 			return null;
 		}

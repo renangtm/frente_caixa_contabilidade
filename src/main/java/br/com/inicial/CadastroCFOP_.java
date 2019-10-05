@@ -9,11 +9,11 @@ import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 
-import br.com.afgtec.notas.CFOP;
-import br.com.afgtec.notas.CFOPService;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.GerenciadorLista;
-import br.com.entidades.Icones;
+import br.com.cfop.CFOP;
+import br.com.cfop.CFOPService;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.ImageIcon;
@@ -52,7 +52,7 @@ public class CadastroCFOP_ extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getConfig();
+			return Resources.getConfig();
 		} catch (IOException e) {
 			return null;
 		}

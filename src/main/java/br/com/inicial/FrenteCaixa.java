@@ -23,29 +23,30 @@ import javax.swing.JTextField;
 
 
 import br.com.afgtec.base.ET;
-import br.com.afgtec.financeiro.Banco;
-import br.com.afgtec.financeiro.Historico;
-import br.com.afgtec.financeiro.Movimento;
-import br.com.afgtec.financeiro.MovimentoService;
-import br.com.afgtec.financeiro.Operacao;
-import br.com.afgtec.notas.Nota;
-import br.com.afgtec.notas.NotaFactory;
-import br.com.afgtec.notas.NotaService;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.pessoa.Pessoa;
 import br.com.afgtec.pessoa.PessoaService;
+import br.com.afgtec.pessoa.Produto;
 import br.com.afgtec.pessoa.RepresentadorPessoa;
-import br.com.afgtec.produto.Produto;
 import br.com.afgtec.produto.ProdutoService;
-import br.com.afgtec.unidades.TipoQuantidade;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.GerenciadorLista;
 import br.com.agrofauna.utilidades.ListModelGenerica;
 import br.com.agrofauna.utilidades.PercentageColumnSetter;
-import br.com.codigo.CodigoBarra;
-import br.com.entidades.FormaPagamento;
-import br.com.entidades.FormaPagamentoVendaService;
-import br.com.entidades.Icones;
+import br.com.banco.Banco;
+import br.com.codigo_barra.CodigoBarra;
+import br.com.empresa.Empresa;
+import br.com.entidades.nota.FormaPagamentoNota;
+import br.com.entidades.nota.Nota;
+import br.com.entidades.nota.NotaFactory;
+import br.com.entidades.nota.NotaService;
+import br.com.historico.Historico;
+import br.com.movimento_financeiro.Movimento;
+import br.com.movimento_financeiro.MovimentoService;
+import br.com.operacao.Operacao;
+import br.com.quantificacao.TipoQuantidade;
+import br.com.venda.FormaPagamento;
+import br.com.venda.FormaPagamentoVendaService;
 import br.com.venda.ProdutoVenda;
 import br.com.venda.RepresentadorProdutoVenda;
 import br.com.venda.StatusVenda;
@@ -171,7 +172,7 @@ public class FrenteCaixa extends Modulo {
 			nf.setPrazoPagamento(0);
 			nf.setTransportadora(null);
 
-			if (this.formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+			if (this.formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 
 				nf.setValorMeioPagamento(Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")));
 
@@ -431,7 +432,7 @@ public class FrenteCaixa extends Modulo {
 
 		this.txtTotal.setText((this.venda.getTotal() + "").replaceAll("\\.", ","));
 
-		if (this.formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+		if (this.formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 			try {
 				this.txtTroco.setText((Math.max(0,
 						Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")) - this.venda.getTotal())
@@ -541,7 +542,7 @@ public class FrenteCaixa extends Modulo {
 
 			FormaPagamento f = (FormaPagamento) this.cboFormaPagto.getSelectedItem();
 
-			if (f.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+			if (f.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 
 				this.txtDinheiro.setEnabled(false);
 				this.txtTroco.setEnabled(false);
@@ -695,7 +696,7 @@ public class FrenteCaixa extends Modulo {
 
 					}
 					
-					if (formaPagamento.getFormaPagamento().equals(br.com.afgtec.notas.FormaPagamento.DINHEIRO)) {
+					if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 						try{
 							
 							Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
@@ -936,7 +937,7 @@ public class FrenteCaixa extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getCotacoes();
+			return Resources.getCotacoes();
 		} catch (IOException e) {
 			return null;
 		}

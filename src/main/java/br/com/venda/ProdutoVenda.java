@@ -12,8 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import br.com.afgtec.produto.Produto;
-import br.com.afgtec.unidades.TipoQuantidade;
+import br.com.afgtec.pessoa.Produto;
+import br.com.quantificacao.TipoQuantidade;
 
 @Entity
 @Table(name="produto_venda")

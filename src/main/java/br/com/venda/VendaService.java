@@ -1,8 +1,5 @@
 package br.com.venda;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.persistence.EntityManager;
 
 import br.com.afgtec.produto.Estoque;

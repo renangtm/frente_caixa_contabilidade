@@ -10,11 +10,11 @@ import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 
 import br.com.afgtec.base.ET;
-import br.com.afgtec.financeiro.Historico;
-import br.com.afgtec.financeiro.HistoricoService;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
 import br.com.agrofauna.utilidades.GerenciadorLista;
-import br.com.entidades.Icones;
+import br.com.historico.Historico;
+import br.com.historico.HistoricoService;
 
 import javax.swing.JFormattedTextField;
 import javax.persistence.EntityManager;
@@ -53,7 +53,7 @@ public class CadastroHistorico extends Modulo {
 	public static ImageIcon logo() {
 
 		try {
-			return Icones.getConfig();
+			return Resources.getConfig();
 		} catch (IOException e) {
 			return null;
 		}

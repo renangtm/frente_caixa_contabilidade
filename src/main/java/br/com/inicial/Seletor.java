@@ -21,11 +21,11 @@ import javax.swing.event.ListSelectionListener;
 
 import br.com.afgtec.base.ET;
 import br.com.afgtec.base.Service;
-import br.com.afgtec.notas.Nota;
-import br.com.afgtec.notas.NotaService;
-import br.com.afgtec.notas.RepresentadorNotaSimples;
 import br.com.agrofauna.utilidades.ListModelGenerica;
 import br.com.agrofauna.utilidades.Representador;
+import br.com.entidades.nota.Nota;
+import br.com.entidades.nota.NotaService;
+import br.com.entidades.nota.RepresentadorNotaSimples;
 
 import javax.swing.JTextField;
 import java.awt.Color;

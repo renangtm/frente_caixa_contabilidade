@@ -20,10 +20,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import br.com.afgtec.notas.Nota;
-import br.com.afgtec.pessoa.Empresa;
 import br.com.afgtec.pessoa.Pessoa;
 import br.com.afgtec.usuario.Usuario;
+import br.com.empresa.Empresa;
+import br.com.entidades.nota.Nota;
 
 @Entity
 @Table(name="vendas")

@@ -8,7 +8,8 @@ import javax.persistence.Query;
 import org.hibernate.Session;
 
 import br.com.afgtec.base.Service;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.empresa.Empresa;
+import br.com.transportadora.Transportadora;
 
 public class TransportadoraService implements Service<Transportadora> {
 

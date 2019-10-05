@@ -18,7 +18,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import afgtec.config.Configuracoes;
-import br.com.afgtec.pessoa.Empresa;
+import br.com.empresa.Empresa;
 
 public class SAT {
 

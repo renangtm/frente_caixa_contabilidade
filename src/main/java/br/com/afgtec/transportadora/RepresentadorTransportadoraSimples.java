@@ -2,6 +2,7 @@ package br.com.afgtec.transportadora;
 
 import br.com.agrofauna.utilidades.Campo;
 import br.com.agrofauna.utilidades.Representador;
+import br.com.transportadora.Transportadora;
 
 public class RepresentadorTransportadoraSimples extends Representador<Transportadora> {
 

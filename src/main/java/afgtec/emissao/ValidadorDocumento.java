@@ -13,45 +13,45 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import afgtec.config.Configuracoes;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Dest;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS.COFINSAliq;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.ICMS;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS.PISAliq;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Prod;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Emit;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Ide;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.InfAdic;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto.MP;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total;
-import br.com.afgtec.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total.DescAcrEntr;
-import br.com.afgtec.impostos.COFINSAliq1;
-import br.com.afgtec.impostos.COFINSAliq2;
-import br.com.afgtec.impostos.ICMS00;
-import br.com.afgtec.impostos.ICMS10;
-import br.com.afgtec.impostos.ICMS20;
-import br.com.afgtec.impostos.ICMS30;
-import br.com.afgtec.impostos.ICMS40;
-import br.com.afgtec.impostos.ICMS41;
-import br.com.afgtec.impostos.ICMS50;
-import br.com.afgtec.impostos.ICMS60;
-import br.com.afgtec.impostos.ICMS70;
-import br.com.afgtec.impostos.ICMS90;
-import br.com.afgtec.impostos.PISAliq1;
-import br.com.afgtec.impostos.PISAliq2;
-import br.com.afgtec.notas.FormaPagamento;
-import br.com.afgtec.notas.ModeloNota;
-import br.com.afgtec.notas.Nota;
-import br.com.afgtec.notas.NotaService;
-import br.com.afgtec.notas.ProdutoNota;
 import br.com.afgtec.pessoa.PessoaFisica;
 import br.com.afgtec.pessoa.PessoaJuridica;
+import br.com.entidades.nota.FormaPagamentoNota;
+import br.com.entidades.nota.ModeloNota;
+import br.com.entidades.nota.Nota;
+import br.com.entidades.nota.NotaService;
+import br.com.entidades.nota.ProdutoNota;
+import br.com.imposto.cofins.COFINSAliq1;
+import br.com.imposto.cofins.COFINSAliq2;
+import br.com.imposto.pis.PISAliq1;
+import br.com.imposto.pis.PISAliq2;
+import br.com.impostos.icms.ICMS00;
+import br.com.impostos.icms.ICMS10;
+import br.com.impostos.icms.ICMS20;
+import br.com.impostos.icms.ICMS30;
+import br.com.impostos.icms.ICMS40;
+import br.com.impostos.icms.ICMS41;
+import br.com.impostos.icms.ICMS50;
+import br.com.impostos.icms.ICMS60;
+import br.com.impostos.icms.ICMS70;
+import br.com.impostos.icms.ICMS90;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Dest;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Emit;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Ide;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.InfAdic;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Prod;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.ICMS;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS.COFINSAliq;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS.PISAliq;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto.MP;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total.DescAcrEntr;
 
 public class ValidadorDocumento {
 
@@ -429,8 +429,8 @@ public class ValidadorDocumento {
 		MP mp = new MP();
 		
 		if(Arrays.asList(
-				FormaPagamento.CARTAO_CREDITO
-				,FormaPagamento.CARTAO_CREDITO).contains(nota.getForma_pagamento())){
+				FormaPagamentoNota.CARTAO_CREDITO
+				,FormaPagamentoNota.CARTAO_DEBITO).contains(nota.getForma_pagamento())){
 		
 			mp.setCAdmC(i3.formatar(nota.getCredenciadoraCartao()));
 
@@ -480,10 +480,10 @@ public class ValidadorDocumento {
 
 			}
 
-			if (this.moduloSat != null || true) {
+			if (this.moduloSat != null) {
 
 				try {
-					/*
+					
 					this.moduloSat.iniciar();
 					
 					CFe cfe = this.notaParaCFe(nota);
@@ -528,9 +528,7 @@ public class ValidadorDocumento {
 						b64 += "|"+retorno[i];
 						
 					}
-					 */
 					
-					String b64="3241234123412341234123412312341234314234123421344";
 					
 					this.gc.gerarCupomFiscal(nota, b64);
 

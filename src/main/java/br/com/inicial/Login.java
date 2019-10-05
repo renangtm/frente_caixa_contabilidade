@@ -23,9 +23,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import afgtec.emissao.SAT;
 import br.com.afgtec.base.CFG;
 import br.com.afgtec.base.ET;
+import br.com.afgtec.base.Resources;
 import br.com.afgtec.usuario.Usuario;
 import br.com.afgtec.usuario.UsuarioService;
-import br.com.entidades.Icones;
 
 public class Login extends Tela {
 
@@ -69,7 +69,7 @@ public class Login extends Tela {
 		this.habilitado = 0;
 
 		this.imgc = new JLabel();
-		this.imgc.setIcon(new ImageIcon(Icones.getLogo()));
+		this.imgc.setIcon(new ImageIcon(Resources.getLogo()));
 		this.add(this.imgc);
 		this.lr.setDimensoesComponente(this.imgc, 5, 5, 88, 30);
 
@@ -93,7 +93,7 @@ public class Login extends Tela {
 		this.add(this.btLogar);
 		this.lr.setDimensoesComponente(this.btLogar, 5, 70, 88, 12);
 		this.btLogar.setEnabled(false);
-		this.btLogar.setIcon(Icones.getChave());
+		this.btLogar.setIcon(Resources.getChave());
 
 		this.lblEstado = new JLabel("Status do sistema: Testando conexão...");
 		this.add(this.lblEstado);
