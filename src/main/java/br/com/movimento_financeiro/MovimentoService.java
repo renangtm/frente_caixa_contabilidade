@@ -7,9 +7,9 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 
-import br.com.afgtec.base.Service;
 import br.com.banco.Banco;
 import br.com.banco.Fechamento;
+import br.com.base.Service;
 import br.com.entidades.nota.SaidaEntrada;
 
 public class MovimentoService implements Service<Movimento> {

@@ -19,13 +19,13 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Service;
-import br.com.agrofauna.utilidades.ListModelGenerica;
-import br.com.agrofauna.utilidades.Representador;
+import br.com.base.ET;
+import br.com.base.Service;
 import br.com.entidades.nota.Nota;
 import br.com.entidades.nota.NotaService;
 import br.com.entidades.nota.RepresentadorNotaSimples;
+import br.com.utilidades.ListModelGenerica;
+import br.com.utilidades.Representador;
 
 import javax.swing.JTextField;
 import java.awt.Color;

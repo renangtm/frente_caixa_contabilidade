@@ -7,7 +7,7 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 
-import br.com.afgtec.base.Service;
+import br.com.base.Service;
 
 public class CFOPService implements Service<CFOP> {
 

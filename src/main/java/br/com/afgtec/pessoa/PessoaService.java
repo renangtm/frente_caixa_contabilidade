@@ -7,7 +7,7 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 
-import br.com.afgtec.base.Service;
+import br.com.base.Service;
 import br.com.empresa.Empresa;
 
 public class PessoaService implements Service<Pessoa> {

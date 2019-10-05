@@ -1,7 +1,7 @@
 package br.com.afgtec.pessoa;
 
-import br.com.agrofauna.utilidades.Campo;
-import br.com.agrofauna.utilidades.Representador;
+import br.com.utilidades.Campo;
+import br.com.utilidades.Representador;
 
 public class RepresentadorPessoaJuridicaSimples extends Representador<PessoaJuridica> {
 

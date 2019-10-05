@@ -1,8 +1,8 @@
 package br.com.movimento_financeiro;
 
-import br.com.agrofauna.conversores.ConversorDate;
-import br.com.agrofauna.utilidades.Campo;
-import br.com.agrofauna.utilidades.Representador;
+import br.com.conversores.ConversorDate;
+import br.com.utilidades.Campo;
+import br.com.utilidades.Representador;
 
 public class RepresentadorMovimento extends Representador<Movimento>{
 

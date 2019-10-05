@@ -8,14 +8,14 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Service;
 import br.com.afgtec.pessoa.Pessoa;
-import br.com.afgtec.usuario.Usuario;
+import br.com.base.ET;
+import br.com.base.Service;
 import br.com.empresa.Empresa;
 import br.com.entidades.nota.Nota;
 import br.com.entidades.nota.SaidaEntrada;
 import br.com.entidades.nota.Vencimento;
+import br.com.usuario.Usuario;
 
 public class ContaService implements Service<Conta>{
 

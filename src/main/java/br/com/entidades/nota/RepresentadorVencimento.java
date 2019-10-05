@@ -4,8 +4,8 @@ import java.sql.Date;
 
 import com.ibm.icu.text.NumberFormat;
 
-import br.com.agrofauna.utilidades.Campo;
-import br.com.agrofauna.utilidades.Representador;
+import br.com.utilidades.Campo;
+import br.com.utilidades.Representador;
 
 public class RepresentadorVencimento extends Representador<Vencimento>{
 

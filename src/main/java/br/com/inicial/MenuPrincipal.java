@@ -29,9 +29,9 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import br.com.afgtec.base.CFG;
-import br.com.afgtec.base.Resources;
-import br.com.afgtec.usuario.Usuario;
+import br.com.base.CFG;
+import br.com.base.Resources;
+import br.com.usuario.Usuario;
 
 class ImagePanel extends JComponent {
     

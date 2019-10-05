@@ -24,19 +24,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultFormatterFactory;
 
-import afgtec.endereco.Estado;
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Masks;
-import br.com.afgtec.base.Resources;
 import br.com.afgtec.pessoa.Produto;
-import br.com.afgtec.produto.Categoria;
-import br.com.afgtec.produto.ProdutoService;
-import br.com.afgtec.usuario.Usuario;
-import br.com.agrofauna.utilidades.ListModelGenerica;
+import br.com.base.ET;
+import br.com.base.Masks;
+import br.com.base.Resources;
 import br.com.cfop.ItemTabelaCfop;
 import br.com.cfop.RepresentadorItemTabelaCfop;
 import br.com.cfop.TabelaCfop;
 import br.com.empresa.Empresa;
+import br.com.endereco.Estado;
 import br.com.entidades.nota.OperacaoLogistica;
 import br.com.entidades.nota.TipoNota;
 import br.com.imposto.cofins.COFINSAliq1;
@@ -65,6 +61,10 @@ import br.com.impostos.icms.ModalidadeBCST;
 import br.com.impostos.icms.OrigemMercadoria;
 import br.com.impostos.icms.TabelaAlicotas;
 import br.com.impostos.icms.TabelaIcms;
+import br.com.produto.Categoria;
+import br.com.produto.ProdutoService;
+import br.com.usuario.Usuario;
+import br.com.utilidades.ListModelGenerica;
 
 public class Categorias extends Modulo {
 

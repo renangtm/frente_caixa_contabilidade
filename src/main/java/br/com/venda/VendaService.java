@@ -2,7 +2,7 @@ package br.com.venda;
 
 import javax.persistence.EntityManager;
 
-import br.com.afgtec.produto.Estoque;
+import br.com.produto.Estoque;
 
 public class VendaService {
 

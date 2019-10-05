@@ -5,8 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import br.com.agrofauna.utilidades.Campo;
-import br.com.agrofauna.utilidades.Representador;
+import br.com.utilidades.Campo;
+import br.com.utilidades.Representador;
 
 public class RepresentadorItemTabelaCfop extends Representador<ItemTabelaCfop> {
 

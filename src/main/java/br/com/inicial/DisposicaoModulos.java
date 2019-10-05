@@ -3,7 +3,7 @@ package br.com.inicial;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.afgtec.usuario.Usuario;
+import br.com.usuario.Usuario;
 
 public class DisposicaoModulos {
 

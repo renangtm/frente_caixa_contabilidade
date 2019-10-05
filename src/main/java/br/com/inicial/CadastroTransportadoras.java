@@ -8,19 +8,22 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Masks;
-import br.com.afgtec.base.Resources;
 import br.com.afgtec.pessoa.PessoaJuridica;
 import br.com.afgtec.pessoa.PessoaJuridicaService;
 import br.com.afgtec.pessoa.RepresentadorPessoaJuridica;
-import br.com.afgtec.transportadora.RepresentadorTransportadora;
-import br.com.afgtec.transportadora.TransportadoraService;
-import br.com.afgtec.usuario.Usuario;
-import br.com.agrofauna.conversores.ConversorDate;
-import br.com.agrofauna.utilidades.GerenciadorLista;
+import br.com.base.ET;
+import br.com.base.Masks;
+import br.com.base.Resources;
+import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
+import br.com.endereco.Cidade;
+import br.com.endereco.Endereco;
+import br.com.endereco.Estado;
+import br.com.transportadora.RepresentadorTransportadora;
 import br.com.transportadora.Transportadora;
+import br.com.transportadora.TransportadoraService;
+import br.com.usuario.Usuario;
+import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -29,11 +32,6 @@ import java.util.List;
 
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
-
-import afgtec.endereco.Cidade;
-import afgtec.endereco.Endereco;
-import afgtec.endereco.Estado;
-
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.JComboBox;

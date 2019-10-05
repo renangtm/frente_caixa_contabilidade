@@ -8,7 +8,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 
-import br.com.afgtec.usuario.Usuario;
+import br.com.usuario.Usuario;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)

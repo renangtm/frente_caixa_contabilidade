@@ -7,8 +7,8 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 
-import br.com.afgtec.base.Service;
-import br.com.afgtec.produto.Categoria;
+import br.com.base.Service;
+import br.com.produto.Categoria;
 
 public class CategoriaService implements Service<Categoria> {
 

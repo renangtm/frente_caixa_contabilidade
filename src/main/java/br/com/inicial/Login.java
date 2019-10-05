@@ -20,12 +20,12 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import afgtec.emissao.SAT;
-import br.com.afgtec.base.CFG;
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Resources;
-import br.com.afgtec.usuario.Usuario;
-import br.com.afgtec.usuario.UsuarioService;
+import br.com.base.CFG;
+import br.com.base.ET;
+import br.com.base.Resources;
+import br.com.emissao.SAT;
+import br.com.usuario.Usuario;
+import br.com.usuario.UsuarioService;
 
 public class Login extends Tela {
 

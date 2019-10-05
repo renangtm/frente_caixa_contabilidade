@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.afgtec.pessoa.Produto;
-import br.com.afgtec.produto.ProdutoService;
+import br.com.produto.ProdutoService;
 
 public class CodigoBarra {
 

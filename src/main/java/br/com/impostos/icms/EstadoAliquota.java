@@ -10,9 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import afgtec.endereco.Estado;
-import br.com.agrofauna.utilidades.Campo;
+import br.com.endereco.Estado;
 import br.com.entidades.nota.TipoNota;
+import br.com.utilidades.Campo;
 
 @Entity
 public class EstadoAliquota {

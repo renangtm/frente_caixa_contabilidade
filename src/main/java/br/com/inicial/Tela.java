@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
-import br.com.agrofauna.utilidades.LayoutRelativo;
+import br.com.utilidades.LayoutRelativo;
 
 public class Tela extends JFrame{
 

@@ -12,14 +12,14 @@ import javax.swing.ImageIcon;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Resources;
-import br.com.afgtec.usuario.Usuario;
-import br.com.agrofauna.utilidades.ListModelGenerica;
-import br.com.agrofauna.utilidades.ProvedorDeEventos;
+import br.com.base.ET;
+import br.com.base.Resources;
 import br.com.codigo_barra.PadraoCodigo;
 import br.com.empresa.Empresa;
 import br.com.quantificacao.TipoQuantidade;
+import br.com.usuario.Usuario;
+import br.com.utilidades.ListModelGenerica;
+import br.com.utilidades.ProvedorDeEventos;
 
 import java.awt.Dimension;
 

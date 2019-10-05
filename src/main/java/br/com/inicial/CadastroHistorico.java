@@ -9,12 +9,12 @@ import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Resources;
-import br.com.afgtec.usuario.Usuario;
-import br.com.agrofauna.utilidades.GerenciadorLista;
+import br.com.base.ET;
+import br.com.base.Resources;
 import br.com.historico.Historico;
 import br.com.historico.HistoricoService;
+import br.com.usuario.Usuario;
+import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JFormattedTextField;
 import javax.persistence.EntityManager;

@@ -16,8 +16,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.usuario.Usuario;
+import br.com.base.ET;
+import br.com.usuario.Usuario;
 
 public class Modulo extends Tela {
 

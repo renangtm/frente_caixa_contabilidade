@@ -17,14 +17,14 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import br.com.afgtec.produto.Categoria;
-import br.com.afgtec.produto.Estoque;
-import br.com.agrofauna.utilidades.Campo;
 import br.com.empresa.Empresa;
 import br.com.entidades.ncm.NCM;
+import br.com.produto.Categoria;
+import br.com.produto.Estoque;
 import br.com.quantificacao.ItemQuantificavel;
 import br.com.quantificacao.UnidadePeso;
 import br.com.quantificacao.UnidadeVolume;
+import br.com.utilidades.Campo;
 
 @Entity
 @Table(name="produtos")

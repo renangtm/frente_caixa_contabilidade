@@ -1,6 +1,6 @@
 package br.com.impostos.icms;
 
-import afgtec.endereco.Estado;
+import br.com.endereco.Estado;
 
 public class TabelaIcms {
 	

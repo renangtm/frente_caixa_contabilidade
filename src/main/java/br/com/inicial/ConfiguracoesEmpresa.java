@@ -2,12 +2,12 @@ package br.com.inicial;
 
 import java.awt.EventQueue;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Resources;
-import br.com.afgtec.usuario.Usuario;
+import br.com.base.ET;
+import br.com.base.Resources;
 import br.com.empresa.Empresa;
 import br.com.empresa.Logo;
 import br.com.empresa.ParametrosEmissao;
+import br.com.usuario.Usuario;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;

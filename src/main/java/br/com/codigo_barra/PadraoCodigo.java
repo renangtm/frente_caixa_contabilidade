@@ -12,9 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import br.com.agrofauna.utilidades.Campo;
 import br.com.empresa.Empresa;
 import br.com.quantificacao.TipoQuantidade;
+import br.com.utilidades.Campo;
 
 @Entity
 @Table(name="padrao_codigo")

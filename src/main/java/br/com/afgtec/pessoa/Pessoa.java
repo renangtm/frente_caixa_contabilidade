@@ -12,9 +12,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import afgtec.endereco.Endereco;
-import br.com.afgtec.cliente.Cliente;
+import br.com.cliente.Cliente;
 import br.com.empresa.Empresa;
+import br.com.endereco.Endereco;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

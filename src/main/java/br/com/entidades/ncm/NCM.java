@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import br.com.agrofauna.utilidades.Campo;
+import br.com.utilidades.Campo;
 
 @Entity
 public class NCM {

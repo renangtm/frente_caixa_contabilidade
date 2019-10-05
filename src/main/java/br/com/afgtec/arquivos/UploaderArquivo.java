@@ -14,7 +14,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.io.CopyStreamEvent;
 import org.apache.commons.net.io.CopyStreamListener;
 
-import br.com.agrofauna.utilidades.LayoutRelativo;
+import br.com.utilidades.LayoutRelativo;
 
 public class UploaderArquivo extends JFrame{
 

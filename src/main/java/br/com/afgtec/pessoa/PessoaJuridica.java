@@ -12,9 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import br.com.afgtec.fornecedor.Fornecedor;
 import br.com.banco.Banco;
 import br.com.entidades.nota.CodigoRegimeTributario;
+import br.com.fornecedor.Fornecedor;
 import br.com.transportadora.Transportadora;
 
 @Entity

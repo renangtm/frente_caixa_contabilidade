@@ -9,11 +9,11 @@ import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 
-import br.com.afgtec.base.Resources;
-import br.com.afgtec.usuario.Usuario;
-import br.com.agrofauna.utilidades.GerenciadorLista;
+import br.com.base.Resources;
 import br.com.cfop.CFOP;
 import br.com.cfop.CFOPService;
+import br.com.usuario.Usuario;
+import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.ImageIcon;

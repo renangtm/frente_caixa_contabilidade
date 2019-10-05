@@ -7,9 +7,9 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 
-import br.com.afgtec.base.Service;
-import br.com.afgtec.produto.Estoque;
+import br.com.base.Service;
 import br.com.empresa.Empresa;
+import br.com.produto.Estoque;
 import br.com.venda.SemEstoqueException;
 
 public class NotaService implements Service<Nota> {

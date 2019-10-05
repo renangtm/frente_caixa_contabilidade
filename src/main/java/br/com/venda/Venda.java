@@ -21,9 +21,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.afgtec.pessoa.Pessoa;
-import br.com.afgtec.usuario.Usuario;
 import br.com.empresa.Empresa;
 import br.com.entidades.nota.Nota;
+import br.com.usuario.Usuario;
 
 @Entity
 @Table(name="vendas")

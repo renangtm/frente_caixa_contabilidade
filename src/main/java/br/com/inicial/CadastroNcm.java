@@ -10,13 +10,13 @@ import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultFormatterFactory;
 
-import br.com.afgtec.base.ET;
-import br.com.afgtec.base.Masks;
-import br.com.afgtec.base.Resources;
-import br.com.afgtec.usuario.Usuario;
-import br.com.agrofauna.utilidades.GerenciadorLista;
+import br.com.base.ET;
+import br.com.base.Masks;
+import br.com.base.Resources;
 import br.com.entidades.ncm.NCM;
 import br.com.entidades.ncm.NCMService;
+import br.com.usuario.Usuario;
+import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JFormattedTextField;
 import javax.persistence.EntityManager;
