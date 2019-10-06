@@ -1,6 +1,6 @@
 package br.com.conta;
 
-import br.com.entidades.nota.Vencimento;
+import br.com.nota.Vencimento;
 import br.com.pessoa.Pessoa;
 
 public class Conta {

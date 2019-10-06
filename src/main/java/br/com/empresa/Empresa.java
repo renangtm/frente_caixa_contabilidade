@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import br.com.codigo_barra.PadraoCodigo;
-import br.com.entidades.nota.Nota;
+import br.com.nota.Nota;
 import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaJuridica;
 import br.com.produto.Produto;

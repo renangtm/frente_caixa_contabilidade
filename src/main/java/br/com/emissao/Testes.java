@@ -10,9 +10,9 @@ import java.security.cert.CertificateException;
 import javax.persistence.EntityManager;
 
 import br.com.base.ET;
-import br.com.entidades.nota.Nota;
-import br.com.entidades.nota.NotaService;
 import br.com.geradoresCupom.GeradorCupomSATModelo1;
+import br.com.nota.Nota;
+import br.com.nota.NotaService;
 
 public class Testes {
 	

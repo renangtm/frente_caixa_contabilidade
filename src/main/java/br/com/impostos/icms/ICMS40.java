@@ -8,7 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import br.com.entidades.nota.MotivoDesoneracao;
+import br.com.nota.MotivoDesoneracao;
 
 @Entity
 public class ICMS40 extends Icms {

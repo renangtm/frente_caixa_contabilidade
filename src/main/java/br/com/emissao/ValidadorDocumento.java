@@ -13,11 +13,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import br.com.config.Configuracoes;
-import br.com.entidades.nota.FormaPagamentoNota;
-import br.com.entidades.nota.ModeloNota;
-import br.com.entidades.nota.Nota;
-import br.com.entidades.nota.NotaService;
-import br.com.entidades.nota.ProdutoNota;
 import br.com.imposto.cofins.COFINSAliq1;
 import br.com.imposto.cofins.COFINSAliq2;
 import br.com.imposto.pis.PISAliq1;
@@ -50,6 +45,11 @@ import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS.COFINSAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS.PISAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto.MP;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total.DescAcrEntr;
+import br.com.nota.FormaPagamentoNota;
+import br.com.nota.ModeloNota;
+import br.com.nota.Nota;
+import br.com.nota.NotaService;
+import br.com.nota.ProdutoNota;
 import br.com.pessoa.PessoaFisica;
 import br.com.pessoa.PessoaJuridica;
 

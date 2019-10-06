@@ -13,8 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import br.com.banco.Banco;
-import br.com.entidades.nota.Vencimento;
 import br.com.historico.Historico;
+import br.com.nota.Vencimento;
 import br.com.operacao.Operacao;
 
 @Entity

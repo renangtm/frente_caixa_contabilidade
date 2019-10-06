@@ -6,7 +6,7 @@ public interface FormaPagamento {
 	
 	public int codigoCredenciadoraCartao();
 	
-	public br.com.entidades.nota.FormaPagamentoNota getFormaPagamento();
+	public br.com.nota.FormaPagamentoNota getFormaPagamento();
 	
 	public String getNome();
 	

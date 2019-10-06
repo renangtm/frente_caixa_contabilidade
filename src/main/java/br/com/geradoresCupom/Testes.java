@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 
 import br.com.base.ET;
 import br.com.emissao.GeradorCupomSAT;
-import br.com.entidades.nota.Nota;
+import br.com.nota.Nota;
 import net.sf.jasperreports.engine.JRException;
 
 public class Testes {

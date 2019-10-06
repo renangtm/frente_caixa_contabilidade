@@ -11,9 +11,9 @@ import org.hibernate.Session;
 import br.com.base.ET;
 import br.com.base.Service;
 import br.com.empresa.Empresa;
-import br.com.entidades.nota.Nota;
-import br.com.entidades.nota.SaidaEntrada;
-import br.com.entidades.nota.Vencimento;
+import br.com.nota.Nota;
+import br.com.nota.SaidaEntrada;
+import br.com.nota.Vencimento;
 import br.com.pessoa.Pessoa;
 import br.com.usuario.Usuario;
 

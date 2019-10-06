@@ -21,7 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.empresa.Empresa;
-import br.com.entidades.nota.Nota;
+import br.com.nota.Nota;
 import br.com.pessoa.Pessoa;
 import br.com.usuario.Usuario;
 
@@ -53,6 +53,7 @@ public class Venda {
 	@Enumerated(EnumType.ORDINAL)
 	private StatusVenda status;
 	
+	//mappedBy='venda'
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_venda")
 	private List<ProdutoVenda> produtos;

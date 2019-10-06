@@ -35,7 +35,8 @@ public class Usuario{
 	@Column
 	private String senha;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="usuario")
+	//mappedBy='usuario'
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="id_usuario")
 	private List<Permissao> permissoes;
 	

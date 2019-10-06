@@ -1,4 +1,4 @@
-package br.com.entidades.nota;
+package br.com.nota;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

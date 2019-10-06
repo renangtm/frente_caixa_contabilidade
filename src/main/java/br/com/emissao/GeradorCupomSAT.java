@@ -1,6 +1,6 @@
 package br.com.emissao;
 
-import br.com.entidades.nota.Nota;
+import br.com.nota.Nota;
 
 public interface GeradorCupomSAT {
 

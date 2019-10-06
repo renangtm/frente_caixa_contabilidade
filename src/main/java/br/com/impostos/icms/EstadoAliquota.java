@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import br.com.endereco.Estado;
-import br.com.entidades.nota.TipoNota;
+import br.com.nota.TipoNota;
 import br.com.utilidades.Campo;
 
 @Entity

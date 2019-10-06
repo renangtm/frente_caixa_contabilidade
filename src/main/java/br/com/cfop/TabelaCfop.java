@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import br.com.entidades.nota.OperacaoLogistica;
+import br.com.nota.OperacaoLogistica;
 
 @Entity
 public class TabelaCfop {

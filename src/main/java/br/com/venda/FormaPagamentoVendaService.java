@@ -28,9 +28,9 @@ public class FormaPagamentoVendaService {
 			}
 
 			@Override
-			public br.com.entidades.nota.FormaPagamentoNota getFormaPagamento() {
+			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
 				// TODO Auto-generated method stub
-				return br.com.entidades.nota.FormaPagamentoNota.DINHEIRO;
+				return br.com.nota.FormaPagamentoNota.DINHEIRO;
 			}
 
 			@Override
@@ -62,9 +62,9 @@ public class FormaPagamentoVendaService {
 			}
 
 			@Override
-			public br.com.entidades.nota.FormaPagamentoNota getFormaPagamento() {
+			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
 				// TODO Auto-generated method stub
-				return br.com.entidades.nota.FormaPagamentoNota.OUTROS;
+				return br.com.nota.FormaPagamentoNota.OUTROS;
 			}
 
 			@Override
@@ -95,9 +95,9 @@ public class FormaPagamentoVendaService {
 			}
 
 			@Override
-			public br.com.entidades.nota.FormaPagamentoNota getFormaPagamento() {
+			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
 				// TODO Auto-generated method stub
-				return br.com.entidades.nota.FormaPagamentoNota.OUTROS;
+				return br.com.nota.FormaPagamentoNota.OUTROS;
 			}
 
 			@Override

@@ -14,7 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import br.com.endereco.Estado;
-import br.com.entidades.nota.TipoNota;
+import br.com.nota.TipoNota;
 
 @Entity
 public class TabelaAlicotas {

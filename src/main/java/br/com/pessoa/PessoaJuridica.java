@@ -15,8 +15,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import br.com.banco.Banco;
-import br.com.entidades.nota.CodigoRegimeTributario;
 import br.com.fornecedor.Fornecedor;
+import br.com.nota.CodigoRegimeTributario;
 import br.com.transportadora.Transportadora;
 
 @Entity

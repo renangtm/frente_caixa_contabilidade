@@ -13,16 +13,16 @@ import br.com.base.Masks;
 import br.com.base.Resources;
 import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
-import br.com.entidades.nota.ModeloNota;
-import br.com.entidades.nota.Nota;
-import br.com.entidades.nota.NotaService;
-import br.com.entidades.nota.ProdutoNota;
-import br.com.entidades.nota.RepresentadorNotaCompleto;
-import br.com.entidades.nota.RepresentadorProdutoNota;
-import br.com.entidades.nota.RepresentadorVencimento;
-import br.com.entidades.nota.StatusNota;
-import br.com.entidades.nota.TipoNota;
-import br.com.entidades.nota.Vencimento;
+import br.com.nota.ModeloNota;
+import br.com.nota.Nota;
+import br.com.nota.NotaService;
+import br.com.nota.ProdutoNota;
+import br.com.nota.RepresentadorNotaCompleto;
+import br.com.nota.RepresentadorProdutoNota;
+import br.com.nota.RepresentadorVencimento;
+import br.com.nota.StatusNota;
+import br.com.nota.TipoNota;
+import br.com.nota.Vencimento;
 import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaFisica;
 import br.com.pessoa.PessoaJuridica;
@@ -402,6 +402,13 @@ public class Notas extends Modulo {
 		}
 
 		try {
+			
+			if(!new NotaService(et).verificacaoPersistencia(nota)) {
+				
+				erro("As alteracoes efetuadas nao podem ser salvas");
+				return;
+				
+			}
 
 			new NotaService(et).mergeNota(nota);
 

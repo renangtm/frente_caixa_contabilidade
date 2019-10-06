@@ -1,4 +1,4 @@
-package br.com.entidades.nota;
+package br.com.nota;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,7 +77,8 @@ public class Nota {
 	@Column
 	private SaidaEntrada operacao;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy="nota")
+	//mappedBy='nota' por conta do join column nao precisa
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<ProdutoNota> produtos;
 
@@ -106,7 +107,8 @@ public class Nota {
 	@Column
 	private FormaPagamentoNota forma_pagamento;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy="nota")
+	//mappedBy='nota'
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<Vencimento> vencimentos;
 

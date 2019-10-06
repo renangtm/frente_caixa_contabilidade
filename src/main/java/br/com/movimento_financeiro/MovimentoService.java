@@ -10,7 +10,7 @@ import org.hibernate.Session;
 import br.com.banco.Banco;
 import br.com.banco.Fechamento;
 import br.com.base.Service;
-import br.com.entidades.nota.SaidaEntrada;
+import br.com.nota.SaidaEntrada;
 
 public class MovimentoService implements Service<Movimento> {
 

@@ -21,9 +21,9 @@ import javax.swing.event.ListSelectionListener;
 
 import br.com.base.ET;
 import br.com.base.Service;
-import br.com.entidades.nota.Nota;
-import br.com.entidades.nota.NotaService;
-import br.com.entidades.nota.RepresentadorNotaSimples;
+import br.com.nota.Nota;
+import br.com.nota.NotaService;
+import br.com.nota.RepresentadorNotaSimples;
 import br.com.utilidades.ListModelGenerica;
 import br.com.utilidades.Representador;
 

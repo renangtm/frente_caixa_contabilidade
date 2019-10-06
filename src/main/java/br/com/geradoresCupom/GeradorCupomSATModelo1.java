@@ -10,8 +10,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import br.com.emissao.GeradorCupomSAT;
-import br.com.entidades.nota.Nota;
-import br.com.entidades.nota.ProdutoNota;
+import br.com.nota.Nota;
+import br.com.nota.ProdutoNota;
 import br.com.pessoa.PessoaFisica;
 import br.com.pessoa.PessoaJuridica;
 import net.sf.jasperreports.engine.JRDataSource;

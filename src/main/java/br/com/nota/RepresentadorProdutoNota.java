@@ -1,4 +1,4 @@
-package br.com.entidades.nota;
+package br.com.nota;
 
 import br.com.utilidades.Campo;
 import br.com.utilidades.Representador;
