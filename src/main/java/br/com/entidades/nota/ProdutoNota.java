@@ -13,9 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import br.com.afgtec.pessoa.Produto;
 import br.com.cfop.CFOP;
 import br.com.imposto.Imposto;
+import br.com.pessoa.Produto;
 import br.com.quantificacao.TipoQuantidade;
 
 @Entity

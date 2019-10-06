@@ -1,4 +1,4 @@
-package br.com.afgtec.pessoa;
+package br.com.pessoa;
 
 import br.com.utilidades.Campo;
 import br.com.utilidades.Representador;

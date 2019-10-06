@@ -1,6 +1,6 @@
 package br.com.venda;
 
-import br.com.afgtec.pessoa.Produto;
+import br.com.pessoa.Produto;
 
 public class SemEstoqueException extends Exception{
 	

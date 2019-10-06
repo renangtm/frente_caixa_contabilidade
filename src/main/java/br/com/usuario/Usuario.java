@@ -18,7 +18,7 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import br.com.afgtec.pessoa.PessoaFisica;
+import br.com.pessoa.PessoaFisica;
 
 @Entity
 public class Usuario{ 

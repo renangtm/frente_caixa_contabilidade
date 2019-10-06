@@ -12,11 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import br.com.afgtec.pessoa.Pessoa;
-import br.com.afgtec.pessoa.PessoaJuridica;
-import br.com.afgtec.pessoa.Produto;
 import br.com.codigo_barra.PadraoCodigo;
 import br.com.entidades.nota.Nota;
+import br.com.pessoa.Pessoa;
+import br.com.pessoa.PessoaJuridica;
+import br.com.pessoa.Produto;
 import br.com.venda.Venda;
 
 @Entity

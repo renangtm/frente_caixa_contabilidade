@@ -1,4 +1,4 @@
-package br.com.afgtec.pessoa;
+package br.com.pessoa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

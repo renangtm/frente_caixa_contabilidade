@@ -1,6 +1,6 @@
 package br.com.produto;
 
-import br.com.afgtec.pessoa.Produto;
+import br.com.pessoa.Produto;
 import br.com.utilidades.Campo;
 import br.com.utilidades.Representador;
 

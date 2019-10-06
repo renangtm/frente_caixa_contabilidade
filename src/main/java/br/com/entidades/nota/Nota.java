@@ -17,12 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import br.com.afgtec.arquivos.Arquivo;
-import br.com.afgtec.pessoa.Pessoa;
-import br.com.afgtec.pessoa.PessoaJuridica;
+import br.com.arquivos.Arquivo;
 import br.com.empresa.Empresa;
 import br.com.imposto.Imposto;
 import br.com.imposto.ImpostoFactory;
+import br.com.pessoa.Pessoa;
+import br.com.pessoa.PessoaJuridica;
 import br.com.transportadora.Transportadora;
 
 @Entity

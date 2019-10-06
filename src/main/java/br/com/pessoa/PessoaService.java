@@ -1,4 +1,4 @@
-package br.com.afgtec.pessoa;
+package br.com.pessoa;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.hibernate.Session;
 import br.com.base.Service;
 import br.com.empresa.Empresa;
 
-public class PessoaFisicaService implements Service<PessoaFisica> {
+public class PessoaService implements Service<Pessoa> {
 
 	private EntityManager et;
 
@@ -24,7 +24,7 @@ public class PessoaFisicaService implements Service<PessoaFisica> {
 		this.empresa = empresa;
 	}
 
-	public PessoaFisicaService(EntityManager et) {
+	public PessoaService(EntityManager et) {
 
 		this.et = et;
 
@@ -40,12 +40,10 @@ public class PessoaFisicaService implements Service<PessoaFisica> {
 		}
 
 		Query q = this.et.createQuery(
-				"SELECT COUNT(*) FROM PessoaFisica p WHERE p.empresa.id = :empresa AND (p.cpf LIKE :cpf OR p.nome LIKE :nome OR p.endereco.cidade.nome LIKE :cidade OR p.rg LIKE :rg)");
+				"SELECT COUNT(*) FROM Pessoa p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome OR p.endereco.cidade.nome LIKE :cidade)");
 		q.setParameter("empresa", this.empresa.getId());
-		q.setParameter("cpf", "%" + filtro + "%");
 		q.setParameter("nome", "%" + filtro + "%");
 		q.setParameter("cidade", "%" + filtro + "%");
-		q.setParameter("rg", "%" + filtro + "%");
 
 		return Integer.parseInt(q.getResultList().get(0) + "");
 
@@ -53,7 +51,7 @@ public class PessoaFisicaService implements Service<PessoaFisica> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PessoaFisica> getElementos(int x1, int x2, String filtro, String ordem) {
+	public List<Pessoa> getElementos(int x1, int x2, String filtro, String ordem) {
 
 		if (this.empresa == null) {
 
@@ -64,29 +62,27 @@ public class PessoaFisicaService implements Service<PessoaFisica> {
 		ordem = ordem.replaceAll("\\{\\{et\\}\\}", "p");
 
 		Query q = this.et.createQuery(
-				"SELECT p FROM PessoaFisica p WHERE p.empresa.id = :empresa AND (p.cpf LIKE :cpf OR p.nome LIKE :nome OR p.endereco.cidade.nome LIKE :cidade OR p.rg LIKE :rg)"
+				"SELECT p FROM Pessoa p WHERE p.empresa.id = :empresa AND (p.nome LIKE :nome OR p.endereco.cidade.nome LIKE :cidade)"
 						+ (!ordem.isEmpty() ? " ORDER BY " + ordem : ""));
 		q.setParameter("empresa", this.empresa.getId());
-		q.setParameter("cpf", "%" + filtro + "%");
 		q.setParameter("nome", "%" + filtro + "%");
 		q.setParameter("cidade", "%" + filtro + "%");
-		q.setParameter("rg", "%" + filtro + "%");
 
 		q.setFirstResult(x1);
 		q.setMaxResults(x2 - x1);
 
-		return (List<PessoaFisica>) (List<?>) q.getResultList();
+		return (List<Pessoa>) (List<?>) q.getResultList();
 
 	}
 
 	@Override
-	public PessoaFisica getPeloCodigo(String str) {
+	public Pessoa getPeloCodigo(String str) {
 		// TODO Auto-generated method stub
-		return this.et.find(PessoaFisica.class, Integer.parseInt(str));
+		return this.et.find(Pessoa.class, Integer.parseInt(str));
 	}
 
 	@Override
-	public void lixeira(PessoaFisica obj) {
+	public void lixeira(Pessoa obj) {
 		// TODO Auto-generated method stub
 		((Session)this.et.getDelegate()).evict(obj);
 	}

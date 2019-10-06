@@ -1,4 +1,4 @@
-package br.com.afgtec.arquivos;
+package br.com.arquivos;
 
 import java.io.File;
 

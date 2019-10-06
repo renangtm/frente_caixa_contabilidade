@@ -1,4 +1,4 @@
-package br.com.afgtec.arquivos;
+package br.com.arquivos;
 
 import java.awt.Desktop;
 import java.net.URI;

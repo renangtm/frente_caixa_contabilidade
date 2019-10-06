@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import br.com.afgtec.pessoa.Produto;
+import br.com.pessoa.Produto;
 import br.com.quantificacao.TipoQuantidade;
 
 @Entity

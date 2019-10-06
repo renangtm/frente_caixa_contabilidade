@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import br.com.afgtec.pessoa.Pessoa;
+import br.com.pessoa.Pessoa;
 
 @Entity
 public class Cliente {

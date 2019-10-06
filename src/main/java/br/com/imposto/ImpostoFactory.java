@@ -1,8 +1,5 @@
 package br.com.imposto;
 
-import br.com.afgtec.pessoa.Pessoa;
-import br.com.afgtec.pessoa.PessoaJuridica;
-import br.com.afgtec.pessoa.Produto;
 import br.com.entidades.nota.MotivoDesoneracao;
 import br.com.entidades.nota.TipoNota;
 import br.com.imposto.cofins.Cofins;
@@ -17,6 +14,9 @@ import br.com.impostos.icms.ICMS70;
 import br.com.impostos.icms.ICMS90;
 import br.com.impostos.icms.Icms;
 import br.com.impostos.icms.TabelaAlicotas;
+import br.com.pessoa.Pessoa;
+import br.com.pessoa.PessoaJuridica;
+import br.com.pessoa.Produto;
 
 public class ImpostoFactory {
 

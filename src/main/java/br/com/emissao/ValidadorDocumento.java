@@ -12,8 +12,6 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import br.com.afgtec.pessoa.PessoaFisica;
-import br.com.afgtec.pessoa.PessoaJuridica;
 import br.com.config.Configuracoes;
 import br.com.entidades.nota.FormaPagamentoNota;
 import br.com.entidades.nota.ModeloNota;
@@ -52,6 +50,8 @@ import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS.COFINSAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS.PISAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto.MP;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total.DescAcrEntr;
+import br.com.pessoa.PessoaFisica;
+import br.com.pessoa.PessoaJuridica;
 
 public class ValidadorDocumento {
 

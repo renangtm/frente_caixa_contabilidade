@@ -1,10 +1,9 @@
-package br.com.afgtec.pessoa;
+package br.com.pessoa;
 
-import br.com.conversores.ConversorDate;
 import br.com.utilidades.Campo;
 import br.com.utilidades.Representador;
 
-public class RepresentadorPessoaFisica extends Representador<PessoaFisica> {
+public class RepresentadorPessoaJuridica extends Representador<PessoaJuridica> {
 
 	@Campo(nome = "Cod", editavel=false, ordem = "{{et}}.id")
 	private int codigo;
@@ -12,11 +11,11 @@ public class RepresentadorPessoaFisica extends Representador<PessoaFisica> {
 	@Campo(nome = "Nome", editavel=false, ordem = "{{et}}.nome")
 	private String nome;
 
-	@Campo(nome = "Cpf", editavel=false, ordem = "{{et}}.cpf")
-	private String cpf;
+	@Campo(nome = "Cnpj", editavel=false, ordem = "{{et}}.cnpj")
+	private String cnpj;
 
-	@Campo(nome = "Rg", editavel=false, ordem = "{{et}}.rg")
-	private String rg;
+	@Campo(nome = "Ie", editavel=false, ordem = "{{et}}.inscricao_estadual")
+	private String ie;
 
 	@Campo(nome = "Estado", editavel=false, ordem = "{{et}}.endereco.cidade.estado.sigla")
 	private String estado;
@@ -24,19 +23,16 @@ public class RepresentadorPessoaFisica extends Representador<PessoaFisica> {
 	@Campo(nome = "Cidade", editavel=false, ordem = "{{et}}.endereco.cidade.nome")
 	private String cidade;
 
-	@Campo(nome = "Data Nasc", editavel=false, ordem = "{{et}}.data_nascimento")
-	private String dataNascimento;
 
-	public RepresentadorPessoaFisica(PessoaFisica p) {
+	public RepresentadorPessoaJuridica(PessoaJuridica p) {
 		super(p);
 
 		this.codigo = p.getId();
 		this.nome = p.getNome();
-		this.cpf = p.getCpf();
-		this.rg = p.getRg();
+		this.cnpj = p.getCnpj();
+		this.ie = p.getInscricao_estadual();
 		this.estado = p.getEndereco().getCidade().getEstado().getSigla();
 		this.cidade = p.getEndereco().getCidade().getNome();
-		this.dataNascimento = new ConversorDate().paraString(p.getData_nascimento());
 
 	}
 

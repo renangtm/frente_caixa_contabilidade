@@ -12,18 +12,18 @@ import java.util.List;
 
 import javax.swing.text.DefaultFormatterFactory;
 
-import br.com.afgtec.arquivos.ActionPosUpload;
-import br.com.afgtec.arquivos.ArquivoUtils;
-import br.com.afgtec.arquivos.ImageLoader;
-import br.com.afgtec.arquivos.ImageLoaderListener;
-import br.com.afgtec.arquivos.UploaderArquivo;
-import br.com.afgtec.pessoa.Produto;
+import br.com.arquivos.ActionPosUpload;
+import br.com.arquivos.ArquivoUtils;
+import br.com.arquivos.ImageLoader;
+import br.com.arquivos.ImageLoaderListener;
+import br.com.arquivos.UploaderArquivo;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
 import br.com.empresa.Empresa;
 import br.com.entidades.ncm.NCM;
 import br.com.entidades.ncm.NCMService;
+import br.com.pessoa.Produto;
 import br.com.produto.Categoria;
 import br.com.produto.ProdutoService;
 import br.com.produto.RepresentadorProdutoCompleto;

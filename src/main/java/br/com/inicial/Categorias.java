@@ -24,7 +24,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultFormatterFactory;
 
-import br.com.afgtec.pessoa.Produto;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
@@ -61,6 +60,7 @@ import br.com.impostos.icms.ModalidadeBCST;
 import br.com.impostos.icms.OrigemMercadoria;
 import br.com.impostos.icms.TabelaAlicotas;
 import br.com.impostos.icms.TabelaIcms;
+import br.com.pessoa.Produto;
 import br.com.produto.Categoria;
 import br.com.produto.ProdutoService;
 import br.com.usuario.Usuario;
