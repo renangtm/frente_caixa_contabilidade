@@ -55,6 +55,8 @@ import br.com.pessoa.PessoaJuridica;
 
 public class ValidadorDocumento {
 
+	private static final boolean TESTE = false;
+	
 	private NotaService service;
 	private SAT moduloSat;
 
@@ -480,57 +482,65 @@ public class ValidadorDocumento {
 
 			}
 
-			if (this.moduloSat != null) {
+			if (this.moduloSat != null || TESTE) {
 
 				try {
 					
-					this.moduloSat.iniciar();
-					
-					CFe cfe = this.notaParaCFe(nota);
-
-					JAXBContext context = JAXBContext.newInstance(CFe.class);
-					Marshaller m = context.createMarshaller();
-
-					StringWriter wr = new StringWriter();
-
-					m.marshal(cfe, wr);
-
-					String xml = wr.toString();
-
-					String ret = this.moduloSat.getInterface().EnviarDadosVenda(this.moduloSat.gerarNumeroSessao(),
-							nota.getEmpresa().getParametrosEmissao().getSenha_sat(), xml);
-
-					System.out.println(xml);
-					System.out.println(ret);
-
-					String[] retorno = ret.split("\\|");
-
-					if (retorno[0].equalsIgnoreCase("erro")) {
-
-						throw new RuntimeException("Erro ao emitir CFe");
-
-					}
-					
-
-					String chave = "12344321";
-
-					nota.setNumero(0);
-
-					nota.setChave(chave);
-					
-					int numero = Integer.parseInt(nota.getChave().substring(26, 35));
-					nota.setNumero(numero);
-					
-					String b64 = retorno[8].replaceAll("CFe", "")+"|"+retorno[7];
-					
-					for(int i=9;i<retorno.length;i++){
+					if(!TESTE) {
 						
-						b64 += "|"+retorno[i];
+						this.moduloSat.iniciar();
+						
+						CFe cfe = this.notaParaCFe(nota);
+	
+						JAXBContext context = JAXBContext.newInstance(CFe.class);
+						Marshaller m = context.createMarshaller();
+	
+						StringWriter wr = new StringWriter();
+	
+						m.marshal(cfe, wr);
+	
+						String xml = wr.toString();
+	
+						String ret = this.moduloSat.getInterface().EnviarDadosVenda(this.moduloSat.gerarNumeroSessao(),
+								nota.getEmpresa().getParametrosEmissao().getSenha_sat(), xml);
+	
+						System.out.println(xml);
+						System.out.println(ret);
+	
+						String[] retorno = ret.split("\\|");
+	
+						if (retorno[0].equalsIgnoreCase("erro")) {
+	
+							throw new RuntimeException("Erro ao emitir CFe");
+	
+						}
+						
+	
+						String chave = "12344321";
+	
+						nota.setNumero(0);
+	
+						nota.setChave(chave);
+						
+						int numero = Integer.parseInt(nota.getChave().substring(26, 35));
+						nota.setNumero(numero);
+						
+						String b64 = retorno[8].replaceAll("CFe", "")+"|"+retorno[7];
+						
+						for(int i=9;i<retorno.length;i++){
+							
+							b64 += "|"+retorno[i];
+							
+						}
+						
+						
+						this.gc.gerarCupomFiscal(nota, b64);
+						
+					}else {
+						
+						this.gc.gerarCupomFiscal(nota, "123456789");
 						
 					}
-					
-					
-					this.gc.gerarCupomFiscal(nota, b64);
 
 				} catch (Exception e) {
 
