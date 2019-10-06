@@ -2,10 +2,12 @@ package br.com.pessoa;
 
 import java.util.Calendar;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -34,16 +36,16 @@ public class PessoaJuridica extends Pessoa{
 	@Column
 	private Calendar abertura;
 	
-	@OneToOne(mappedBy="pj")
+	@OneToOne(mappedBy="pj",cascade=CascadeType.MERGE)
 	private Fornecedor fornecedor;
 	
-	@OneToOne(mappedBy="pj")
+	@OneToOne(mappedBy="pj",cascade=CascadeType.MERGE)
 	private Transportadora transportadora;
 	
-	@OneToOne(mappedBy="pj")
+	@OneToOne(mappedBy="pj",cascade=CascadeType.MERGE)
 	private Banco banco;
 	
-	@OneToOne
+	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_suframa")
 	private Suframa suframa;
 	

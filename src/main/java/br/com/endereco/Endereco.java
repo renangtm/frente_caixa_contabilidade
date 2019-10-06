@@ -1,5 +1,6 @@
 package br.com.endereco;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,7 +26,7 @@ public class Endereco {
 	@Column
 	private String cep;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade = {CascadeType.MERGE})
 	@JoinColumn(name="id_cidade")
 	private Cidade cidade;
 	

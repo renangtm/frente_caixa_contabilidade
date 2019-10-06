@@ -16,7 +16,7 @@ import br.com.codigo_barra.PadraoCodigo;
 import br.com.entidades.nota.Nota;
 import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaJuridica;
-import br.com.pessoa.Produto;
+import br.com.produto.Produto;
 import br.com.venda.Venda;
 
 @Entity
@@ -49,7 +49,7 @@ public class Empresa{
 	@JoinColumn(name="id_logo")
 	private Logo logo;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER,cascade= {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinColumn(name="id_pessoa")
 	private PessoaJuridica pj;
 	

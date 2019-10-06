@@ -1,5 +1,6 @@
 package br.com.venda;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import br.com.pessoa.Produto;
+import br.com.produto.Produto;
 import br.com.quantificacao.TipoQuantidade;
 
 @Entity
@@ -23,7 +24,7 @@ public class ProdutoVenda {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_produto")
 	private Produto produto;
 
@@ -40,7 +41,7 @@ public class ProdutoVenda {
 	@Column
 	private double valor;
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_venda")
 	private Venda venda;
 	

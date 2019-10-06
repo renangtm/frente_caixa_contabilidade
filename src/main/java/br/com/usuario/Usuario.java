@@ -15,9 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import br.com.pessoa.PessoaFisica;
 
 @Entity
@@ -38,9 +35,8 @@ public class Usuario{
 	@Column
 	private String senha;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="usuario")
 	@JoinColumn(name="id_usuario")
-	@Fetch(value = FetchMode.SUBSELECT)
 	private List<Permissao> permissoes;
 	
 	public int getId() {

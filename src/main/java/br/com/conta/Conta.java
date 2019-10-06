@@ -16,7 +16,6 @@ public class Conta {
 	private double pendencia;
 	
 	
-	
 	public double getPendencia() {
 		return pendencia;
 	}

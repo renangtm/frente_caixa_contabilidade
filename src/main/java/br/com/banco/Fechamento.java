@@ -21,7 +21,7 @@ public class Fechamento {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne(fetch=FetchType.EAGER,cascade={CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.EAGER,cascade={CascadeType.MERGE})
 	@JoinColumn(name="id_banco")
 	private Banco banco;
 	

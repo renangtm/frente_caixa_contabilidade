@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
 
 import br.com.cfop.CFOP;
 import br.com.imposto.Imposto;
-import br.com.pessoa.Produto;
+import br.com.produto.Produto;
 import br.com.quantificacao.TipoQuantidade;
 
 @Entity
@@ -25,15 +25,15 @@ public class ProdutoNota {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_nota")
 	private Nota nota;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_produto")
 	private Produto produto;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_cfop")
 	private CFOP cfop;
 

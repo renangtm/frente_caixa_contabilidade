@@ -18,8 +18,8 @@ public class Cliente {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade={ CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-			CascadeType.REFRESH })
+	@OneToOne(fetch=FetchType.EAGER,cascade={CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH, CascadeType.DETACH})
 	@JoinColumn(name="id_pessoa")
 	private Pessoa pessoa;
 

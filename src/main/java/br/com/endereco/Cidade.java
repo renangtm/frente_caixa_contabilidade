@@ -1,5 +1,6 @@
 package br.com.endereco;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,7 +23,7 @@ public class Cidade {
 	@Column
 	private String codigoIBGE;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade= {CascadeType.MERGE})
 	@JoinColumn(name="id_estado")
 	private Estado estado;
 

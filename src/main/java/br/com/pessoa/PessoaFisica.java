@@ -2,6 +2,7 @@ package br.com.pessoa;
 
 import java.util.Calendar;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -23,7 +24,7 @@ public class PessoaFisica extends Pessoa{
 	@Column
 	private Calendar data_nascimento;
 	
-	@OneToOne(mappedBy="pf")
+	@OneToOne(mappedBy="pf",cascade=CascadeType.MERGE)
 	private Usuario usuario;
 	
 	

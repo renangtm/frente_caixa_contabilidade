@@ -1,9 +1,11 @@
 package br.com.impostos.icms;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,12 +23,12 @@ public class EstadoAliquota {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToOne
+	@OneToOne(cascade=CascadeType.MERGE,fetch=FetchType.EAGER)
 	@JoinColumn(name="origem")
 	@Campo(nome="Origem",editavel=false)
 	private Estado origem;
 	
-	@OneToOne
+	@OneToOne(cascade=CascadeType.MERGE,fetch=FetchType.EAGER)
 	@JoinColumn(name="destino")
 	@Campo(nome="Destino",editavel=false)
 	private Estado destino;

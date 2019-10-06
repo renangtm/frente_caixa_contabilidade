@@ -41,11 +41,11 @@ public class Venda {
 	@JoinColumn(name="id_operador")
 	private Usuario operador;
 	
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_venda")
 	private List<Nota> notas;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_pessoa")
 	private Pessoa cliente;
 	

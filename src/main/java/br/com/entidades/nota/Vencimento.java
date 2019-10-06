@@ -31,7 +31,7 @@ public class Vencimento {
 	@Column
 	private double valor;
 	
-	@ManyToOne(fetch=FetchType.LAZY,cascade={CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.LAZY,cascade={CascadeType.MERGE})
 	@JoinColumn(name="id_nota")
 	private Nota nota;
 	

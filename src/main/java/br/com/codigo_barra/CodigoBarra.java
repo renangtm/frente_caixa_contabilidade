@@ -3,7 +3,7 @@ package br.com.codigo_barra;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.pessoa.Produto;
+import br.com.produto.Produto;
 import br.com.produto.ProdutoService;
 
 public class CodigoBarra {

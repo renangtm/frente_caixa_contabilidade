@@ -1,5 +1,6 @@
 package br.com.codigo_barra;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -45,7 +46,7 @@ public class PadraoCodigo {
 	@Campo(nome="Casas Decimais",editavel=true)
 	private int casasDecimais;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_empresa")
 	private Empresa empresa;
 	

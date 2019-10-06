@@ -1,6 +1,6 @@
 package br.com.venda;
 
-import br.com.pessoa.Produto;
+import br.com.produto.Produto;
 
 public class SemEstoqueException extends Exception{
 	

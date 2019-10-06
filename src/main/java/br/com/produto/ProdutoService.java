@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import br.com.base.ET;
 import br.com.base.Service;
 import br.com.empresa.Empresa;
-import br.com.pessoa.Produto;
 import br.com.usuario.Usuario;
 import br.com.usuario.UsuarioService;
 

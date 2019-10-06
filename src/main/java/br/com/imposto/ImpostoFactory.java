@@ -16,7 +16,7 @@ import br.com.impostos.icms.Icms;
 import br.com.impostos.icms.TabelaAlicotas;
 import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaJuridica;
-import br.com.pessoa.Produto;
+import br.com.produto.Produto;
 
 public class ImpostoFactory {
 

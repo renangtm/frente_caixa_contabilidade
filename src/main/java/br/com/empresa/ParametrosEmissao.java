@@ -1,5 +1,6 @@
 package br.com.empresa;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,7 +19,7 @@ public class ParametrosEmissao {
 	@Column
 	private String senha_sat;
 
-	@OneToOne(fetch=FetchType.EAGER,mappedBy="parametrosEmissao")
+	@OneToOne(fetch=FetchType.EAGER,mappedBy="parametrosEmissao",cascade= {CascadeType.MERGE})
 	private Empresa empresa;
 	
 	@Column

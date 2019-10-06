@@ -1,4 +1,4 @@
-package br.com.pessoa;
+package br.com.produto;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,8 +19,6 @@ import org.hibernate.annotations.FetchMode;
 
 import br.com.empresa.Empresa;
 import br.com.entidades.ncm.NCM;
-import br.com.produto.Categoria;
-import br.com.produto.Estoque;
 import br.com.quantificacao.ItemQuantificavel;
 import br.com.quantificacao.UnidadePeso;
 import br.com.quantificacao.UnidadeVolume;
@@ -42,7 +40,7 @@ public class Produto implements ItemQuantificavel{
 	@Campo(nome="Nome",editavel=false,tamanho=80)
 	private String nome;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_ncm")
 	@Fetch(FetchMode.JOIN)
 	private NCM ncm;
@@ -64,7 +62,7 @@ public class Produto implements ItemQuantificavel{
 	@Fetch(FetchMode.JOIN)
 	private Estoque estoque;
 
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_empresa")
 	@Fetch(FetchMode.JOIN)
 	private Empresa empresa;

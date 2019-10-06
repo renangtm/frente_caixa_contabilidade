@@ -40,7 +40,7 @@ public class Movimento {
 	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	private Operacao operacao;
 	
-	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_vencimento")
 	private Vencimento vencimento;
 	
