@@ -23,7 +23,7 @@ public class Banco {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH,CascadeType.DETACH })
+	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_pessoa")
 	private PessoaJuridica pj;
 	

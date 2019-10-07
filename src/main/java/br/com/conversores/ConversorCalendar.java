@@ -2,9 +2,8 @@ package br.com.conversores;
 
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
-public class ConversorDate implements Conversor<Date> {
+public class ConversorCalendar implements Conversor<Calendar> {
 	
 	
 	private static long milenio_atual = 0;
@@ -16,31 +15,18 @@ public class ConversorDate implements Conversor<Date> {
 	}
 
 	public boolean podeConverter(@SuppressWarnings("rawtypes") Class classe) {
-		return classe.equals(Date.class);
+		return classe.equals(Calendar.class);
 	}
 
-	public String paraString(Date data) {
-		Calendar calendario = new GregorianCalendar();
-		calendario.setTime(data);
-		return (calendario.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + calendario.get(Calendar.DAY_OF_MONTH) + " / "
-				+ ((calendario.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calendario.get(Calendar.MONTH) + 1) + " / "
-				+ calendario.get(Calendar.YEAR);
-	}
-
+	
 	public String paraString(Calendar calendario) {
-		return (calendario.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + calendario.get(Calendar.DAY_OF_MONTH) + " / "
-				+ ((calendario.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calendario.get(Calendar.MONTH) + 1) + " / "
-				+ calendario.get(Calendar.YEAR);
-	}
-
-	public String paraStringComHora(Calendar calendario) {
 		return (calendario.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + calendario.get(Calendar.DAY_OF_MONTH) + " / "
 				+ ((calendario.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calendario.get(Calendar.MONTH) + 1) + " / "
 				+ calendario.get(Calendar.YEAR)+" "+calendario.get(Calendar.HOUR_OF_DAY)+":"+calendario.get(Calendar.MINUTE);
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Date paraObjeto(String string) throws Exception {
+	public Calendar paraObjeto(String string) throws Exception {
 
 		String[] dados = string.split("/", 3);
 
@@ -69,11 +55,16 @@ public class ConversorDate implements Conversor<Date> {
 			throw new Exception("Data em formato incorreto");
 
 		if (ano < 1000)
-			ano += ConversorDate.milenio_atual*1000;
+			ano += ConversorCalendar.milenio_atual*1000;
 
 		mes -= 1;
-		return new Date(ano - 1900, mes, dia);
+		Date dt = new Date(ano - 1900, mes, dia);
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(dt);
 
+		return c;
+		
 	}
 
 }

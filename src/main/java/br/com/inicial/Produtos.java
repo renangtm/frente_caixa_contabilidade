@@ -414,6 +414,16 @@ public class Produtos extends Modulo {
 				produto.setApareceLoja(chkApareceLoja.isSelected());
 				produto.setPorcentagemLoja(((Number) txtPorcentagemLoja.getValue()).doubleValue());
 				
+				if(produto.getCategoria().getId() == 0) {
+					
+					et.persist(produto.getCategoria());
+					
+				}else {
+					
+					produto.setCategoria(et.merge(produto.getCategoria()));
+					
+				}
+				
 				if(produto.getId() == 0) {
 					
 					et.persist(produto);
@@ -430,7 +440,7 @@ public class Produtos extends Modulo {
 				grProdutos.atualizar();
 
 				Produto p = new Produto();
-				p.setEmpresa(empresa);
+				p.setEmpresa(et.merge(empresa));
 				setProduto(p);
 
 				info("Operacao efetuada com sucesso");

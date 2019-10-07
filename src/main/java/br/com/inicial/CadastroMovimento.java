@@ -527,7 +527,7 @@ public class CadastroMovimento extends Modulo {
 			Fechamento f = new Fechamento();
 			f.setData(Calendar.getInstance());
 			f.setValor(this.banco.getSaldo());
-			f.setBanco(this.banco);
+			f.setBanco(et.merge(this.banco));
 			
 			et.persist(f);
 			

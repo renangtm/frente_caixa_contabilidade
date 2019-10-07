@@ -24,7 +24,7 @@ public class ProdutoVenda {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_produto")
 	private Produto produto;
 
@@ -41,7 +41,7 @@ public class ProdutoVenda {
 	@Column
 	private double valor;
 
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_venda")
 	private Venda venda;
 	

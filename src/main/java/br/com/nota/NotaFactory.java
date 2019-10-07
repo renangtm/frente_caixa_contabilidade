@@ -18,7 +18,7 @@ public class NotaFactory {
 
 	private int prazoPagamento;
 	private int parcelas;
-
+	
 	public int getParcelas() {
 		return parcelas;
 	}

@@ -21,7 +21,7 @@ public class ItemTabelaCfop {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_cfop")
 	private CFOP cfop;
 

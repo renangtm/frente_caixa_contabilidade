@@ -39,7 +39,7 @@ public class Pessoa {
 	@Column
 	private String skype;
 	
-	@OneToOne(mappedBy="pessoa",cascade=CascadeType.MERGE)
+	@OneToOne(mappedBy="pessoa",fetch=FetchType.LAZY)
 	private Cliente cliente;
 	
 	@OneToOne(fetch=FetchType.EAGER)

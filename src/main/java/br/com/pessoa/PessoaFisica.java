@@ -5,6 +5,7 @@ import java.util.Calendar;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
@@ -24,7 +25,7 @@ public class PessoaFisica extends Pessoa{
 	@Column
 	private Calendar data_nascimento;
 	
-	@OneToOne(mappedBy="pf",cascade=CascadeType.MERGE)
+	@OneToOne(mappedBy="pf",fetch=FetchType.EAGER)
 	private Usuario usuario;
 	
 	

@@ -12,10 +12,7 @@ public class ScriptInicial {
 		/*
 		EntityManager et = ET.nova();
 		
-		
-		
 		Query q = et.createQuery("SELECT p FROM Produto p WHERE p.id>=8");
-		
 		
 		Usuario u = et.find(Usuario.class, 3);
 		Empresa empresa = u.getPf().getEmpresa();

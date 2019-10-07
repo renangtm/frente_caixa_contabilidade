@@ -42,11 +42,11 @@ public class Categoria {
 	@JoinColumn(name = "id_cofins")
 	private Pis pis;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_tabela_alicota")
 	private TabelaAlicotas tabelaAlicota;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_tabela_cfop")
 	private TabelaCfop tabelaCfop;
 

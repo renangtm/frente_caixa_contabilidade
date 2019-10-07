@@ -35,15 +35,15 @@ public class Nota {
 	@Column
 	private int ficha;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.MERGE)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_pessoa")
 	private PessoaJuridica emitente;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.MERGE, optional = true)
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "id_transportadora")
 	private Transportadora transportadora;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.MERGE, optional = true)
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "id_destinatario")
 	private Pessoa destinatario;
 
@@ -65,11 +65,11 @@ public class Nota {
 	@Column
 	private String chave_referenciada;
 
-	@ManyToOne(optional = true,cascade=CascadeType.ALL)
+	@ManyToOne(optional = true,cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name = "id_xml")
 	private Arquivo xml;
 
-	@ManyToOne(optional = true,cascade=CascadeType.ALL)
+	@ManyToOne(optional = true,cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name = "id_danfe")
 	private Arquivo danfe;
 
@@ -78,7 +78,7 @@ public class Nota {
 	private SaidaEntrada operacao;
 
 	//mappedBy='nota' por conta do join column nao precisa
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_nota")
 	private List<ProdutoNota> produtos;
 
@@ -108,7 +108,7 @@ public class Nota {
 	private FormaPagamentoNota forma_pagamento;
 
 	//mappedBy='nota'
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_nota")
 	private List<Vencimento> vencimentos;
 
@@ -127,7 +127,7 @@ public class Nota {
 	@Column
 	private String cnpjCredenciadoraCartao;
 
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name = "id_empresa")
 	private Empresa empresa;
 

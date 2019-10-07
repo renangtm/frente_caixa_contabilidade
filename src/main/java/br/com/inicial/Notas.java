@@ -403,6 +403,8 @@ public class Notas extends Modulo {
 
 		try {
 			
+			et.getTransaction().begin();
+			
 			if(!new NotaService(et).verificacaoPersistencia(nota)) {
 				
 				erro("As alteracoes efetuadas nao podem ser salvas");
@@ -412,11 +414,11 @@ public class Notas extends Modulo {
 
 			new NotaService(et).mergeNota(nota);
 
-			et.getTransaction().begin();
-
 			et.getTransaction().commit();
 
 		} catch (Exception ex) {
+			
+			ex.printStackTrace();
 
 			info("A nota não tem integridade, verifique se os vencimentos batem com o valor total");
 
@@ -454,7 +456,10 @@ public class Notas extends Modulo {
 				Vencimento v = new Vencimento();
 				v.setValor(((Number) this.txtValorVencimento.getValue()).doubleValue());
 				v.setData(Masks.getData(this.txtDataVencimento.getText()));
-
+				v.setNota(this.nota);
+				
+				//et.persist(v);
+				
 				this.nota.getVencimentos().add(v);
 
 				this.setVencimentos(this.nota);
@@ -548,12 +553,14 @@ public class Notas extends Modulo {
 			
 			ProdutoNota pn = new ProdutoNota();
 			pn.setNota(this.nota);
-			pn.setProduto(aAdicionar);
+			pn.setProduto(et.merge(aAdicionar));
 			pn.setValor(((Number) this.txtValorProduto.getValue()).doubleValue());
 			pn.setQuantidade(((Number) this.txtQtdProduto.getValue()).doubleValue());
 
-			pn.setCfop(aAdicionar.getCategoria().getTabelaCfop().getCFOP(this.nota.getOperacaoLogistica()));
+			pn.setCfop(et.merge(aAdicionar.getCategoria().getTabelaCfop().getCFOP(this.nota.getOperacaoLogistica())));
 
+			//et.persist(pn);
+			
 			this.nota.getProdutos().add(pn);
 
 			aAdicionar = null;

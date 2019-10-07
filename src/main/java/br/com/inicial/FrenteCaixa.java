@@ -22,8 +22,11 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import br.com.banco.Banco;
+import br.com.base.AberturaCaixaException;
+import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
 import br.com.base.Resources;
+import br.com.caixa.ExpedienteCaixa;
 import br.com.codigo_barra.CodigoBarra;
 import br.com.emissao.SAT;
 import br.com.emissao.ValidadorDocumento;
@@ -206,6 +209,16 @@ public class FrenteCaixa extends Modulo {
 		
 			ValidadorDocumento vd = new ValidadorDocumento(ns, sat, new GeradorCupomSATModelo1());
 
+			if(this.cpf != "") {
+				
+				vd.setCpfNota(this.cpf);
+				
+			}else {
+				
+				vd.setCpfNota("");
+				
+			}
+			
 			notas.forEach(n -> {
 
 				try {
@@ -269,6 +282,7 @@ public class FrenteCaixa extends Modulo {
 			Operacao op = (Operacao) et.createQuery("SELECT o FROM Operacao o WHERE o.credito=true").getResultList().get(0);
 
 			ths.addAll(notas.stream().flatMap(n -> n.getVencimentos().stream()).map(v -> {
+				
 				return new Thread(() -> {
 
 					Movimento m = new Movimento();
@@ -279,6 +293,8 @@ public class FrenteCaixa extends Modulo {
 					m.setOperacao(op);
 					m.setValor(v.getValor());
 					m.setVencimento(v);
+					m.setFormaPagamento(v.getNota().getForma_pagamento());
+					m.setExpediente(expediente);
 
 					mvs.mergeMovimento(m, true, new MovimentoService.Listener() {
 
@@ -327,6 +343,8 @@ public class FrenteCaixa extends Modulo {
 
 	}
 
+	private String cpf;
+	
 	protected void novaVenda() {
 
 		if (this.venda != null) {
@@ -334,6 +352,13 @@ public class FrenteCaixa extends Modulo {
 			et.detach(this.venda);
 
 		}
+		
+		new Thread(()->{
+			
+			this.cpf = console("CPF da nota ?");
+			
+		}).start();
+		
 
 		this.venda = new Venda();
 
@@ -449,12 +474,27 @@ public class FrenteCaixa extends Modulo {
 		
 	}
 
+	private ExpedienteCaixa expediente;
+	
 	public void init(Usuario operador) {
 
 		this.operador = et.merge(operador);
 		this.empresa = this.operador.getPf().getEmpresa();
 		et.detach(this.operador);
 		this.empresa = et.merge(this.empresa);
+		
+		try {
+			
+			expediente = ConfiguracaoExpediente.getExpedienteCaixa(operador);
+			
+		} catch (AberturaCaixaException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			erro("Nao foi possivel abrir o caixa configure o numero do caixa na tela de configuracao de caixa primerio");
+			this.dispose();
+			return;
+			
+		}
 
 		this.setTitle(operador.getPf().getEmpresa().getPj().getNome() + " - Operador: " + operador.getPf().getNome());
 
@@ -651,67 +691,70 @@ public class FrenteCaixa extends Modulo {
 		}).start();
 
 		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		final FrenteCaixa este = this;
 		keyManager.addKeyEventDispatcher(new KeyEventDispatcher() {
 
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
-				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F1) {
-
-					tbpBP.setSelectedIndex(0);
-					txtPesquisa.setText("");
-
-					return true;
-
-				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F2) {
-
-					txtBipe.setText("");
-					tbpBP.setSelectedIndex(1);
-
-					return true;
-
-				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F3) {
-
-					novaVenda();
-
-					return true;
-
-				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
-					
-					if(venda.getProdutos().size() == 0){
-						
-						alerta("Coloque produtos na venda");
+				if(este.isDisplayable()) {
+					if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F1) {
+	
+						tbpBP.setSelectedIndex(0);
+						txtPesquisa.setText("");
+	
 						return true;
-						
-					}
-					
-					boolean pf = true;
-
-					if (tbpBP.getSelectedIndex() == 0) {
-
+	
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F2) {
+	
 						txtBipe.setText("");
 						tbpBP.setSelectedIndex(1);
-
-					}
-					
-					if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-						try{
+	
+						return true;
+	
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F3) {
+	
+						novaVenda();
+	
+						return true;
+	
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
+						
+						if(venda.getProdutos().size() == 0){
 							
-							Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
+							alerta("Coloque produtos na venda");
+							return true;
 							
-						}catch(Exception exx){
-							txtDinheiro.requestFocus();
-							pf = false;
 						}
+						
+						boolean pf = true;
+	
+						if (tbpBP.getSelectedIndex() == 0) {
+	
+							txtBipe.setText("");
+							tbpBP.setSelectedIndex(1);
+	
+						}
+						
+						if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+							try{
+								
+								Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
+								
+							}catch(Exception exx){
+								txtDinheiro.requestFocus();
+								pf = false;
+							}
+						}
+	
+						if (pf)
+							finalizarVenda();
+	
+						return true;
+	
 					}
-
-					if (pf)
-						finalizarVenda();
-
-					return true;
-
 				}
-
 				return false;
+				
 			}
 
 		});

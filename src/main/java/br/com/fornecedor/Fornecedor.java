@@ -18,8 +18,7 @@ public class Fornecedor {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade={ CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-			CascadeType.REFRESH })
+	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_pessoa")
 	private PessoaJuridica pj;
 

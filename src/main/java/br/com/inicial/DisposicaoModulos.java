@@ -3,6 +3,7 @@ package br.com.inicial;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.base.CFG;
 import br.com.usuario.Usuario;
 
 public class DisposicaoModulos {
@@ -11,7 +12,11 @@ public class DisposicaoModulos {
 	
 		List<Object> disposicao = new ArrayList<Object>();
 		
-		disposicao.add(FrenteCaixa.class);
+		if(CFG.clc != null) {
+		
+			disposicao.add(FrenteCaixa.class);
+		
+		}
 		
 		disposicao.add(Produtos.class);
 		
@@ -54,6 +59,8 @@ public class DisposicaoModulos {
 		disposicao.add(menu_financeiro);
 			
 		disposicao.add(ConfiguracoesEmpresa.class);
+		
+		disposicao.add(ConfiguracaoCaixa.class);
 		
 		return disposicao;
 		

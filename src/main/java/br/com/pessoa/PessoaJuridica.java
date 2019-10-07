@@ -36,16 +36,16 @@ public class PessoaJuridica extends Pessoa{
 	@Column
 	private Calendar abertura;
 	
-	@OneToOne(mappedBy="pj",cascade=CascadeType.MERGE)
+	@OneToOne(mappedBy="pj",fetch=FetchType.LAZY)
 	private Fornecedor fornecedor;
 	
-	@OneToOne(mappedBy="pj",cascade=CascadeType.MERGE)
+	@OneToOne(mappedBy="pj",fetch=FetchType.LAZY)
 	private Transportadora transportadora;
 	
-	@OneToOne(mappedBy="pj",cascade=CascadeType.MERGE)
+	@OneToOne(mappedBy="pj")
 	private Banco banco;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
+	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_suframa")
 	private Suframa suframa;
 	

@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import br.com.banco.Banco;
 import br.com.banco.Fechamento;
 import br.com.base.Service;
+import br.com.nota.FormaPagamentoNota;
 import br.com.nota.SaidaEntrada;
 
 public class MovimentoService implements Service<Movimento> {
@@ -185,23 +186,43 @@ public class MovimentoService implements Service<Movimento> {
 
 			fechamentos.stream().forEach(et::remove);
 
+			if(movimento.getVencimento() != null)
+				movimento.setVencimento(et.merge(movimento.getVencimento()));
+			
+			movimento.setBanco(et.merge(movimento.getBanco()));
+			movimento.getBanco().setSaldo(currente.getSaldo());
+
+			if(movimento.getFormaPagamento() != null) {
+				if(movimento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+					
+					if(movimento.getExpediente() != null) {
+						
+						movimento.setExpediente(et.merge(movimento.getExpediente()));
+						movimento.getExpediente().setCaixa(et.merge(movimento.getExpediente().getCaixa()));
+						
+						movimento.getExpediente().setSaldo_final_atual(movimento.getExpediente().getSaldo_final_atual()+((movimento.getValor()+movimento.getJuros()-movimento.getDescontos()) * (movimento.getOperacao().isCredito() ? 1 : -1)));
+						movimento.getExpediente().getCaixa().setSaldoAtual(movimento.getExpediente().getCaixa().getSaldoAtual()+((movimento.getValor()+movimento.getJuros()-movimento.getDescontos()) * (movimento.getOperacao().isCredito() ? 1 : -1)));
+						
+					}
+					
+				}
+			}
+
+			
 			if (movimento.getId() == 0) {
 
 				et.persist(movimento);
-
-			} else {
+				
+			}else {
 
 				et.merge(movimento);
-
-			}
-
-			movimento.getBanco().setSaldo(currente.getSaldo());
 			
-			movimento.setBanco(et.merge(movimento.getBanco()));
+			}
 
 			l.setConclusao(100, "");
 
 		};
+		
 
 		Thread th = new Thread(rn);
 

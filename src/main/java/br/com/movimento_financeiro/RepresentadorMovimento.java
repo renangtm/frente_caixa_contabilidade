@@ -21,11 +21,11 @@ public class RepresentadorMovimento extends Representador<Movimento>{
 	@Campo(nome="Data",editavel=false)
 	private String data;
 	
-	@Campo(nome="Juros",editavel=false)
-	private double juros;
+	@Campo(nome="Pag",editavel=false)
+	private String pagamento;
 	
-	@Campo(nome="desc.",editavel=false)
-	private double descontos;
+	@Campo(nome="Caixa",editavel=false)
+	private String caixa;
 	
 	public RepresentadorMovimento(Movimento m) {
 		super(m);
@@ -35,8 +35,27 @@ public class RepresentadorMovimento extends Representador<Movimento>{
 		this.saldoAnterior = m.getSaldo();
 		this.valor = m.getValor();
 		this.data = new ConversorDate().paraString(m.getData());
-		this.juros = m.getJuros();
-		this.descontos = m.getDescontos();
+		
+		if(m.getFormaPagamento() == null) {
+			
+			this.pagamento = "Desconhecido";
+			
+		}else {
+			
+			this.pagamento = m.getFormaPagamento().toString();
+			
+		}
+		
+		if(m.getExpediente() == null) {
+			
+			this.caixa = "Desconhecido";
+			
+		}else {
+			
+			this.caixa = m.getExpediente().getUsuario().getPf().getNome()+" - "+m.getExpediente().getCaixa().getNumero();
+			
+		}
+		
 		
 	}
 

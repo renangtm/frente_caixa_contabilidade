@@ -55,10 +55,20 @@ import br.com.pessoa.PessoaJuridica;
 
 public class ValidadorDocumento {
 
-	private static final boolean TESTE = false;
+	private static final boolean TESTE = true;
 	
 	private NotaService service;
 	private SAT moduloSat;
+	
+	private String cpfNota = "";
+
+	public String getCpfNota() {
+		return cpfNota;
+	}
+
+	public void setCpfNota(String cpfNota) {
+		this.cpfNota = cpfNota;
+	}
 
 	public CFe notaParaCFe(Nota nota) throws InvalidKeyException, NoSuchAlgorithmException, KeyStoreException,
 			CertificateException, SignatureException, IOException {
@@ -103,7 +113,7 @@ public class ValidadorDocumento {
 
 		if (nota.getDestinatario() == null) {
 
-			dest.setCPF("");
+			dest.setCPF(this.cpfNota);
 
 		} else if (nota.getDestinatario().getClass().equals(PessoaFisica.class)) {
 

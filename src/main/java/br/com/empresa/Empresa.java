@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import br.com.caixa.Caixa;
 import br.com.codigo_barra.PadraoCodigo;
 import br.com.nota.Nota;
 import br.com.pessoa.Pessoa;
@@ -39,13 +40,16 @@ public class Empresa{
 	private List<Venda> vendas;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
+	private List<Caixa> caixas;
+	
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
 	private List<Nota> notas;
 	
-	@OneToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_parametros")
 	private ParametrosEmissao parametrosEmissao;
 	
-	@OneToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_logo")
 	private Logo logo;
 	
@@ -53,6 +57,21 @@ public class Empresa{
 	@JoinColumn(name="id_pessoa")
 	private PessoaJuridica pj;
 	
+	
+	
+	
+	public List<Caixa> getCaixas() {
+		return caixas;
+	}
+
+
+
+	public void setCaixas(List<Caixa> caixas) {
+		this.caixas = caixas;
+	}
+
+
+
 	public Empresa(){
 		
 		this.pj = new PessoaJuridica();

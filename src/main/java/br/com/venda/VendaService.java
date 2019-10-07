@@ -1,5 +1,7 @@
 package br.com.venda;
 
+import java.util.stream.Collectors;
+
 import javax.persistence.EntityManager;
 
 import br.com.produto.Estoque;
@@ -16,9 +18,9 @@ public class VendaService {
 
 	public boolean verificacaoPersistencia(Venda venda) {
 		
+		venda.setProdutos(venda.getProdutos().stream().map(this::pmv).collect(Collectors.toList()));
+		
 		for (ProdutoVenda pv : venda.getProdutos()) {
-			
-			pv.setProduto(et.merge(pv.getProduto()));
 			
 			double meta = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0);
 
@@ -41,11 +43,24 @@ public class VendaService {
 		
 	}
 	
+	private ProdutoVenda pmv(ProdutoVenda pn) {
+		
+		if(pn.getId() == 0) {
+			
+			et.persist(pn);
+			return pn;
+			
+		}
+		
+		return et.merge(pn);
+		
+	}
+	
 	public synchronized Venda persistirVenda(Venda venda) throws SemEstoqueException {
 
+		venda.setProdutos(venda.getProdutos().stream().map(this::pmv).collect(Collectors.toList()));
+		
 		for (ProdutoVenda pv : venda.getProdutos()) {
-			
-			pv.setProduto(et.merge(pv.getProduto()));
 			
 			double meta = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0);
 

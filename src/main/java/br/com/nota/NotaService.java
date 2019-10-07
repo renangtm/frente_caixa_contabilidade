@@ -1,6 +1,7 @@
 package br.com.nota;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -40,6 +41,9 @@ public class NotaService implements Service<Nota> {
 
 	public boolean verificacaoPersistencia(Nota nota) {
 
+		nota.setProdutos(nota.getProdutos().stream().map(this::pmp).collect(Collectors.toList()));
+		nota.setVencimentos(nota.getVencimentos().stream().map(this::pmv).collect(Collectors.toList()));
+		
 		for (ProdutoNota pn : nota.getProdutos()) {
 
 			double meta = 0;
@@ -76,6 +80,32 @@ public class NotaService implements Service<Nota> {
 		return true;
 
 	}
+	
+	private Vencimento pmv(Vencimento pn) {
+		
+		if(pn.getId() == 0) {
+			
+			et.persist(pn);
+			return pn;
+			
+		}
+		
+		return et.merge(pn);
+		
+	}
+	
+	private ProdutoNota pmp(ProdutoNota pn) {
+		
+		if(pn.getId() == 0) {
+			
+			et.persist(pn);
+			return pn;
+			
+		}
+		
+		return et.merge(pn);
+		
+	}
 
 	public void mergeNota(Nota nota) throws Exception {
 
@@ -85,9 +115,17 @@ public class NotaService implements Service<Nota> {
 
 		}
 
+		nota.setProdutos(nota.getProdutos().stream().map(this::pmp).collect(Collectors.toList()));
+		nota.setVencimentos(nota.getVencimentos().stream().map(this::pmv).collect(Collectors.toList()));
+		
+		nota.setEmpresa(et.merge(nota.getEmpresa()));
+		
+		if(nota.getDestinatario() != null)
+			nota.setDestinatario(et.merge(nota.getDestinatario()));
+		
+		nota.setEmitente(et.merge(nota.getEmitente()));
+		
 		for (ProdutoNota pn : nota.getProdutos()) {
-
-			pn.setProduto(et.merge(pn.getProduto()));
 
 			try {
 

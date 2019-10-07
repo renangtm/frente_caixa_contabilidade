@@ -62,7 +62,7 @@ public class Produto implements ItemQuantificavel{
 	@Fetch(FetchMode.JOIN)
 	private Estoque estoque;
 
-	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_empresa")
 	@Fetch(FetchMode.JOIN)
 	private Empresa empresa;
@@ -81,7 +81,7 @@ public class Produto implements ItemQuantificavel{
 	@Column
 	private double volume;
 	
-	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_categoria")
 	private Categoria categoria;
 	

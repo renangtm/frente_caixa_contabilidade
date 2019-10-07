@@ -23,6 +23,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Resources;
+import br.com.caixa.ConfiguracaoLocalCaixa;
 import br.com.emissao.SAT;
 import br.com.usuario.Usuario;
 import br.com.usuario.UsuarioService;
@@ -149,6 +150,20 @@ public class Login extends Tela {
 					try {
 						
 						CFG.moduloSat = new SAT(usuario.getPf().getEmpresa());
+						
+						ConfiguracaoLocalCaixa clc = ConfiguracaoLocalCaixa.getConfiguracaoLocalCaixa(usuario.getPf().getEmpresa());
+						
+						if(clc != null) {
+							
+							if(!clc.verificarAssinatura()) {
+								
+								clc = null;
+								
+							}
+							
+						}
+						
+						CFG.clc = clc;
 						
 						new MenuPrincipal(usuario);
 						

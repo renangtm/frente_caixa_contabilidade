@@ -46,7 +46,7 @@ public class PadraoCodigo {
 	@Campo(nome="Casas Decimais",editavel=true)
 	private int casasDecimais;
 	
-	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	@JoinColumn(name="id_empresa")
 	private Empresa empresa;
 	

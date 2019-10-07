@@ -320,7 +320,8 @@ public class CadastroPessoa extends Modulo {
 				e.setNumero(this.txtNumero.getText());
 				e.setRua(this.txtRua.getText());
 				
-				pf.setEndereco(e);
+				pf.setEndereco(et.merge(e));
+				pf.setEmpresa(et.merge(pf.getEmpresa()));
 			
 				if(this.chkColaborador.isSelected()) {
 					

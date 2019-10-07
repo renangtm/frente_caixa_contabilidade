@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.swing.DefaultComboBoxModel;
@@ -295,6 +296,11 @@ public class Categorias extends Modulo {
 		this.cat.setPis(etReq.merge(this.cat.getPis()));
 		this.cat.setIcms(etReq.merge(this.cat.getIcms()));
 
+		this.cat.setTabelaAlicota(etReq.merge(this.cat.getTabelaAlicota()));
+		this.cat.setTabelaCfop(etReq.merge(this.cat.getTabelaCfop()));
+		
+		
+		
 		this.dispose();
 		
 	}

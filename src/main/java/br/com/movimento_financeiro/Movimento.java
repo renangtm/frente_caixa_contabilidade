@@ -5,15 +5,20 @@ import java.util.Calendar;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import br.com.banco.Banco;
+import br.com.caixa.ExpedienteCaixa;
 import br.com.historico.Historico;
+import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Vencimento;
 import br.com.operacao.Operacao;
 
@@ -24,7 +29,7 @@ public class Movimento {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_banco")
 	private Banco banco;
 	
@@ -40,9 +45,16 @@ public class Movimento {
 	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	private Operacao operacao;
 	
-	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_vencimento")
 	private Vencimento vencimento;
+	
+	@OneToOne(fetch=FetchType.EAGER,optional=true)
+	private ExpedienteCaixa expediente;
+	
+	@Enumerated(EnumType.ORDINAL)
+	@Column
+	private FormaPagamentoNota formaPagamento;
 	
 	@Column
 	private double saldo;
@@ -60,7 +72,32 @@ public class Movimento {
 	}
 	
 	
-	
+	public FormaPagamentoNota getFormaPagamento() {
+		return formaPagamento;
+	}
+
+
+
+
+	public void setFormaPagamento(FormaPagamentoNota formaPagamento) {
+		this.formaPagamento = formaPagamento;
+	}
+
+
+
+
+	public ExpedienteCaixa getExpediente() {
+		return expediente;
+	}
+
+
+
+	public void setExpediente(ExpedienteCaixa expediente) {
+		this.expediente = expediente;
+	}
+
+
+
 	public double getJuros() {
 		return juros;
 	}

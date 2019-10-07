@@ -20,6 +20,7 @@ import javax.swing.table.TableRowSorter;
 
 import br.com.conversores.Conversor;
 import br.com.conversores.ConversorBooleano;
+import br.com.conversores.ConversorCalendar;
 import br.com.conversores.ConversorDate;
 
 public class ListModelGenerica<T> extends AbstractTableModel {
@@ -122,6 +123,7 @@ public class ListModelGenerica<T> extends AbstractTableModel {
 		this.alteracao = true;
 		this.conversores.add(new ConversorDate());
 		this.conversores.add(new ConversorBooleano());
+		this.conversores.add(new ConversorCalendar());
 
 		this.listaCompleta = listaCompleta;
 		this.filtros = new ArrayList<Filtro>();
@@ -170,6 +172,7 @@ public class ListModelGenerica<T> extends AbstractTableModel {
 		this.alteracao = true;
 		this.conversores.add(new ConversorDate());
 		this.conversores.add(new ConversorBooleano());
+		this.conversores.add(new ConversorCalendar());
 		
 		this.listaCompleta = listaCompleta;
 		this.filtros = new ArrayList<Filtro>();
@@ -213,6 +216,7 @@ public class ListModelGenerica<T> extends AbstractTableModel {
 		this.alteracao = true;
 		this.conversores.add(new ConversorDate());
 		this.conversores.add(new ConversorBooleano());
+		this.conversores.add(new ConversorCalendar());
 
 		this.listaCompleta = listaCompleta;
 		this.filtros = new ArrayList<Filtro>();
