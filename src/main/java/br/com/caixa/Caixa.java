@@ -2,7 +2,6 @@ package br.com.caixa;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,8 +44,6 @@ public class Caixa {
 	public int getNumero() {
 		return numero;
 	}
-	
-	
 
 	public Empresa getEmpresa() {
 		return empresa;

@@ -1,8 +1,5 @@
 package br.com.banco;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,10 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+
 import javax.persistence.OneToOne;
 
-import br.com.movimento_financeiro.Movimento;
 import br.com.pessoa.PessoaJuridica;
 
 @Entity
@@ -32,12 +28,6 @@ public class Banco {
 	
 	@Column
 	private double saldo;
-	
-	@OneToMany(mappedBy="banco")
-	private List<Movimento> movimentos;
-	
-	@OneToMany(mappedBy="banco")
-	private List<Fechamento> fechamentos;
 	
 	@Column
 	private String agencia;
@@ -58,26 +48,6 @@ public class Banco {
 		
 		this.pj = new PessoaJuridica();
 		
-	}
-	
-
-	public List<Movimento> getMovimentos() {
-		return movimentos;
-	}
-
-
-	public void setMovimentos(List<Movimento> movimentos) {
-		this.movimentos = movimentos;
-	}
-
-
-	public List<Fechamento> getFechamentos() {
-		return fechamentos;
-	}
-
-
-	public void setFechamentos(List<Fechamento> fechamentos) {
-		this.fechamentos = fechamentos;
 	}
 
 

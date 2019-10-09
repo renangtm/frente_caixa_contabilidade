@@ -91,4 +91,20 @@ public class BancoService implements Service<Banco> {
 		((Session)this.et.getDelegate()).evict(obj);
 	}
 
+	@Override
+	public Banco merge(Banco b) {
+		
+		b.setPj(et.merge(b.getPj()));
+		
+		if(b.getId() == 0) {
+			
+			et.persist(b);
+			return b;
+			
+		}
+		
+		return et.merge(b);
+		
+	}
+
 }

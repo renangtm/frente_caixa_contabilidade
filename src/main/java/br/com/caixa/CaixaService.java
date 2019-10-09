@@ -1,6 +1,7 @@
 package br.com.caixa;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -110,6 +111,37 @@ public class CaixaService implements Service<Caixa> {
 
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
+	}
+
+	@Override
+	public Caixa merge(Caixa c) {
+		
+		if(c.getId() == 0) {
+			
+			et.persist(c);
+		
+		}else {
+			
+			c = et.merge(c);
+			
+		}
+		
+		final Caixa cc = c;
+		
+		c.setEmpresa(et.merge(c.getEmpresa()));
+		
+		c.setExpedientes(c.getExpedientes().stream().map(e->{
+			
+			e.setCaixa(cc);
+			
+			return et.merge(e);
+			
+		}).collect(Collectors.toList()));
+		
+		
+		
+		return c;
+		
 	}
 
 }

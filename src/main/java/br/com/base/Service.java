@@ -12,4 +12,6 @@ public interface Service<T> {
 	
 	public void lixeira(T obj);
 	
+	public T merge(T obj);
+	
 }

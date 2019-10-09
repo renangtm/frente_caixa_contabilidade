@@ -2,7 +2,6 @@ package br.com.caixa;
 
 import java.util.Calendar;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import br.com.movimento_financeiro.Movimento;
 
 @Entity
 public class AjusteDivergencia {
@@ -29,10 +31,41 @@ public class AjusteDivergencia {
 	
 	@Column
 	private TipoAjuste tipo;
+	
+	@OneToOne(fetch=FetchType.EAGER,mappedBy="expediente")
+	private Movimento movimento;
 
 	public int getId() {
 		return id;
 	}
+
+	
+	
+	public TipoAjuste getTipo() {
+		return tipo;
+	}
+
+
+
+	public void setTipo(TipoAjuste tipo) {
+		this.tipo = tipo;
+	}
+
+
+
+	public Movimento getMovimento() {
+		
+		return movimento;
+		
+	}
+
+
+
+	public void setMovimento(Movimento movimento) {
+		this.movimento = movimento;
+	}
+
+
 
 	public void setId(int id) {
 		this.id = id;

@@ -18,8 +18,6 @@ public abstract class Representador<T> {
 		
 	}
 	
-	
-	
 	public void atualizar(){
 		
 	}

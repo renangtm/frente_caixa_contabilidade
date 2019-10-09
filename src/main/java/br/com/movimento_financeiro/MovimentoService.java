@@ -308,4 +308,10 @@ public class MovimentoService implements Service<Movimento> {
 		((Session) this.et.getDelegate()).evict(obj);
 	}
 
+	@Override
+	public Movimento merge(Movimento obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
