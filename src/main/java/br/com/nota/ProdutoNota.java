@@ -87,6 +87,13 @@ public class ProdutoNota {
 
 
 	public TipoQuantidade getTipoInfluenciaEstoque() {
+		
+		if(this.tipoInfluenciaEstoque == null) {
+			
+			return TipoQuantidade.UN;
+			
+		}
+		
 		return tipoInfluenciaEstoque;
 	}
 

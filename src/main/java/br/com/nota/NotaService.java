@@ -61,6 +61,8 @@ public class NotaService implements Service<Nota> {
 			Estoque est = pn.getProduto().getEstoque();
 			et.refresh(est);
 
+			
+			
 			double realDif = pn.getTipoInfluenciaEstoque().para(est.getTipo(), pn.getProduto(), dif);
 
 			if (est.getQuantidade() + realDif < 0 || est.getDisponivel() + realDif < 0) {

@@ -130,7 +130,7 @@ public class ConfiguracaoCaixa extends Modulo {
 		this.textField.setText(clc.getNumeroCaixa()+"");
 		this.lblStatus.setBackground(Color.GREEN);
 		
-		this.setExpediente(ConfiguracaoExpediente.getExpedienteCaixa(this.usu));
+		this.setExpediente(et.merge(ConfiguracaoExpediente.getExpedienteCaixa(this.usu)));
 		
 		Query q = et.createQuery("SELECT e FROM ExpedienteCaixa e WHERE e.caixa=:caixa ORDER BY e.id DESC");
 		q.setParameter("caixa", exp.getCaixa());
