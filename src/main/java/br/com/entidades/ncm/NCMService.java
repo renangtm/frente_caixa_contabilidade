@@ -64,4 +64,20 @@ public class NCMService implements Service<NCM> {
 		((Session)this.et.getDelegate()).evict(obj);
 	}
 
+	@Override
+	public NCM merge(NCM obj) {
+		
+		if(obj.getId() == 0) {
+			
+			et.persist(obj);
+			return obj;
+			
+		}else {
+			
+			return et.merge(obj);
+			
+		}
+		
+	}
+
 }

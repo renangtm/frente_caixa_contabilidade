@@ -91,4 +91,39 @@ public class PessoaFisicaService implements Service<PessoaFisica> {
 		((Session)this.et.getDelegate()).evict(obj);
 	}
 
+	@Override
+	public PessoaFisica merge(PessoaFisica obj) {
+		
+		PessoaFisica pessoa = obj;
+		
+		if(obj.getId() == 0) {
+			
+			et.persist(pessoa);
+			
+		}else {
+			
+			pessoa = et.merge(pessoa);
+			
+		}
+		
+		if(pessoa.getCliente() != null) {
+			
+			pessoa.setCliente(et.merge(obj.getCliente()));
+			obj.getCliente().setPessoa(pessoa);
+			
+		}
+		
+		if(pessoa.getUsuario() != null) {
+			
+			pessoa.setUsuario(et.merge(obj.getUsuario()));
+			obj.getUsuario().setPf(pessoa);
+			
+		}
+		
+		
+		return pessoa;
+		
+		
+	}
+
 }

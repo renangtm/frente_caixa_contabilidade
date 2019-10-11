@@ -1,14 +1,12 @@
-package br.com.inicial;
+package br.com.produto;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
 
 import br.com.base.Service;
-import br.com.produto.Categoria;
 
 public class CategoriaService implements Service<Categoria> {
 
@@ -55,8 +53,36 @@ public class CategoriaService implements Service<Categoria> {
 
 	@Override
 	public void lixeira(Categoria obj) {
-		// TODO Auto-generated method stub
-		((Session)this.et.getDelegate()).evict(obj);
+		
+	}
+
+	@Override
+	public Categoria merge(Categoria obj) {
+		
+		Categoria cat = obj;
+		
+		if(cat.getId() == 0) {
+			
+			et.persist(cat);
+			
+		}else {
+			
+			cat = et.merge(cat);
+			
+		}
+		
+		cat.setTabelaAlicota(et.merge(cat.getTabelaAlicota()));
+		cat.setTabelaCfop(et.merge(cat.getTabelaCfop()));
+		
+		cat.setCofins(et.merge(cat.getCofins()));
+		
+		cat.setIcms(et.merge(cat.getIcms()));
+		
+		cat.setPis(et.merge(cat.getPis()));
+		
+		
+		return cat;
+		
 	}
 
 }

@@ -403,7 +403,7 @@ public class Notas extends Modulo {
 
 		try {
 			
-			et.getTransaction().begin();
+			
 			
 			if(!new NotaService(et).verificacaoPersistencia(nota)) {
 				
@@ -412,8 +412,9 @@ public class Notas extends Modulo {
 				
 			}
 
-			new NotaService(et).mergeNota(nota);
+			new NotaService(et).merge(nota);
 
+			et.getTransaction().begin();
 			et.getTransaction().commit();
 
 		} catch (Exception ex) {

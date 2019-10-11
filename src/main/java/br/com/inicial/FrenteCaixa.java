@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import br.com.banco.Banco;
+import br.com.banco.BancoService;
 import br.com.base.AberturaCaixaException;
 import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
@@ -237,23 +238,14 @@ public class FrenteCaixa extends Modulo {
 
 			});
 
-			this.venda = vs.persistirVenda(this.venda);
-
+			this.venda = new VendaService(et).merge(venda);
+			
+			et.getTransaction().begin();
+			et.getTransaction().commit();
+			
+			notas = notas.stream().map(n->new NotaService(et).merge(n)).collect(Collectors.toList());
+			
 			this.venda.setNotas(notas);
-
-			notas.forEach(t -> {
-
-				try {
-
-					ns.mergeNota(t);
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-
-				}
-
-			});
 
 			et.getTransaction().begin();
 			et.getTransaction().commit();
@@ -268,7 +260,7 @@ public class FrenteCaixa extends Modulo {
 				banco.setPj(this.empresa.getPj());
 				banco.setSaldo(0);
 
-				et.persist(banco);
+				banco = new BancoService(et).merge(banco);
 
 			}
 
@@ -806,13 +798,13 @@ public class FrenteCaixa extends Modulo {
 
 		JLabel lblCliente = new JLabel("Cliente:");
 		lblCliente.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblCliente.setBounds(471, 11, 88, 14);
+		lblCliente.setBounds(586, 11, 88, 14);
 		getContentPane().add(lblCliente);
 
 		txtCliente = new JTextField();
 		txtCliente.setEnabled(false);
 		txtCliente.setColumns(10);
-		txtCliente.setBounds(471, 36, 360, 20);
+		txtCliente.setBounds(585, 36, 246, 20);
 		getContentPane().add(txtCliente);
 
 		btCliente = new JButton("...");
@@ -942,7 +934,7 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(lblFnovoPedido);
 
 		tbpBP = new JTabbedPane(JTabbedPane.LEFT);
-		tbpBP.setBounds(10, 11, 451, 47);
+		tbpBP.setBounds(10, 11, 566, 47);
 		getContentPane().add(tbpBP);
 
 		JPanel panel = new JPanel();
@@ -951,7 +943,7 @@ public class FrenteCaixa extends Modulo {
 
 		txtBipe = new JTextField();
 		txtBipe.setBackground(new Color(173, 216, 230));
-		txtBipe.setBounds(10, 11, 345, 20);
+		txtBipe.setBounds(10, 11, 460, 20);
 		panel.add(txtBipe);
 		txtBipe.setColumns(10);
 

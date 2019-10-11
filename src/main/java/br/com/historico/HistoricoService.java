@@ -8,18 +8,11 @@ import javax.persistence.Query;
 import org.hibernate.Session;
 
 import br.com.base.Service;
-import br.com.movimento_financeiro.Movimento;
 
 public class HistoricoService implements Service<Historico> {
 
 	private EntityManager et;
 	
-	public void mergeMovimento(Movimento movimento){
-		
-		
-		
-	}
-
 	public HistoricoService(EntityManager et) {
 
 		this.et = et;
@@ -80,6 +73,21 @@ public class HistoricoService implements Service<Historico> {
 	public void lixeira(Historico obj) {
 		// TODO Auto-generated method stub
 		((Session)this.et.getDelegate()).evict(obj);
+	}
+
+	@Override
+	public Historico merge(Historico obj) {
+		
+		if(obj.getId() == 0) {
+			
+			et.persist(obj);
+			
+			return obj;
+			
+		}
+		
+		return et.merge(obj);
+		
 	}
 
 }

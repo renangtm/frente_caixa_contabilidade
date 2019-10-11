@@ -97,14 +97,13 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 			
 			a.setExpediente(ee);
 			
-			if(a.getMovimento() != null) {
-				a.setMovimento(et.merge(a.getMovimento()));
-			}
-			
 			return a;
 			
 		}).collect(Collectors.toList()));
 		
+		e.getCaixa().setSaldoAtual(e.getSaldo_final_atual());
+		
+		e.setCaixa(et.merge(e.getCaixa()));
 		
 		return e;
 	}

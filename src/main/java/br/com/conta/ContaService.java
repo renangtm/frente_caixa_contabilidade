@@ -200,4 +200,12 @@ public class ContaService implements Service<Conta>{
 		
 	}
 
+
+	@Override
+	public Conta merge(Conta obj) {
+		
+		throw new UnsupportedOperationException("A conta e um objeto inteiramente calculado");
+		
+	}
+
 }

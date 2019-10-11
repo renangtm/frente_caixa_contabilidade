@@ -5,8 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
-
 import br.com.base.Service;
 import br.com.empresa.Empresa;
 
@@ -91,7 +89,24 @@ public class VencimentoService implements Service<Vencimento> {
 	@Override
 	public void lixeira(Vencimento obj) {
 		// TODO Auto-generated method stub
-		((Session)this.et.getDelegate()).evict(obj);
+	
 	}
+
+	@Override
+	public Vencimento merge(Vencimento obj) {
+		
+		if(obj.getId() == 0) {
+			
+			et.persist(obj);
+			
+			return obj;
+			
+		}
+		
+		return et.merge(obj);
+		
+	}
+
+	
 
 }

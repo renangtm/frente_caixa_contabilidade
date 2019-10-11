@@ -82,4 +82,18 @@ public class OperacaoService implements Service<Operacao> {
 		((Session)this.et.getDelegate()).evict(obj);
 	}
 
+	@Override
+	public Operacao merge(Operacao obj) {
+		
+		if(obj.getId() == 0) {
+			
+			et.persist(obj);
+			return obj;
+			
+		}
+		
+		return et.merge(obj);
+		
+	}
+
 }

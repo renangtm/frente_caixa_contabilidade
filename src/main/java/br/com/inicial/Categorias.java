@@ -5,7 +5,6 @@ import java.awt.Container;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.swing.DefaultComboBoxModel;
@@ -62,6 +61,7 @@ import br.com.impostos.icms.TabelaIcms;
 import br.com.nota.OperacaoLogistica;
 import br.com.nota.TipoNota;
 import br.com.produto.Categoria;
+import br.com.produto.CategoriaService;
 import br.com.produto.Produto;
 import br.com.produto.ProdutoService;
 import br.com.usuario.Usuario;
@@ -291,15 +291,7 @@ public class Categorias extends Modulo {
 
 		}
 		
-
-		this.cat.setCofins(etReq.merge(this.cat.getCofins()));
-		this.cat.setPis(etReq.merge(this.cat.getPis()));
-		this.cat.setIcms(etReq.merge(this.cat.getIcms()));
-
-		this.cat.setTabelaAlicota(etReq.merge(this.cat.getTabelaAlicota()));
-		this.cat.setTabelaCfop(etReq.merge(this.cat.getTabelaCfop()));
-		
-		
+		new CategoriaService(et).merge(this.cat);
 		
 		this.dispose();
 		

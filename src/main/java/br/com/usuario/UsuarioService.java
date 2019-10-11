@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-public class UsuarioService {
+import br.com.base.Service;
+
+public class UsuarioService implements Service<Usuario>{
 
 	private EntityManager et;
 	
@@ -30,6 +32,52 @@ public class UsuarioService {
 		}
 		
 		return (Usuario)usuarios.get(0);
+		
+	}
+
+	@Override
+	public int getCount(String filtro) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Usuario> getElementos(int x1, int x2, String filtro, String ordem) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Usuario getPeloCodigo(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void lixeira(Usuario obj) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Usuario merge(Usuario obj) {
+		
+		Usuario t = obj;
+		
+		if(t.getId() == 0) {
+			
+			et.persist(t);
+			
+		}else {
+			
+			t = et.merge(t);
+			
+		}
+		
+		t.setPf(et.merge(t.getPf()));
+		t.getPf().setUsuario(t);
+		
+		return t;
 		
 	}
 	

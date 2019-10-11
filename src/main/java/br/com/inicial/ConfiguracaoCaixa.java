@@ -16,6 +16,7 @@ import br.com.caixa.Caixa;
 import br.com.caixa.CaixaService;
 import br.com.caixa.ConfiguracaoLocalCaixa;
 import br.com.caixa.ExpedienteCaixa;
+import br.com.caixa.ExpedienteCaixaService;
 import br.com.caixa.Reposicao;
 import br.com.caixa.RepresentadorExpedienteCaixa;
 import br.com.caixa.Sangria;
@@ -160,9 +161,7 @@ public class ConfiguracaoCaixa extends Modulo {
 	
 	private void setExpediente(ExpedienteCaixa ex) {
 		
-		exp = et.merge(ex);
-		exp.setCaixa(et.merge(exp.getCaixa()));
-		exp.getCaixa().setEmpresa(et.merge(exp.getCaixa().getEmpresa()));
+		exp = ex;
 		
 		this.textField.setText(exp.getCaixa().getNumero()+"");
 		
@@ -255,12 +254,9 @@ public class ConfiguracaoCaixa extends Modulo {
 			repo.setMomento(Calendar.getInstance());
 			repo.setValor(valor);
 			
-			et.persist(repo);
-			
 			exp.getReposicoes().add(repo);
-			
-			exp.getCaixa().setSaldoAtual(exp.getCaixa().getSaldoAtual()+repo.getValor());
-			exp.setSaldo_final_atual(exp.getCaixa().getSaldoAtual());
+		
+			new ExpedienteCaixaService(et).merge(exp);
 			
 			et.getTransaction().begin();
 			et.getTransaction().commit();
@@ -316,12 +312,9 @@ public class ConfiguracaoCaixa extends Modulo {
 			repo.setMomento(Calendar.getInstance());
 			repo.setValor(valor);
 			
-			et.persist(repo);
-			
 			exp.getSangrias().add(repo);
 			
-			exp.getCaixa().setSaldoAtual(exp.getCaixa().getSaldoAtual()-repo.getValor());
-			exp.setSaldo_final_atual(exp.getCaixa().getSaldoAtual());
+			new ExpedienteCaixaService(et).merge(exp);
 			
 			et.getTransaction().begin();
 			et.getTransaction().commit();
@@ -354,7 +347,7 @@ public class ConfiguracaoCaixa extends Modulo {
 				caixa.setSaldoAtual(0);
 				caixa.setEmpresa(et.merge(this.usu.getPf().getEmpresa()));
 				
-				et.merge(caixa);
+				new CaixaService(et).merge(caixa);
 				
 				et.getTransaction().begin();
 				et.getTransaction().commit();

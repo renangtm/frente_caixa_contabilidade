@@ -114,6 +114,8 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(nota.getEmpresa().getLogo().getArquivo()));
 
+			double impostos = nota.getProdutos().stream().mapToDouble(x->x.getImposto().getTotalImpostos()).sum();
+			
 			Map<String, Object> parametros = new HashMap<String, Object>();
 
 			parametros.put("qrCode", qrCode);
@@ -133,6 +135,7 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 			parametros.put("troco", troco);
 			parametros.put("formaPagamento", formaPagamento);
 			parametros.put("valorPagamento", valorPagamento);
+			parametros.put("valorImpostos", impostos);
 
 			JRDataSource jrd = new JRBeanCollectionDataSource(produtos);
 

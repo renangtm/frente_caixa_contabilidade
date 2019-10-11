@@ -144,15 +144,7 @@ public class CadastroCFOP_ extends Modulo {
 			try {
 
 							
-				if(ncm.getId() == 0) {
-				
-					et.persist(ncm);
-				
-				}else {
-					
-					et.merge(ncm);
-					
-				}
+				new CFOPService(et).merge(ncm);
 				
 				et.getTransaction().begin();
 				et.getTransaction().commit();

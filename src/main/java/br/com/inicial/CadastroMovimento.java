@@ -21,6 +21,7 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import br.com.banco.Banco;
 import br.com.banco.Fechamento;
+import br.com.banco.FechamentoService;
 import br.com.banco.RepresentadorFechamento;
 import br.com.base.ET;
 import br.com.base.Masks;
@@ -238,8 +239,9 @@ public class CadastroMovimento extends Modulo {
 			
 			this.gr.atualizar();
 			
+			FechamentoService fs = new FechamentoService(et);
 			
-			ListModelGenerica<Fechamento> lf = new ListModelGenerica<Fechamento>(this.banco.getFechamentos(),Fechamento.class,RepresentadorFechamento.class);
+			ListModelGenerica<Fechamento> lf = new ListModelGenerica<Fechamento>(fs.getPeloBanco(this.banco),Fechamento.class,RepresentadorFechamento.class);
 			this.tblFechamento.setModel(lf);
 			
 		});
@@ -279,15 +281,7 @@ public class CadastroMovimento extends Modulo {
 					!vc(this.txtDataMovimento)) {
 				return;
 			}
-			
-			EntityManager esp = ET.nova();
-			this.managers.add(esp);
-			
-			if(this.movimento.getId()>0) {
-				
-				this.movimento = esp.find(Movimento.class, this.movimento.getId());
-				
-			}
+		
 			
 			this.movimento.setBanco((Banco)this.comboBox.getSelectedItem());
 			this.movimento.setData(Masks.getData(this.txtDataMovimento.getText()));
@@ -303,7 +297,7 @@ public class CadastroMovimento extends Modulo {
 				
 			}
 			
-			MovimentoService ms = new MovimentoService(esp);
+			MovimentoService ms = new MovimentoService(et);
 			ms.setBanco(this.movimento.getBanco());
 			
 			this.btnExcluirMovimento.setEnabled(false);
@@ -317,8 +311,8 @@ public class CadastroMovimento extends Modulo {
 					
 					if(p == 100) {
 						
-						esp.getTransaction().begin();
-						esp.getTransaction().commit();
+						et.getTransaction().begin();
+						et.getTransaction().commit();
 						
 						this.btnConfirmar.setEnabled(true);
 						this.btnExcluirMovimento.setEnabled(true);
@@ -341,7 +335,9 @@ public class CadastroMovimento extends Modulo {
 						
 						et.refresh(this.banco);
 						
-						ListModelGenerica<Fechamento> lf = new ListModelGenerica<Fechamento>(this.banco.getFechamentos(),Fechamento.class,RepresentadorFechamento.class);
+						FechamentoService fs = new FechamentoService(et);
+						
+						ListModelGenerica<Fechamento> lf = new ListModelGenerica<Fechamento>(fs.getPeloBanco(this.banco),Fechamento.class,RepresentadorFechamento.class);
 						this.tblFechamento.setModel(lf);
 						
 						this.txtSaldo.setValue(this.banco.getSaldo());
@@ -354,7 +350,6 @@ public class CadastroMovimento extends Modulo {
 				}else {
 					
 					this.lblProgresso.setText("");
-					esp.clear();
 					erro(o);
 					
 					this.btnConfirmar.setEnabled(true);
@@ -491,7 +486,9 @@ public class CadastroMovimento extends Modulo {
 							
 							et.refresh(this.banco);
 							
-							ListModelGenerica<Fechamento> lf = new ListModelGenerica<Fechamento>(this.banco.getFechamentos(),Fechamento.class,RepresentadorFechamento.class);
+							FechamentoService fs = new FechamentoService(et);
+							
+							ListModelGenerica<Fechamento> lf = new ListModelGenerica<Fechamento>(fs.getPeloBanco(this.banco),Fechamento.class,RepresentadorFechamento.class);
 							this.tblFechamento.setModel(lf);
 							
 							this.txtSaldo.setValue(this.banco.getSaldo());

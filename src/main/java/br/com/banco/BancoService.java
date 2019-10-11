@@ -103,7 +103,11 @@ public class BancoService implements Service<Banco> {
 			
 		}
 		
-		return et.merge(b);
+		Banco banco = et.merge(b);
+		
+		banco.getPj().setBanco(banco);
+		
+		return banco;
 		
 	}
 

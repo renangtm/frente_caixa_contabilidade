@@ -26,7 +26,7 @@ public class Endereco {
 	@Column
 	private String cep;
 	
-	@ManyToOne(fetch=FetchType.EAGER,cascade = {CascadeType.MERGE})
+	@ManyToOne(fetch=FetchType.EAGER,cascade = {CascadeType.MERGE,CascadeType.PERSIST})
 	@JoinColumn(name="id_cidade")
 	private Cidade cidade;
 	

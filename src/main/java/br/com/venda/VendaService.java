@@ -1,12 +1,14 @@
 package br.com.venda;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import br.com.base.Service;
 import br.com.produto.Estoque;
 
-public class VendaService {
+public class VendaService implements Service<Venda>{
 
 	private EntityManager et;
 
@@ -17,8 +19,6 @@ public class VendaService {
 	}
 
 	public boolean verificacaoPersistencia(Venda venda) {
-		
-		venda.setProdutos(venda.getProdutos().stream().map(this::pmv).collect(Collectors.toList()));
 		
 		for (ProdutoVenda pv : venda.getProdutos()) {
 			
@@ -56,8 +56,9 @@ public class VendaService {
 		
 	}
 	
-	public synchronized Venda persistirVenda(Venda venda) throws SemEstoqueException {
-
+	@Override
+	public Venda merge(Venda venda) {
+		
 		venda.setProdutos(venda.getProdutos().stream().map(this::pmv).collect(Collectors.toList()));
 		
 		for (ProdutoVenda pv : venda.getProdutos()) {
@@ -79,7 +80,7 @@ public class VendaService {
 				
 			} catch (Exception ex) {
 				
-				throw new SemEstoqueException(pv.getProduto());
+				throw new RuntimeException(ex);
 
 			}
 
@@ -113,5 +114,31 @@ public class VendaService {
 		return venda;
 		
 	}
+
+	@Override
+	public int getCount(String filtro) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Venda> getElementos(int x1, int x2, String filtro, String ordem) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Venda getPeloCodigo(String str) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void lixeira(Venda obj) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 }

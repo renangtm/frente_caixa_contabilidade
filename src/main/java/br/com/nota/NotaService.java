@@ -6,12 +6,9 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
-
 import br.com.base.Service;
 import br.com.empresa.Empresa;
 import br.com.produto.Estoque;
-import br.com.venda.SemEstoqueException;
 
 public class NotaService implements Service<Nota> {
 
@@ -41,9 +38,6 @@ public class NotaService implements Service<Nota> {
 
 	public boolean verificacaoPersistencia(Nota nota) {
 
-		nota.setProdutos(nota.getProdutos().stream().map(this::pmp).collect(Collectors.toList()));
-		nota.setVencimentos(nota.getVencimentos().stream().map(this::pmv).collect(Collectors.toList()));
-		
 		for (ProdutoNota pn : nota.getProdutos()) {
 
 			double meta = 0;
@@ -107,7 +101,7 @@ public class NotaService implements Service<Nota> {
 		
 	}
 
-	public void mergeNota(Nota nota) throws Exception {
+	public Nota merge(Nota nota){
 
 		if (!this.verificarIntegridadeNota(nota)) {
 
@@ -158,7 +152,7 @@ public class NotaService implements Service<Nota> {
 
 			} catch (Exception ex) {
 
-				throw new SemEstoqueException(pn.getProduto());
+				throw new RuntimeException(ex);
 
 			}
 
@@ -181,11 +175,13 @@ public class NotaService implements Service<Nota> {
 		if (nota.getId() == 0) {
 
 			this.et.persist(nota);
-
+			return nota;
+			
 		} else {
 
 			nota = et.merge(nota);
-
+			return nota;
+			
 		}
 
 	}
@@ -249,8 +245,8 @@ public class NotaService implements Service<Nota> {
 
 	@Override
 	public void lixeira(Nota obj) {
-		// TODO Auto-generated method stub
-		((Session) this.et.getDelegate()).evict(obj);
+
 	}
+	
 
 }

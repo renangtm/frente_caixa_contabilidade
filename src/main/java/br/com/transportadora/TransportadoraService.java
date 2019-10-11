@@ -5,8 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
-
 import br.com.base.Service;
 import br.com.empresa.Empresa;
 
@@ -134,8 +132,29 @@ public class TransportadoraService implements Service<Transportadora> {
 
 	@Override
 	public void lixeira(Transportadora obj) {
-		// TODO Auto-generated method stub
-		((Session)this.et.getDelegate()).evict(obj);
+		
+	}
+
+	@Override
+	public Transportadora merge(Transportadora obj) {
+		
+		Transportadora t = obj;
+		
+		if(t.getId() == 0) {
+			
+			et.persist(t);
+			
+		}else {
+			
+			t = et.merge(t);
+			
+		}
+		
+		t.setPj(et.merge(t.getPj()));
+		t.getPj().setTransportadora(t);
+		
+		return t;
+		
 	}
 
 }

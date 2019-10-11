@@ -145,15 +145,7 @@ public class CadastroHistorico extends Modulo {
 			
 			try {
 
-				if(ncm.getId() == 0) {
-					
-					et.persist(ncm);
-					
-				}else {
-					
-					et.merge(ncm);
-					
-				}
+				new HistoricoService(et).merge(ncm);
 				
 				et.getTransaction().begin();
 				et.getTransaction().commit();

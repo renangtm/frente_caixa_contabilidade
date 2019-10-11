@@ -12,14 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import br.com.caixa.Caixa;
 import br.com.codigo_barra.PadraoCodigo;
-import br.com.nota.Nota;
-import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaJuridica;
-import br.com.produto.Produto;
-import br.com.venda.Venda;
-
 @Entity
 public class Empresa{
 	
@@ -29,21 +23,6 @@ public class Empresa{
 
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
 	private List<PadraoCodigo> padroesCodigo;
-	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
-	private List<Pessoa> pessoas;
-	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
-	private List<Produto> produtos;
-
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
-	private List<Venda> vendas;
-	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
-	private List<Caixa> caixas;
-	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
-	private List<Nota> notas;
 	
 	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_parametros")
@@ -56,21 +35,6 @@ public class Empresa{
 	@OneToOne(fetch=FetchType.EAGER,cascade= {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REFRESH})
 	@JoinColumn(name="id_pessoa")
 	private PessoaJuridica pj;
-	
-	
-	
-	
-	public List<Caixa> getCaixas() {
-		return caixas;
-	}
-
-
-
-	public void setCaixas(List<Caixa> caixas) {
-		this.caixas = caixas;
-	}
-
-
 
 	public Empresa(){
 		
@@ -108,16 +72,7 @@ public class Empresa{
 	public void setPj(PessoaJuridica pj) {
 		this.pj = pj;
 	}
-
-	public List<Nota> getNotas() {
-		return notas;
-	}
-
-	public void setNotas(List<Nota> notas) {
-		this.notas = notas;
-	}
-
-
+	
 	public Logo getLogo() {
 		return logo;
 	}
@@ -126,37 +81,12 @@ public class Empresa{
 		this.logo = logo;
 	}
 
-
-	public List<Venda> getVendas() {
-		return vendas;
-	}
-
 	public List<PadraoCodigo> getPadroesCodigo() {
 		return padroesCodigo;
 	}
 
 	public void setPadroesCodigo(List<PadraoCodigo> padroesCodigo) {
 		this.padroesCodigo = padroesCodigo;
-	}
-
-	public void setVendas(List<Venda> vendas) {
-		this.vendas = vendas;
-	}
-
-	public List<Pessoa> getPessoas() {
-		return pessoas;
-	}
-
-	public void setPessoas(List<Pessoa> pessoas) {
-		this.pessoas = pessoas;
-	}
-
-	public List<Produto> getProdutos() {
-		return produtos;
-	}
-
-	public void setProdutos(List<Produto> produtos) {
-		this.produtos = produtos;
 	}
 
 	

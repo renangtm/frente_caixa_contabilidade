@@ -9,23 +9,29 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import br.com.banco.Banco;
+import br.com.banco.BancoService;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
 import br.com.cliente.Cliente;
+import br.com.cliente.ClienteService;
 import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
 import br.com.endereco.Cidade;
 import br.com.endereco.Endereco;
 import br.com.endereco.Estado;
 import br.com.fornecedor.Fornecedor;
+import br.com.fornecedor.FornecedorService;
 import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaFisica;
+import br.com.pessoa.PessoaFisicaService;
 import br.com.pessoa.PessoaJuridica;
 import br.com.pessoa.PessoaService;
 import br.com.pessoa.RepresentadorPessoa;
 import br.com.transportadora.Transportadora;
+import br.com.transportadora.TransportadoraService;
 import br.com.usuario.Usuario;
+import br.com.usuario.UsuarioService;
 import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JLabel;
@@ -329,10 +335,9 @@ public class CadastroPessoa extends Modulo {
 						
 						Usuario u = new Usuario();
 						u.setPf(pf);
-						
-						et.persist(u);
-						
 						pf.setUsuario(u);
+						
+						new UsuarioService(et).merge(u);
 						
 					}
 					
@@ -354,10 +359,9 @@ public class CadastroPessoa extends Modulo {
 						
 						Cliente u = new Cliente();
 						u.setPessoa(pf);
-						
-						et.persist(u);
-						
 						pf.setCliente(u);
+						
+						new ClienteService(et).merge(u);
 						
 					}
 					
@@ -381,15 +385,7 @@ public class CadastroPessoa extends Modulo {
 				
 			}
 			
-			if(pf.getId() == 0) {
-				
-				et.persist(pf);
-				
-			}else {
-				
-				et.merge(pf);
-				
-			}
+			new PessoaFisicaService(et).merge(pf);
 			
 			et.getTransaction().begin();
 			et.getTransaction().commit();
@@ -447,10 +443,9 @@ public class CadastroPessoa extends Modulo {
 						
 						Banco u = new Banco();
 						u.setPj(pf);
-						
-						et.persist(u);
-						
 						pf.setBanco(u);
+						
+						new BancoService(et).merge(u);
 						
 					}
 					
@@ -472,10 +467,9 @@ public class CadastroPessoa extends Modulo {
 						
 						Fornecedor u = new Fornecedor();
 						u.setPj(pf);
-						
-						et.persist(u);
-						
 						pf.setFornecedor(u);
+						
+						new FornecedorService(et).merge(u);
 						
 					}
 					
@@ -497,10 +491,9 @@ public class CadastroPessoa extends Modulo {
 						
 						Cliente u = new Cliente();
 						u.setPessoa(pf);
-						
-						et.persist(u);
-						
 						pf.setCliente(u);
+						
+						new ClienteService(et).merge(u);
 						
 					}
 					
@@ -522,10 +515,9 @@ public class CadastroPessoa extends Modulo {
 						
 						Transportadora u = new Transportadora();
 						u.setPj(pf);
-						
-						et.persist(u);
-						
 						pf.setTransportadora(u);
+						
+						new TransportadoraService(et).merge(u);
 						
 					}
 					

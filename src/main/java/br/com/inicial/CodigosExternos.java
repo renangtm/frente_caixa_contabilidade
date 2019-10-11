@@ -5,16 +5,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import br.com.base.ET;
 import br.com.base.Resources;
 import br.com.codigo_barra.PadraoCodigo;
+import br.com.codigo_barra.PadraoCodigoService;
 import br.com.empresa.Empresa;
 import br.com.quantificacao.TipoQuantidade;
 import br.com.usuario.Usuario;
@@ -131,8 +130,6 @@ public class CodigosExternos extends Modulo{
 				
 				if(!validarFormulario())return;
 				
-				EntityManager et = ET.nova();
-				
 				boolean nova = padrao.getId()==0;
 				
 				try{
@@ -146,8 +143,9 @@ public class CodigosExternos extends Modulo{
 					erro("Preencha os dados adequadamente");
 					return;
 				}
-				et.getTransaction().begin();
-				padrao = et.merge(padrao);
+				
+				padrao = new PadraoCodigoService(et).merge(padrao);
+				et.getTransaction().begin();	
 				et.getTransaction().commit();
 				
 				if(nova){

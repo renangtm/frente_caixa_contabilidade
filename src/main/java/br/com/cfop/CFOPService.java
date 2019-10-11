@@ -64,4 +64,18 @@ public class CFOPService implements Service<CFOP> {
 		((Session)this.et.getDelegate()).evict(obj);
 	}
 
+	@Override
+	public CFOP merge(CFOP obj) {
+		
+		if(obj.getId() == 0){
+			
+			et.persist(obj);
+			return obj;
+			
+		}
+		
+		return et.merge(obj);
+		
+	}
+
 }

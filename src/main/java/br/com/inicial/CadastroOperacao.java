@@ -150,15 +150,7 @@ public class CadastroOperacao extends Modulo {
 			
 			try {
 
-				if(ncm.getId() == 0) {
-					
-					et.persist(ncm);
-					
-				}else {
-					
-					et.merge(ncm);
-					
-				}
+				new OperacaoService(et).merge(this.ncm);
 				
 				et.getTransaction().begin();
 				et.getTransaction().commit();

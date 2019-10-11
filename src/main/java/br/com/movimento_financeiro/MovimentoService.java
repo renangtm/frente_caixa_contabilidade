@@ -58,7 +58,8 @@ public class MovimentoService implements Service<Movimento> {
 				if (!movimento.getVencimento().getMovimentos().contains(movimento)) {
 
 					pago += movimento.getValor();
-
+					movimento.getVencimento().getMovimentos().add(movimento);
+					
 				}
 
 				if (pago > movimento.getVencimento().getValor()) {
@@ -192,23 +193,27 @@ public class MovimentoService implements Service<Movimento> {
 			movimento.setBanco(et.merge(movimento.getBanco()));
 			movimento.getBanco().setSaldo(currente.getSaldo());
 
-			if(movimento.getFormaPagamento() != null) {
-				if(movimento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-					
-					if(movimento.getExpediente() != null) {
+			if(movimento.getExpediente() != null) {
+				
+				movimento.setExpediente(et.merge(movimento.getExpediente()));
+				movimento.getExpediente().setCaixa(et.merge(movimento.getExpediente().getCaixa()));
+				
+				
+				
+				if(movimento.getFormaPagamento() != null) {
+					if(movimento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 						
-						movimento.setExpediente(et.merge(movimento.getExpediente()));
-						movimento.getExpediente().setCaixa(et.merge(movimento.getExpediente().getCaixa()));
-						
+						//calcular aqui corretamente na alteracao vai acabar somando em duplicidade um credito ou subtraindo um debito em duplicidade
+				
 						movimento.getExpediente().setSaldo_final_atual(movimento.getExpediente().getSaldo_final_atual()+((movimento.getValor()+movimento.getJuros()-movimento.getDescontos()) * (movimento.getOperacao().isCredito() ? 1 : -1)));
 						movimento.getExpediente().getCaixa().setSaldoAtual(movimento.getExpediente().getCaixa().getSaldoAtual()+((movimento.getValor()+movimento.getJuros()-movimento.getDescontos()) * (movimento.getOperacao().isCredito() ? 1 : -1)));
 						
+						
 					}
-					
 				}
+				
 			}
 
-			
 			if (movimento.getId() == 0) {
 
 				et.persist(movimento);
@@ -310,8 +315,9 @@ public class MovimentoService implements Service<Movimento> {
 
 	@Override
 	public Movimento merge(Movimento obj) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		throw new UnsupportedOperationException("O movimento tem um processo de merge repleto de regras de negocio, pode demorar por isso conta com o metodo mergeMovimento para inserir");
+		
 	}
 
 }

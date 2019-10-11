@@ -5,8 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
-
 import br.com.base.Service;
 import br.com.empresa.Empresa;
 
@@ -83,8 +81,33 @@ public class PessoaService implements Service<Pessoa> {
 
 	@Override
 	public void lixeira(Pessoa obj) {
-		// TODO Auto-generated method stub
-		((Session)this.et.getDelegate()).evict(obj);
+		
+	}
+
+	@Override
+	public Pessoa merge(Pessoa obj) {
+		
+		Pessoa pessoa = obj;
+		
+		if(obj.getId() == 0) {
+			
+			et.persist(pessoa);
+			
+		}else {
+			
+			pessoa = et.merge(pessoa);
+			
+		}
+		
+		if(pessoa.getCliente() != null) {
+			
+			pessoa.setCliente(et.merge(obj.getCliente()));
+			obj.getCliente().setPessoa(pessoa);
+			
+		}
+		
+		return pessoa;
+		
 	}
 
 }

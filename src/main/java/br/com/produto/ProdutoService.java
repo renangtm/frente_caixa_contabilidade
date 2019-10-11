@@ -5,8 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
-
 import br.com.base.ET;
 import br.com.base.Service;
 import br.com.empresa.Empresa;
@@ -130,8 +128,42 @@ public class ProdutoService implements Service<Produto>{
 
 	@Override
 	public void lixeira(Produto obj) {
-		// TODO Auto-generated method stub
-		((Session)this.et.getDelegate()).evict(obj);
+		
+	}
+
+
+
+	@Override
+	public Produto merge(Produto obj) {
+	
+		Produto produto = obj;
+		
+		if(produto.getId() == 0) {
+			
+			et.persist(produto);
+			
+		}else {
+			
+			produto = et.merge(produto);
+			
+		}
+		
+		Categoria cat = et.merge(produto.getCategoria());
+		
+		cat.setTabelaAlicota(et.merge(cat.getTabelaAlicota()));
+		
+		cat.setTabelaCfop(et.merge(cat.getTabelaCfop()));
+		
+		cat.setCofins(et.merge(cat.getCofins()));
+		
+		cat.setIcms(et.merge(cat.getIcms()));
+		
+		cat.setPis(et.merge(cat.getPis()));
+		
+		produto.setCategoria(cat);
+		
+		return produto;
+		
 	}
 
 	
