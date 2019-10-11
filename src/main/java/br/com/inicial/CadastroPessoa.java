@@ -839,6 +839,7 @@ public class CadastroPessoa extends Modulo {
 		panel.add(txtNome);
 		txtNome.setColumns(10);
 		
+		
 		txtCpf = new JFormattedTextField();
 		txtCpf.setBounds(46, 33, 195, 20);
 		panel.add(txtCpf);
