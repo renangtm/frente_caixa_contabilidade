@@ -40,6 +40,7 @@ public class PessoaFisica extends Pessoa{
 		super();
 		
 		this.data_nascimento = Calendar.getInstance();
+	
 		
 	}
 

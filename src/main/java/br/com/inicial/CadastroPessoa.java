@@ -9,29 +9,25 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import br.com.banco.Banco;
-import br.com.banco.BancoService;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
 import br.com.cliente.Cliente;
-import br.com.cliente.ClienteService;
 import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
 import br.com.endereco.Cidade;
 import br.com.endereco.Endereco;
 import br.com.endereco.Estado;
 import br.com.fornecedor.Fornecedor;
-import br.com.fornecedor.FornecedorService;
 import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaFisica;
 import br.com.pessoa.PessoaFisicaService;
 import br.com.pessoa.PessoaJuridica;
+import br.com.pessoa.PessoaJuridicaService;
 import br.com.pessoa.PessoaService;
 import br.com.pessoa.RepresentadorPessoa;
 import br.com.transportadora.Transportadora;
-import br.com.transportadora.TransportadoraService;
 import br.com.usuario.Usuario;
-import br.com.usuario.UsuarioService;
 import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JLabel;
@@ -111,7 +107,22 @@ public class CadastroPessoa extends Modulo {
 	private Usuario operador;
 
 	private Pessoa p;
+	
+	
+	
+	
+	private Usuario usuario;
+	
+	private Cliente cliente;
+	
+	private Transportadora transportadora;
+	
+	private Fornecedor fornecedor;
+	
+	private Banco banco;
 
+	
+	
 	private GerenciadorLista<Pessoa> gr;
 
 	public static ImageIcon logo() {
@@ -134,6 +145,12 @@ public class CadastroPessoa extends Modulo {
 
 		this.p = p;
 
+		this.usuario = null;
+		this.transportadora = null;
+		this.cliente = null;
+		this.fornecedor = null;
+		this.banco = null;
+		
 		try {
 		
 			PessoaFisica pf = (PessoaFisica)this.p;
@@ -189,13 +206,10 @@ public class CadastroPessoa extends Modulo {
 				this.tabbedPane.setEnabledAt(0,true);
 				this.tabbedPane.setEnabledAt(1, true);
 				
-				this.chkColaborador.setSelected(false);
-				this.chkCliente.setSelected(false);
-				
 			}
 			
-			
-			
+			this.cliente = pf.getCliente();
+			this.usuario = pf.getUsuario();
 			
 		}catch(Exception ex) {
 			
@@ -252,22 +266,23 @@ public class CadastroPessoa extends Modulo {
 				
 			}else {
 				
-				this.chkFornecedor.setSelected(false);
-				this.chkClienteJ.setSelected(false);
-				this.chkTransp.setSelected(false);
-				this.chkBanco.setSelected(false);
-				
 				this.tabbedPane.setEnabledAt(0,true);
 				this.tabbedPane.setEnabledAt(1, true);
 				
 			}
 			
-			
+			this.transportadora = pf.getTransportadora();
+			this.fornecedor = pf.getFornecedor();
+			this.cliente = pf.getCliente();
+			this.banco = pf.getBanco();
 			
 		}
 		
-		
-		
+		this.chkColaborador.setSelected(this.usuario != null);
+		this.chkFornecedor.setSelected(this.fornecedor != null);
+		this.chkClienteJ.setSelected(this.cliente != null);
+		this.chkTransp.setSelected(this.transportadora != null);
+		this.chkBanco.setSelected(this.banco != null);
 		
 	}
 	
@@ -278,10 +293,12 @@ public class CadastroPessoa extends Modulo {
 			if(this.tabbedPane.getSelectedIndex() == 0) {
 				
 				this.p = new PessoaFisica();
+				this.p.setEmpresa(this.empresa);
 				
 			}else {
 				
 				this.p = new PessoaJuridica();
+				this.p.setEmpresa(this.empresa);
 				
 			}
 			
@@ -319,69 +336,28 @@ public class CadastroPessoa extends Modulo {
 				pf.setWhatsapp(this.txtWhatsapp.getText());
 				pf.setCpf(this.txtCpf.getText());
 				
-				Endereco e = new Endereco();
+				Endereco e = (pf.getEndereco() != null)?pf.getEndereco():new Endereco();
+				
 				e.setBairro(this.txtBairro.getText());
 				e.setCep(this.txtCep.getText());
 				e.setCidade((Cidade)this.cboCidade.getSelectedItem());
 				e.setNumero(this.txtNumero.getText());
 				e.setRua(this.txtRua.getText());
 				
-				pf.setEndereco(et.merge(e));
-				pf.setEmpresa(et.merge(pf.getEmpresa()));
-			
-				if(this.chkColaborador.isSelected()) {
-					
-					if(pf.getUsuario() == null) {
-						
-						Usuario u = new Usuario();
-						u.setPf(pf);
-						pf.setUsuario(u);
-						
-						new UsuarioService(et).merge(u);
-						
-					}
-					
-				}else {
-					
-					if(pf.getUsuario() != null) {
-						
-						et.remove(pf.getUsuario());
-						
-						pf.setUsuario(null);
-						
-					}
-					
-				}
+				pf.setEndereco(e);
 				
-				if(this.chkCliente.isSelected()) {
-					
-					if(pf.getCliente() == null) {
-						
-						Cliente u = new Cliente();
-						u.setPessoa(pf);
-						pf.setCliente(u);
-						
-						new ClienteService(et).merge(u);
-						
-					}
-					
-				}else {
-					
-					if(pf.getCliente() != null) {
-						
-						et.remove(pf.getCliente());
-						
-						pf.setCliente(null);
-						
-					}
-					
-				}
+				if(this.usuario == null && pf.getUsuario() != null)et.remove(pf.getUsuario());
+				pf.setUsuario(this.usuario);
+				if(this.cliente == null && pf.getCliente() != null)et.remove(pf.getCliente());
+				pf.setCliente(this.cliente);
 				
 			}catch(Exception ex){
 				
 				ex.printStackTrace();
 				
 				erro("Preencha os dados adequadamente");
+				
+				return;
 				
 			}
 			
@@ -428,7 +404,7 @@ public class CadastroPessoa extends Modulo {
 				pf.setWhatsapp(this.txtWhatsapp.getText());
 				pf.setCnpj(this.txtCnpj.getText());
 				
-				Endereco e = new Endereco();
+				Endereco e = (pf.getEndereco()!=null)?pf.getEndereco():new Endereco();
 				e.setBairro(this.txtBairro.getText());
 				e.setCep(this.txtCep.getText());
 				e.setCidade((Cidade)this.cboCidade.getSelectedItem());
@@ -436,102 +412,15 @@ public class CadastroPessoa extends Modulo {
 				e.setRua(this.txtRua.getText());
 				
 				pf.setEndereco(e);
-			
-				if(this.chkBanco.isSelected()) {
-					
-					if(pf.getBanco() == null) {
-						
-						Banco u = new Banco();
-						u.setPj(pf);
-						pf.setBanco(u);
-						
-						new BancoService(et).merge(u);
-						
-					}
-					
-				}else {
-					
-					if(pf.getBanco() != null) {
-						
-						et.remove(pf.getBanco());
-						
-						pf.setBanco(null);
-						
-					}
-					
-				}
 				
-				if(this.chkFornecedor.isSelected()) {
-					
-					if(pf.getFornecedor() == null) {
-						
-						Fornecedor u = new Fornecedor();
-						u.setPj(pf);
-						pf.setFornecedor(u);
-						
-						new FornecedorService(et).merge(u);
-						
-					}
-					
-				}else {
-					
-					if(pf.getFornecedor() != null) {
-						
-						et.remove(pf.getFornecedor());
-						
-						pf.setFornecedor(null);
-						
-					}
-					
-				}
-				
-				if(this.chkClienteJ.isSelected()) {
-					
-					if(pf.getCliente() == null) {
-						
-						Cliente u = new Cliente();
-						u.setPessoa(pf);
-						pf.setCliente(u);
-						
-						new ClienteService(et).merge(u);
-						
-					}
-					
-				}else {
-					
-					if(pf.getCliente() != null) {
-						
-						et.remove(pf.getCliente());
-						
-						pf.setCliente(null);
-						
-					}
-					
-				}
-				
-				if(this.chkTransp.isSelected()) {
-					
-					if(pf.getTransportadora() == null) {
-						
-						Transportadora u = new Transportadora();
-						u.setPj(pf);
-						pf.setTransportadora(u);
-						
-						new TransportadoraService(et).merge(u);
-						
-					}
-					
-				}else {
-					
-					if(pf.getTransportadora() != null) {
-						
-						et.remove(pf.getTransportadora());
-						
-						pf.setTransportadora(null);
-						
-					}
-					
-				}
+				if(this.banco == null && pf.getBanco() != null)et.remove(pf.getBanco());
+				pf.setBanco(this.banco);
+				if(this.cliente == null && pf.getCliente() != null)et.remove(pf.getCliente());
+				pf.setCliente(this.cliente);
+				if(this.fornecedor == null && pf.getFornecedor() != null)et.remove(pf.getFornecedor());
+				pf.setFornecedor(this.fornecedor);
+				if(this.transportadora == null && pf.getTransportadora() != null)et.remove(pf.getTransportadora());
+				pf.setTransportadora(this.transportadora);
 				
 			}catch(Exception ex2){
 				
@@ -541,15 +430,7 @@ public class CadastroPessoa extends Modulo {
 				
 			}
 			
-			if(pf.getId() == 0) {
-				
-				et.persist(pf);
-				
-			}else {
-				
-				et.merge(pf);
-				
-			}
+			new PessoaJuridicaService(et).merge(pf);
 			
 			et.getTransaction().begin();
 			et.getTransaction().commit();
@@ -654,6 +535,119 @@ public class CadastroPessoa extends Modulo {
 			
 		});
 		
+		this.chkBanco.addActionListener(x->{
+			
+			if(!this.chkBanco.isSelected()){
+				
+				this.banco = null;
+				
+			}else{
+				
+				PessoaJuridica pj = (PessoaJuridica)this.p;
+				
+				if(pj.getBanco() != null){
+					this.banco = pj.getBanco();
+				}else{
+					this.banco = new Banco();
+					this.banco.setPj(pj);
+				}
+			}
+			
+		});
+		
+		this.chkCliente.addActionListener(a->{
+			if(!this.chkCliente.isSelected()){
+				
+				this.cliente = null;
+				
+			}else{
+				if(this.p.getCliente() != null){
+					this.cliente = this.p.getCliente();
+				}else{
+					this.cliente = new Cliente();
+					this.cliente.setPessoa(this.p);
+				}
+			}
+			
+		});
+		
+		this.chkClienteJ.addActionListener(a->{
+			if(!this.chkCliente.isSelected()){
+				
+				this.cliente = null;
+				
+			}else{
+				if(this.p.getCliente() != null){
+					this.cliente = this.p.getCliente();
+				}else{
+					this.cliente = new Cliente();
+					this.cliente.setPessoa(this.p);
+				}
+			}
+			
+		});
+		
+		this.chkColaborador.addActionListener(a->{
+			
+			if(!this.chkColaborador.isSelected()){
+				
+				this.usuario = null;
+				
+			}else{
+				
+				PessoaFisica pf = (PessoaFisica)this.p;
+				
+				if(pf.getUsuario() != null){
+					this.usuario = pf.getUsuario();
+				}else{
+					this.usuario = new Usuario();
+					this.usuario.setPf(pf);
+				}
+				
+			}
+			
+		});
+		
+		this.chkFornecedor.addActionListener(a->{
+			
+			if(!this.chkFornecedor.isSelected()){
+				
+				this.fornecedor = null;
+				
+			}else{
+				
+				PessoaJuridica pj = (PessoaJuridica)this.p;
+				
+				if(pj.getFornecedor() != null){
+					this.fornecedor = pj.getFornecedor();
+				}else{
+					this.fornecedor = new Fornecedor();
+					this.fornecedor.setPj(pj);
+				}
+				
+			}
+			
+		});
+		
+		this.chkTransp.addActionListener(a->{
+			
+			if(!this.chkTransp.isSelected()){
+				this.transportadora = null;
+			}else{
+				
+				PessoaJuridica pj = (PessoaJuridica)this.p;
+				
+				if(pj.getTransportadora()!=null){
+					this.transportadora = pj.getTransportadora();
+				}else{
+					this.transportadora = new Transportadora();
+					this.transportadora.setPj(pj);
+				}
+				
+			}
+			
+		});
+		
 		this.btNovaPessoa.doClick();
 		
 	}
@@ -671,7 +665,7 @@ public class CadastroPessoa extends Modulo {
 
 		JLabel lblNewLabel = new JLabel("Cadastro de Pessoa");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel.setBounds(18, 11, 315, 32);
+		lblNewLabel.setBounds(18, 11, 249, 32);
 		contentPane.add(lblNewLabel);
 
 		JSeparator separator = new JSeparator();
@@ -680,7 +674,7 @@ public class CadastroPessoa extends Modulo {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Contatos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(323, 70, 312, 142);
+		panel_1.setBounds(323, 70, 312, 205);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -722,7 +716,7 @@ public class CadastroPessoa extends Modulo {
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Endereco", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(18, 267, 460, 110);
+		panel_2.setBounds(18, 286, 460, 110);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 
@@ -780,24 +774,24 @@ public class CadastroPessoa extends Modulo {
 		panel_2.add(cboCidade);
 
 		btNovaPessoa = new JButton("Nova Pessoa");
-		btNovaPessoa.setBounds(488, 277, 146, 32);
+		btNovaPessoa.setBounds(489, 291, 146, 32);
 		contentPane.add(btNovaPessoa);
 
 		btConfirmar = new JButton("Confirmar");
-		btConfirmar.setBounds(489, 334, 146, 32);
+		btConfirmar.setBounds(488, 351, 146, 32);
 		contentPane.add(btConfirmar);
 
 		txtPesquisar = new JTextField();
 		txtPesquisar.setColumns(10);
-		txtPesquisar.setBounds(107, 388, 306, 20);
+		txtPesquisar.setBounds(107, 397, 306, 20);
 		contentPane.add(txtPesquisar);
 
 		JLabel lblPesquisa = new JLabel("Pesquisa:");
-		lblPesquisa.setBounds(18, 391, 79, 14);
+		lblPesquisa.setBounds(18, 400, 79, 14);
 		contentPane.add(lblPesquisa);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(18, 419, 617, 142);
+		scrollPane.setBounds(18, 428, 617, 133);
 		contentPane.add(scrollPane);
 
 		tblPessoasFisicas = new JTable();
@@ -813,7 +807,7 @@ public class CadastroPessoa extends Modulo {
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBorder(new TitledBorder(null, "Dados da Pessoa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		tabbedPane.setBounds(18, 67, 306, 196);
+		tabbedPane.setBounds(18, 67, 306, 208);
 		contentPane.add(tabbedPane);
 		
 		JPanel panel = new JPanel();
@@ -860,6 +854,14 @@ public class CadastroPessoa extends Modulo {
 		txtDtNasc = new JFormattedTextField();
 		txtDtNasc.setBounds(96, 84, 166, 20);
 		panel.add(txtDtNasc);
+		
+		JButton btDetalheUsuario = new JButton("...");
+		btDetalheUsuario.setBounds(10, 132, 31, 14);
+		panel.add(btDetalheUsuario);
+		
+		JButton btDetalheCliente = new JButton("...");
+		btDetalheCliente.setBounds(108, 132, 31, 14);
+		panel.add(btDetalheCliente);
 		
 		JPanel panel_3 = new JPanel();
 		tabbedPane.addTab("Jur\u00EDdica", null, panel_3, null);

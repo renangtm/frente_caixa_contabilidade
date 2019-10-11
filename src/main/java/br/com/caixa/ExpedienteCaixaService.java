@@ -44,30 +44,19 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 	@Override
 	public ExpedienteCaixa merge(ExpedienteCaixa e) {
 		
-		if(e.getId() == 0) {
-			
-			et.persist(e);
-			
-		}else {
-			
-			e = et.merge(e);
-			
-		}
-		
 		final ExpedienteCaixa ee = e;
 		
 		e.setSaldo_final_atual(e.getSaldo_inicial());
 		
 		e.setSangrias(e.getSangrias().stream().map(s->{
-		
+			
 			if(s.getId() == 0)
 				et.persist(s);
 			else
 				s = et.merge(s);
 			
-			ee.setSaldo_final_atual(ee.getSaldo_final_atual()-s.getValor());
 			
-			s.setExpediente(ee);
+			ee.setSaldo_final_atual(ee.getSaldo_final_atual()-s.getValor());
 			
 			return s;
 			
@@ -82,8 +71,6 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 			
 			ee.setSaldo_final_atual(ee.getSaldo_final_atual()+r.getValor());
 			
-			r.setExpediente(ee);
-			
 			return r;
 			
 		}).collect(Collectors.toList()));
@@ -95,7 +82,8 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 			else
 				a = et.merge(a);
 			
-			a.setExpediente(ee);
+			
+			ee.setSaldo_final_atual(ee.getSaldo_final_atual()+(a.getValor()*(a.getTipo()==TipoAjuste.FISICAMENTE_AMAIOR?1:-1)));
 			
 			return a;
 			
@@ -104,6 +92,22 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 		e.getCaixa().setSaldoAtual(e.getSaldo_final_atual());
 		
 		e.setCaixa(et.merge(e.getCaixa()));
+		
+		if(e.getId() == 0) {
+			
+			et.persist(e);
+			
+		}else {
+			
+			e = et.merge(e);
+			
+		}
+		
+		final ExpedienteCaixa ne = e;
+		
+		e.getAjustes().forEach(a->a.setExpediente(ne));
+		e.getSangrias().forEach(s->s.setExpediente(ne));
+		e.getReposicoes().forEach(r->r.setExpediente(ne));
 		
 		return e;
 	}

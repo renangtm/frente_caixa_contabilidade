@@ -24,7 +24,7 @@ public class Usuario{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade={CascadeType.MERGE})
+	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="id_pessoa")
 	private PessoaFisica pf;
 	
@@ -35,7 +35,7 @@ public class Usuario{
 	private String senha;
 	
 	//mappedBy='usuario'
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinColumn(name="id_usuario")
 	private List<Permissao> permissoes;
 	

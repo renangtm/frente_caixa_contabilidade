@@ -64,6 +64,8 @@ public class UsuarioService implements Service<Usuario>{
 		
 		Usuario t = obj;
 		
+		t.setPf(et.merge(t.getPf()));
+		
 		if(t.getId() == 0) {
 			
 			et.persist(t);
@@ -71,11 +73,9 @@ public class UsuarioService implements Service<Usuario>{
 		}else {
 			
 			t = et.merge(t);
+			t.getPf().setUsuario(t);
 			
 		}
-		
-		t.setPf(et.merge(t.getPf()));
-		t.getPf().setUsuario(t);
 		
 		return t;
 		

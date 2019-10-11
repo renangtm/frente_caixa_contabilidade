@@ -140,6 +140,8 @@ public class TransportadoraService implements Service<Transportadora> {
 		
 		Transportadora t = obj;
 		
+		t.setPj(et.merge(t.getPj()));
+		
 		if(t.getId() == 0) {
 			
 			et.persist(t);
@@ -147,11 +149,9 @@ public class TransportadoraService implements Service<Transportadora> {
 		}else {
 			
 			t = et.merge(t);
+			t.getPj().setTransportadora(t);
 			
 		}
-		
-		t.setPj(et.merge(t.getPj()));
-		t.getPj().setTransportadora(t);
 		
 		return t;
 		

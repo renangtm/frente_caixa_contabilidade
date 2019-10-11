@@ -10,13 +10,11 @@ import br.com.base.AberturaCaixaException;
 import br.com.base.CFG;
 import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
-import br.com.base.Masks;
 import br.com.base.Resources;
 import br.com.caixa.Caixa;
 import br.com.caixa.CaixaService;
 import br.com.caixa.ConfiguracaoLocalCaixa;
 import br.com.caixa.ExpedienteCaixa;
-import br.com.caixa.ExpedienteCaixaService;
 import br.com.caixa.Reposicao;
 import br.com.caixa.RepresentadorExpedienteCaixa;
 import br.com.caixa.Sangria;
@@ -45,13 +43,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.DefaultFormatterFactory;
 
 import com.ibm.icu.text.NumberFormat;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JFormattedTextField;
 import javax.swing.UIManager;
 
 public class ConfiguracaoCaixa extends Modulo {
@@ -108,10 +104,6 @@ public class ConfiguracaoCaixa extends Modulo {
 	private JLabel lblStatus;
 	private JTable tblMovimentos;
 	private JTable tblSangrias;
-	private JButton btSangria;
-	private JFormattedTextField txtValorReposicao;
-	private JFormattedTextField txtValorSangria;
-	private JButton btReposicao;
 	private JLabel lblOperador;
 	private JButton btnFechar;
 	private JLabel lblSaldoAtual;
@@ -174,16 +166,11 @@ public class ConfiguracaoCaixa extends Modulo {
 			this.lblAgora.setText("-----------");
 			this.btnFechar.setEnabled(true);
 			
-			this.btSangria.setEnabled(true);
-			this.btReposicao.setEnabled(true);
-			
 		}else {
 			
 			this.lblAgora.setText(new ConversorDate().paraStringComHora(exp.getFim()));
 			this.btnFechar.setEnabled(false);
 			
-			this.btSangria.setEnabled(false);
-			this.btReposicao.setEnabled(false);
 			
 		}
 		
@@ -238,34 +225,6 @@ public class ConfiguracaoCaixa extends Modulo {
 			
 		}
 		
-		this.btReposicao.addActionListener(e->{
-			
-			if(
-					!vc(this.txtValorReposicao)) {
-				
-				return;
-				
-			}
-			
-			double valor = ((Number)this.txtValorReposicao.getValue()).doubleValue();
-			
-			Reposicao repo = new Reposicao();
-			repo.setExpediente(exp);
-			repo.setMomento(Calendar.getInstance());
-			repo.setValor(valor);
-			
-			exp.getReposicoes().add(repo);
-		
-			new ExpedienteCaixaService(et).merge(exp);
-			
-			et.getTransaction().begin();
-			et.getTransaction().commit();
-			
-			this.setExpediente(exp);
-			
-			this.txtValorReposicao.setValue(0);
-			
-		});
 		
 		this.btnFechar.addActionListener(e->{
 			
@@ -286,42 +245,6 @@ public class ConfiguracaoCaixa extends Modulo {
 				e1.printStackTrace();
 			}
 			this.dispose();
-			
-		});
-		
-		this.btSangria.addActionListener(e->{
-			
-			if(
-					!vc(this.txtValorSangria)) {
-				
-				return;
-				
-			}
-			
-			double valor = ((Number)this.txtValorSangria.getValue()).doubleValue();
-			
-			if(valor > exp.getCaixa().getSaldoAtual()) {
-				
-				erro("O valor da sangria tem que ser menor ou igual ao saldo");
-				return;
-				
-			}
-			
-			Sangria repo = new Sangria();
-			repo.setExpediente(exp);
-			repo.setMomento(Calendar.getInstance());
-			repo.setValor(valor);
-			
-			exp.getSangrias().add(repo);
-			
-			new ExpedienteCaixaService(et).merge(exp);
-			
-			et.getTransaction().begin();
-			et.getTransaction().commit();
-			
-			this.setExpediente(exp);
-			
-			this.txtValorReposicao.setValue(0);
 			
 		});
 		
@@ -491,12 +414,12 @@ public class ConfiguracaoCaixa extends Modulo {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Movimentos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 260, 320, 191);
+		panel.setBounds(10, 260, 320, 198);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 21, 300, 159);
+		scrollPane.setBounds(10, 21, 300, 166);
 		panel.add(scrollPane);
 		
 		tblMovimentos = new JTable();
@@ -509,25 +432,11 @@ public class ConfiguracaoCaixa extends Modulo {
 		panel_1.setLayout(null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 22, 215, 127);
+		scrollPane_1.setBounds(10, 22, 215, 159);
 		panel_1.add(scrollPane_1);
 		
 		tblSangrias = new JTable();
 		scrollPane_1.setViewportView(tblSangrias);
-		
-		JLabel lblNewLabel_2 = new JLabel("Valor R$:");
-		lblNewLabel_2.setBounds(10, 167, 46, 14);
-		panel_1.add(lblNewLabel_2);
-		
-		txtValorSangria = new JFormattedTextField();
-		txtValorSangria.setBounds(75, 161, 93, 20);
-		panel_1.add(txtValorSangria);
-		
-		txtValorSangria.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
-		
-		btSangria = new JButton("+");
-		btSangria.setBounds(178, 160, 47, 23);
-		panel_1.add(btSangria);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setLayout(null);
@@ -536,25 +445,11 @@ public class ConfiguracaoCaixa extends Modulo {
 		contentPane.add(panel_2);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(10, 22, 215, 127);
+		scrollPane_2.setBounds(10, 22, 215, 159);
 		panel_2.add(scrollPane_2);
 		
 		tblReposicao = new JTable();
 		scrollPane_2.setViewportView(tblReposicao);
-		
-		JLabel label = new JLabel("Valor R$:");
-		label.setBounds(10, 167, 46, 14);
-		panel_2.add(label);
-		
-		txtValorReposicao = new JFormattedTextField();
-		txtValorReposicao.setBounds(75, 161, 93, 20);
-		panel_2.add(txtValorReposicao);
-		
-		txtValorReposicao.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
-		
-		btReposicao = new JButton("+");
-		btReposicao.setBounds(178, 160, 47, 23);
-		panel_2.add(btReposicao);
 		
 		panel_3 = new JPanel();
 		panel_3.setLayout(null);
