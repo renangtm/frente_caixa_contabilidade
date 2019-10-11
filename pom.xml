@@ -24,7 +24,12 @@
     <version>1.7</version>
 </dependency>
 
-	
+	<!-- https://mvnrepository.com/artifact/com.jtattoo/JTattoo -->
+<dependency>
+    <groupId>com.jtattoo</groupId>
+    <artifactId>JTattoo</artifactId>
+    <version>1.6.7</version>
+</dependency>
 	<dependency>
     <groupId>net.sf.barcode4j</groupId>
     <artifactId>barcode4j</artifactId>

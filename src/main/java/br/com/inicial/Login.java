@@ -58,7 +58,7 @@ public class Login extends Tela {
 		super("Login", 37, 30, 26, 40, true);
 
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block

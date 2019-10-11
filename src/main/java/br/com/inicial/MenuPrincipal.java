@@ -34,21 +34,23 @@ import br.com.base.Resources;
 import br.com.usuario.Usuario;
 
 class ImagePanel extends JComponent {
-    
+
 	/**
 	 * 
 	 */
-	
+
 	private static final long serialVersionUID = 1L;
 	private Image image;
-    public ImagePanel(Image image) {
-        this.image = image;
-    }
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(image, this.getWidth()-image.getWidth(null), 0, this);
-    }
+
+	public ImagePanel(Image image) {
+		this.image = image;
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(image, this.getWidth() - image.getWidth(null), 0, this);
+	}
 }
 
 public class MenuPrincipal extends Tela {
@@ -64,20 +66,19 @@ public class MenuPrincipal extends Tela {
 	private static final long serialVersionUID = 1L;
 
 	private Usuario usuario;
-	
-	public MenuPrincipal(Usuario usuario) throws IOException{
 
-		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: ", 0, 0, 100, 100,
-				false);
-		
+	public MenuPrincipal(Usuario usuario) throws IOException {
+
+		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: ", 0, 0, 100, 100, false);
+
 		this.usuario = usuario;
-		
+
 		this.setVisible(true);
-		
+
 		this.setContentPane(new ImagePanel(Resources.getFundo()));
-		
+
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
-		
+
 		this.addFocusListener(new FocusListener() {
 
 			@Override
@@ -102,24 +103,21 @@ public class MenuPrincipal extends Tela {
 			}
 
 		});
-		
+
 		this.setBackground(Color.WHITE);
 
-		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 
 		/*
 		 * try {
 		 * 
-		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage
-		 * bi = ImageIO.read(imagem); JLabel lblFundo = new JLabel();
-		 * lblFundo.setIcon(new ImageIcon(bi));
+		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage bi =
+		 * ImageIO.read(imagem); JLabel lblFundo = new JLabel(); lblFundo.setIcon(new
+		 * ImageIcon(bi));
 		 * 
-		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); } catch
-		 * (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
+		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } catch (IOException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
 
 		JLabel logo = new JLabel();
@@ -130,17 +128,17 @@ public class MenuPrincipal extends Tela {
 		JLabel logoCliente = new JLabel();
 		getContentPane().add(logoCliente);
 		this.lr.setDimensoesComponente(logoCliente, 1, 1, 30, 15);
-		
+
 		try {
-		
+
 			logoCliente.setIcon(new ImageIcon(usuario.getPf().getEmpresa().getLogo().getArquivo()));
-		
-		}catch(Exception ex) {
-			
+
+		} catch (Exception ex) {
+
 			logoCliente.setIcon(new ImageIcon(Resources.getLogo()));
-			
+
 		}
-		
+
 		final Tela este = this;
 
 		this.addMouseListener(new MouseListener() {
@@ -211,41 +209,40 @@ public class MenuPrincipal extends Tela {
 
 		formarMenu(modulos, 15, 0, Math.min(6, 70 / modulos.size()));
 
-	
-		if(!CFG.moduloSat.isOperavel()){
-			
-			JOptionPane.showMessageDialog(null, "O Sat nao esta operando","Erro",JOptionPane.ERROR_MESSAGE);
-			
-		}else{
-			
-			while(true){
-				
-				try{
-					
+		if (!CFG.moduloSat.isOperavel()) {
+
+			JOptionPane.showMessageDialog(null, "O Sat nao esta operando", "Erro", JOptionPane.ERROR_MESSAGE);
+
+		} else {
+
+			while (true) {
+
+				try {
+
 					CFG.moduloSat.iniciar();
-					
+
 					break;
-					
-				}catch(Exception ex){
-					
-					JOptionPane.showMessageDialog(null, "O Sistema nao esta conseguindo inicializar o SAT","Erro",JOptionPane.ERROR_MESSAGE);
-					
+
+				} catch (Exception ex) {
+
+					JOptionPane.showMessageDialog(null, "O Sistema nao esta conseguindo inicializar o SAT", "Erro",
+							JOptionPane.ERROR_MESSAGE);
+
 					try {
-						
+
 						Thread.sleep(200000);
-						
+
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-				
+
 				}
-				
+
 			}
-			
+
 		}
-		
-		
+
 	}
 
 	private void esconde() {
@@ -275,7 +272,7 @@ public class MenuPrincipal extends Tela {
 	}
 
 	private void formarMenu(List<Object> o, int y_base, int level, int h) {
-		
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		} catch (ClassNotFoundException e2) {
@@ -291,12 +288,10 @@ public class MenuPrincipal extends Tela {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		
 
 		if (o.size() == 0)
 			return;
 
-		
 		int largura = 13;
 		int largura_img = 4;
 		int espacamento = 1;
@@ -335,14 +330,12 @@ public class MenuPrincipal extends Tela {
 
 			lbl.setLayout(null);
 
-			
-			
 			JComponent lblK2 = new JButton();
 			lblK2.setBorder(null);
 			lblK2.setOpaque(true);
 			lblK2.setForeground(new Color(255, 255, 255));
 			boolean bt = true;
-			
+
 			try {
 				@SuppressWarnings("unused")
 				Object[] sub_menu = (Object[]) item;
@@ -472,8 +465,7 @@ public class MenuPrincipal extends Tela {
 			}
 			lbl.requestFocus();
 			JComponent actr = lbl;
-			
-			
+
 			if (bt) {
 				((JButton) lbl2).addActionListener(new ActionListener() {
 
@@ -486,7 +478,7 @@ public class MenuPrincipal extends Tela {
 							public void run() {
 								try {
 									@SuppressWarnings("unchecked")
-									
+
 									Class<? extends Modulo> classe = (Class<? extends Modulo>) objetos.get(lbl);
 									Med m = new Med("Abrir " + classe.getName());
 									Modulo mod = classe.newInstance();
@@ -511,11 +503,10 @@ public class MenuPrincipal extends Tela {
 									}
 
 									mod.init(usuario);
-									
+
 									mod.setVisible(true);
-									
+
 									mod.centralizar();
-									
 
 								} catch (Exception ee) {
 									ee.printStackTrace();
@@ -620,21 +611,13 @@ public class MenuPrincipal extends Tela {
 		}
 
 		esconde();
-		
+
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e2) {
+			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (InstantiationException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (IllegalAccessException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			e.printStackTrace();
 		}
 
 	}
