@@ -94,8 +94,6 @@ public class BancoService implements Service<Banco> {
 	@Override
 	public Banco merge(Banco b) {
 		
-		b.setPj(et.merge(b.getPj()));
-		
 		if(b.getId() == 0) {
 			
 			et.persist(b);
@@ -104,7 +102,6 @@ public class BancoService implements Service<Banco> {
 		}
 		
 		Banco banco = et.merge(b);
-		
 		banco.getPj().setBanco(banco);
 		
 		return banco;

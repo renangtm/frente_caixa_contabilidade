@@ -52,23 +52,14 @@ import br.com.nota.NotaService;
 import br.com.nota.ProdutoNota;
 import br.com.pessoa.PessoaFisica;
 import br.com.pessoa.PessoaJuridica;
+import br.com.webServices.TabelaImpostoAproximado;
 
 public class ValidadorDocumento {
 
 	private static final boolean TESTE = true;
-	
+
 	private NotaService service;
 	private SAT moduloSat;
-	
-	private String cpfNota = "";
-
-	public String getCpfNota() {
-		return cpfNota;
-	}
-
-	public void setCpfNota(String cpfNota) {
-		this.cpfNota = cpfNota;
-	}
 
 	public CFe notaParaCFe(Nota nota) throws InvalidKeyException, NoSuchAlgorithmException, KeyStoreException,
 			CertificateException, SignatureException, IOException {
@@ -76,9 +67,9 @@ public class ValidadorDocumento {
 		FormataNumero f2 = new FormataNumero(2);
 
 		FormataNumero f3 = new FormataNumero(3);
-		
+
 		FormataNumero f4 = new FormataNumero(4);
-		
+
 		FormataInteiro i2 = new FormataInteiro(2);
 
 		FormataInteiro i3 = new FormataInteiro(3);
@@ -98,13 +89,13 @@ public class ValidadorDocumento {
 		inf.setIde(ide);
 
 		Emit emit = new Emit();
-		
+
 		emit.setCNPJ(nota.getEmitente().getCnpj().replaceAll("\\.", "").replaceAll("/", "").replaceAll("-", ""));
 		emit.setIE(nota.getEmitente().getInscricao_estadual().replaceAll("\\.", "").replaceAll("/", "").replaceAll("-",
 				""));
 
-		//emit.setXNome(nota.getEmitente().getNome());
-		//emit.setXFant(nota.getEmitente().getNome());
+		// emit.setXNome(nota.getEmitente().getNome());
+		// emit.setXFant(nota.getEmitente().getNome());
 		emit.setIndRatISSQN("N");
 
 		inf.setEmit(emit);
@@ -113,7 +104,7 @@ public class ValidadorDocumento {
 
 		if (nota.getDestinatario() == null) {
 
-			dest.setCPF(this.cpfNota);
+			dest.setCPF(nota.getCpfNotaSemDestinatario());
 
 		} else if (nota.getDestinatario().getClass().equals(PessoaFisica.class)) {
 
@@ -133,15 +124,14 @@ public class ValidadorDocumento {
 
 		inf.setDest(dest);
 
-		
 		int ni = 1;
 		for (ProdutoNota pn : nota.getProdutos()) {
 
 			Det det = new Det();
-			
-			det.setNItem(ni+"");
+
+			det.setNItem(ni + "");
 			ni++;
-			
+
 			Prod prod = new Prod();
 
 			prod.setCProd(pn.getProduto().getCodigo_barra());
@@ -162,12 +152,12 @@ public class ValidadorDocumento {
 
 			prod.setVDesc(f2.formatar(pn.getDesconto()));
 
-			//prod.setCEAN("SEM GTIN");
+			// prod.setCEAN("SEM GTIN");
 
 			prod.setVOutro(f2.formatar(pn.getOutro() + pn.getSeguro()));
 
 			prod.setIndRegra("A");
-			
+
 			det.setProd(prod);
 
 			det.setInfAdProd("Produto emitido referente a venda no sistema RTC Contabil");
@@ -187,7 +177,7 @@ public class ValidadorDocumento {
 				c.setCST(ca.getCst());
 				c.setPPIS(f4.formatar(ca.getAlicotaPis()));
 				c.setVBC(f2.formatar(ca.getValorBaseCalculo()));
-				
+
 				pis.setPISAliq(c);
 
 			} catch (Exception ex) {
@@ -368,8 +358,7 @@ public class ValidadorDocumento {
 				icms00.setCST(i00.getCst());
 				icms00.setOrig(i00.getOrigem().getId() + "");
 				icms00.setPICMS(f2.formatar((i00.getValorIcms()
-						/ (pn.getValor() * pn.getQuantidade() + pn.getOutro() + pn.getSeguro())
-						* 100)));
+						/ (pn.getValor() * pn.getQuantidade() + pn.getOutro() + pn.getSeguro()) * 100)));
 
 				icms.setICMS00(icms00);
 
@@ -411,7 +400,13 @@ public class ValidadorDocumento {
 
 			imp.setICMS(icms);
 
-			imp.setVItem12741(f2.formatar(nota.getProdutos().stream().mapToDouble(i->i.getImposto().getTotalImpostos()).sum()));
+			imp.setVItem12741(f2.formatar(nota.getProdutos().stream().mapToDouble(i -> {
+
+				double tmp = this.tia.getImposto(i.getProduto(), i.getValor() * i.getQuantidade());
+
+				return tmp > 0 ? tmp : i.getImposto().getTotalImpostos();
+
+			}).sum()));
 
 			inf.getDet().add(det);
 
@@ -439,15 +434,14 @@ public class ValidadorDocumento {
 		Pgto pg = new Pgto();
 
 		MP mp = new MP();
-		
-		if(Arrays.asList(
-				FormaPagamentoNota.CARTAO_CREDITO
-				,FormaPagamentoNota.CARTAO_DEBITO).contains(nota.getForma_pagamento())){
-		
+
+		if (Arrays.asList(FormaPagamentoNota.CARTAO_CREDITO, FormaPagamentoNota.CARTAO_DEBITO)
+				.contains(nota.getForma_pagamento())) {
+
 			mp.setCAdmC(i3.formatar(nota.getCredenciadoraCartao()));
 
 		}
-		
+
 		mp.setVMP(f2.formatar(nota.getValorMeioDePagamento()));
 		mp.setCMP(i2.formatar(nota.getForma_pagamento().getId()));
 
@@ -468,11 +462,15 @@ public class ValidadorDocumento {
 
 	private GeradorCupomSAT gc;
 
-	public ValidadorDocumento(NotaService service, SAT moduloSat, GeradorCupomSAT gc) {
+	private TabelaImpostoAproximado tia;
+
+	public ValidadorDocumento(NotaService service, SAT moduloSat, GeradorCupomSAT gc, TabelaImpostoAproximado tia) {
 
 		this.service = service;
 		this.moduloSat = moduloSat;
 		this.gc = gc;
+
+		this.tia = tia;
 
 	}
 
@@ -495,61 +493,68 @@ public class ValidadorDocumento {
 			if (this.moduloSat != null || TESTE) {
 
 				try {
-					
-					if(!TESTE) {
-						
+
+					if (!TESTE) {
+
 						this.moduloSat.iniciar();
-						
+
 						CFe cfe = this.notaParaCFe(nota);
-	
+
 						JAXBContext context = JAXBContext.newInstance(CFe.class);
 						Marshaller m = context.createMarshaller();
-	
+
 						StringWriter wr = new StringWriter();
-	
+
 						m.marshal(cfe, wr);
-	
+
 						String xml = wr.toString();
-	
+
 						String ret = this.moduloSat.getInterface().EnviarDadosVenda(this.moduloSat.gerarNumeroSessao(),
 								nota.getEmpresa().getParametrosEmissao().getSenha_sat(), xml);
-	
+
 						System.out.println(xml);
 						System.out.println(ret);
-	
+
 						String[] retorno = ret.split("\\|");
-	
+
 						if (retorno[0].equalsIgnoreCase("erro")) {
-	
+
 							throw new RuntimeException("Erro ao emitir CFe");
-	
+
 						}
-						
-	
+
 						String chave = "12344321";
-	
+
 						nota.setNumero(0);
-	
+
 						nota.setChave(chave);
-						
+
 						int numero = Integer.parseInt(nota.getChave().substring(26, 35));
 						nota.setNumero(numero);
-						
-						String b64 = retorno[8].replaceAll("CFe", "")+"|"+retorno[7];
-						
-						for(int i=9;i<retorno.length;i++){
-							
-							b64 += "|"+retorno[i];
-							
+
+						String b64 = retorno[8].replaceAll("CFe", "") + "|" + retorno[7];
+
+						for (int i = 9; i < retorno.length; i++) {
+
+							b64 += "|" + retorno[i];
+
 						}
-						
-						
-						this.gc.gerarCupomFiscal(nota, b64);
-						
-					}else {
-						
-						this.gc.gerarCupomFiscal(nota, "123456789");
-						
+
+						this.gc.gerarCupomFiscal(nota, Double.parseDouble(cfe.getInfCFe().getTotal().getVCFeLei12741()),
+								b64);
+
+					} else {
+
+						double impostosApriximados = nota.getProdutos().stream().mapToDouble(i -> {
+
+							double tmp = this.tia.getImposto(i.getProduto(), i.getValor() * i.getQuantidade());
+
+							return tmp > 0 ? tmp : i.getImposto().getTotalImpostos();
+
+						}).sum();
+
+						this.gc.gerarCupomFiscal(nota, impostosApriximados, "123456789");
+
 					}
 
 				} catch (Exception e) {

@@ -106,20 +106,6 @@ public class PessoaFisicaService implements Service<PessoaFisica> {
 			
 		}
 		
-		if(pessoa.getCliente() != null) {
-			
-			pessoa.setCliente(et.merge(obj.getCliente()));
-			obj.getCliente().setPessoa(pessoa);
-			
-		}
-		
-		if(pessoa.getUsuario() != null) {
-			
-			pessoa.setUsuario(et.merge(obj.getUsuario()));
-			obj.getUsuario().setPf(pessoa);
-			
-		}
-		
 		
 		return pessoa;
 		

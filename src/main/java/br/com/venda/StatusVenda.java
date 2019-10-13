@@ -2,7 +2,7 @@ package br.com.venda;
 
 public enum StatusVenda {
 	
-	EM_EXECUCAO(0,false),
+	EM_EXECUCAO(0,true),
 	RESERVA(1,true),
 	FINALIZANDO_PAGAMENTO(1,true),
 	FECHADA(2,false),

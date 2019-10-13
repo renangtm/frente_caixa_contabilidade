@@ -1,4 +1,4 @@
-package br.com.geradoresCupom;
+package br.com.impressao;
 
 public class ProdutoSATModelo1 {
 

@@ -131,37 +131,6 @@ public class PessoaJuridicaService implements Service<PessoaJuridica> {
 			pessoa = et.merge(pessoa);
 			
 		}
-		
-		if(pessoa.getCliente() != null) {
-			
-			pessoa.setCliente(et.merge(obj.getCliente()));
-			obj.getCliente().setPessoa(pessoa);
-			
-		}
-		
-		if(pessoa.getBanco() != null) {
-			
-			pessoa.setBanco(et.merge(obj.getBanco()));
-			obj.getBanco().setPj(pessoa);
-			
-		}
-		
-		if(pessoa.getFornecedor() != null) {
-			
-			pessoa.setFornecedor(et.merge(obj.getFornecedor()));
-			obj.getFornecedor().setPj(pessoa);
-			
-		}
-		
-		if(pessoa.getTransportadora() != null) {
-			
-			pessoa.setTransportadora(et.merge(obj.getTransportadora()));
-			obj.getTransportadora().setPj(pessoa);
-			
-		}
-		
-		
-		
 		return pessoa;
 		
 		

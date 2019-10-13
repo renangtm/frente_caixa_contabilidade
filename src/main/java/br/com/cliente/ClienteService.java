@@ -48,6 +48,7 @@ public class ClienteService implements Service<Cliente>{
 		if(obj.getId() == 0) {
 			
 			et.persist(obj);
+			
 			return obj;
 			
 		}

@@ -29,18 +29,18 @@ public class MovimentoService implements Service<Movimento> {
 
 		movimento.setValor(0);
 
-		this.mergeMovimento(movimento, deletarFechamento, (p, d) -> {
+		this.mergeMovimento(movimento, deletarFechamento, (p, d, m) -> {
 
 			if (p < 100) {
 
-				l.setConclusao(p, d);
+				l.setConclusao(p, d, m);
 				return;
 
 			}
 
 			this.et.remove(movimento);
 
-			l.setConclusao(100, "");
+			l.setConclusao(100, "", m);
 
 		});
 
@@ -64,7 +64,7 @@ public class MovimentoService implements Service<Movimento> {
 
 				if (pago > movimento.getVencimento().getValor()) {
 
-					l.setConclusao(-1, "Esse valor supera o do vencimento");
+					l.setConclusao(-1, "Esse valor supera o do vencimento",null);
 					return;
 
 				}
@@ -73,7 +73,7 @@ public class MovimentoService implements Service<Movimento> {
 
 					if (movimento.getOperacao().isCredito()) {
 
-						l.setConclusao(-1, "Operacao de credito para entrada");
+						l.setConclusao(-1, "Operacao de credito para entrada",null);
 						return;
 
 					}
@@ -82,7 +82,7 @@ public class MovimentoService implements Service<Movimento> {
 
 					if (!movimento.getOperacao().isCredito()) {
 
-						l.setConclusao(-1, "Operacao de debito para saida");
+						l.setConclusao(-1, "Operacao de debito para saida",null);
 						return;
 
 					}
@@ -99,11 +99,11 @@ public class MovimentoService implements Service<Movimento> {
 			@SuppressWarnings("unchecked")
 			List<Fechamento> fechamentos = (List<Fechamento>) (List<?>) q.getResultList();
 
-			l.setConclusao(5, "");
+			l.setConclusao(5, "",null);
 
 			if (!deletarFechamentos && fechamentos.size() > 0) {
 
-				l.setConclusao(-1, "Existem fechamentos que nao podem ser apagados");
+				l.setConclusao(-1, "Existem fechamentos que nao podem ser apagados",null);
 				return;
 
 			}
@@ -115,12 +115,11 @@ public class MovimentoService implements Service<Movimento> {
 			q.setParameter("este", movimento.getId() == 0 ? Integer.MAX_VALUE : movimento.getId());
 			q.setMaxResults(1);
 
-			System.out.println(q.toString());
 
 			@SuppressWarnings("unchecked")
 			List<Movimento> anteriores = (List<Movimento>) (List<?>) q.getResultList();
 
-			l.setConclusao(10, "");
+			l.setConclusao(10, "",null);
 
 			double saldo_anterior = 0;
 
@@ -167,7 +166,7 @@ public class MovimentoService implements Service<Movimento> {
 					currente.setSaldo(
 							saldo_anterior + ((currente.getValor()+currente.getJuros()-currente.getDescontos()) * (currente.getOperacao().isCredito() ? 1 : -1)));
 					if (currente.getSaldo() < 0) {
-						l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId());
+						l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId(),null);
 						return;
 					}
 					saldo_anterior = currente.getSaldo();
@@ -175,13 +174,13 @@ public class MovimentoService implements Service<Movimento> {
 					currente = m;
 				}
 
-				l.setConclusao(10 + ((index / total) * 80), "");
+				l.setConclusao(10 + ((index / total) * 80), "",null);
 
 			}
 
 			currente.setSaldo(saldo_anterior + ((currente.getValor()+currente.getJuros()-currente.getDescontos()) * (currente.getOperacao().isCredito() ? 1 : -1)));
 			if (currente.getSaldo() < 0) {
-				l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId());
+				l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId(),null);
 				return;
 			}
 
@@ -214,17 +213,19 @@ public class MovimentoService implements Service<Movimento> {
 				
 			}
 
+			Movimento mov = movimento;
+			
 			if (movimento.getId() == 0) {
 
 				et.persist(movimento);
 				
 			}else {
 
-				et.merge(movimento);
+				mov = et.merge(movimento);
 			
 			}
 
-			l.setConclusao(100, "");
+			l.setConclusao(100, "",mov);
 
 		};
 		
@@ -303,7 +304,7 @@ public class MovimentoService implements Service<Movimento> {
 
 	public interface Listener {
 
-		public void setConclusao(double porcentagem, String observacao);
+		public void setConclusao(double porcentagem, String observacao,Movimento merged);
 
 	}
 

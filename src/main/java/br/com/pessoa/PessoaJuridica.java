@@ -36,13 +36,13 @@ public class PessoaJuridica extends Pessoa{
 	@Column
 	private Calendar abertura;
 	
-	@OneToOne(mappedBy="pj",fetch=FetchType.LAZY)
+	@OneToOne(mappedBy="pj",fetch=FetchType.LAZY,cascade={CascadeType.MERGE,CascadeType.PERSIST})
 	private Fornecedor fornecedor;
 	
-	@OneToOne(mappedBy="pj",fetch=FetchType.LAZY)
+	@OneToOne(mappedBy="pj",fetch=FetchType.LAZY,cascade={CascadeType.MERGE,CascadeType.PERSIST})
 	private Transportadora transportadora;
 	
-	@OneToOne(mappedBy="pj")
+	@OneToOne(mappedBy="pj",fetch=FetchType.LAZY,cascade={CascadeType.MERGE,CascadeType.PERSIST})
 	private Banco banco;
 	
 	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)

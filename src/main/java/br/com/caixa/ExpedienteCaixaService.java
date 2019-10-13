@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 
 import br.com.base.Service;
+import br.com.nota.FormaPagamentoNota;
 
 public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 
@@ -50,6 +51,8 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 		
 		e.setSangrias(e.getSangrias().stream().map(s->{
 			
+			s.setGerente(et.merge(s.getGerente()));
+			
 			if(s.getId() == 0)
 				et.persist(s);
 			else
@@ -63,6 +66,8 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 		}).collect(Collectors.toList()));
 		
 		e.setReposicoes(e.getReposicoes().stream().map(r->{
+			
+			r.setGerente(et.merge(r.getGerente()));
 			
 			if(r.getId() == 0)
 				et.persist(r);
@@ -89,6 +94,18 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 			
 		}).collect(Collectors.toList()));
 		
+		
+		e.getMovimentos().forEach(m->{
+			
+			if(m.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+				
+				
+				ee.setSaldo_final_atual(ee.getSaldo_final_atual()+(m.getValor()*(m.getOperacao().isCredito()?1:-1)));
+				
+			}
+			
+		});
+		
 		e.getCaixa().setSaldoAtual(e.getSaldo_final_atual());
 		
 		e.setCaixa(et.merge(e.getCaixa()));
@@ -108,6 +125,7 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 		e.getAjustes().forEach(a->a.setExpediente(ne));
 		e.getSangrias().forEach(s->s.setExpediente(ne));
 		e.getReposicoes().forEach(r->r.setExpediente(ne));
+		e.getMovimentos().forEach(m->m.setExpediente(ne));
 		
 		return e;
 	}

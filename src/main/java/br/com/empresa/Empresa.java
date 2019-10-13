@@ -3,6 +3,7 @@ package br.com.empresa;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,9 +33,24 @@ public class Empresa{
 	@JoinColumn(name="id_logo")
 	private Logo logo;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade= {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REFRESH})
+	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.PERSIST)
 	@JoinColumn(name="id_pessoa")
 	private PessoaJuridica pj;
+
+	@Column
+	private String tokenAPIImpostosAproximados;
+	
+	public String getTokenAPIImpostosAproximados() {
+		return tokenAPIImpostosAproximados;
+	}
+
+
+
+	public void setTokenAPIImpostosAproximados(String tokenAPIImpostosAproximados) {
+		this.tokenAPIImpostosAproximados = tokenAPIImpostosAproximados;
+	}
+
+
 
 	public Empresa(){
 		

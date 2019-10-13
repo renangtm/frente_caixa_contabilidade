@@ -6,10 +6,17 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,16 +31,23 @@ import javax.swing.JTextField;
 import br.com.banco.Banco;
 import br.com.banco.BancoService;
 import br.com.base.AberturaCaixaException;
+import br.com.base.CFG;
 import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
 import br.com.base.Resources;
+import br.com.caixa.ConfiguracaoLocalCaixa;
 import br.com.caixa.ExpedienteCaixa;
+import br.com.caixa.ExpedienteCaixaService;
+import br.com.caixa.Reposicao;
+import br.com.caixa.Sangria;
 import br.com.codigo_barra.CodigoBarra;
 import br.com.emissao.SAT;
 import br.com.emissao.ValidadorDocumento;
 import br.com.empresa.Empresa;
-import br.com.geradoresCupom.GeradorCupomSATModelo1;
 import br.com.historico.Historico;
+import br.com.impressao.GeradorCupomReposicao;
+import br.com.impressao.GeradorCupomSATModelo1;
+import br.com.impressao.GeradorCupomSangria;
 import br.com.movimento_financeiro.Movimento;
 import br.com.movimento_financeiro.MovimentoService;
 import br.com.nota.FormaPagamentoNota;
@@ -47,7 +61,9 @@ import br.com.pessoa.RepresentadorPessoa;
 import br.com.produto.Produto;
 import br.com.produto.ProdutoService;
 import br.com.quantificacao.TipoQuantidade;
+import br.com.usuario.TipoPermissao;
 import br.com.usuario.Usuario;
+import br.com.usuario.UsuarioService;
 import br.com.utilidades.GerenciadorLista;
 import br.com.utilidades.ListModelGenerica;
 import br.com.utilidades.PercentageColumnSetter;
@@ -58,6 +74,7 @@ import br.com.venda.RepresentadorProdutoVenda;
 import br.com.venda.StatusVenda;
 import br.com.venda.Venda;
 import br.com.venda.VendaService;
+import br.com.webServices.TabelaImpostoAproximado;
 
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -71,6 +88,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JSlider;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
 
 public class FrenteCaixa extends Modulo {
 
@@ -93,6 +112,8 @@ public class FrenteCaixa extends Modulo {
 	private JTextField txtPesquisa;
 	private JTable tblProdutos;
 	private JTable tblVenda;
+
+	private static List<KeyEventDispatcher> atalhos = new ArrayList<KeyEventDispatcher>();
 
 	private JTabbedPane tbpBP;
 
@@ -128,11 +149,28 @@ public class FrenteCaixa extends Modulo {
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException,
-			IllegalAccessException, UnsupportedLookAndFeelException {
+			IllegalAccessException, UnsupportedLookAndFeelException, InvalidKeyException, NoSuchAlgorithmException,
+			CertificateException, KeyStoreException, SignatureException, IOException {
 
 		EntityManager et = ET.nova();
 
 		Usuario u = et.find(Usuario.class, 1);
+
+		CFG.moduloSat = new SAT(u.getPf().getEmpresa());
+
+		ConfiguracaoLocalCaixa clc = ConfiguracaoLocalCaixa.getConfiguracaoLocalCaixa(u.getPf().getEmpresa());
+
+		if (clc != null) {
+
+			if (!clc.verificarAssinatura()) {
+
+				clc = null;
+
+			}
+
+		}
+
+		CFG.clc = clc;
 
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
@@ -155,14 +193,14 @@ public class FrenteCaixa extends Modulo {
 
 		this.venda.setStatus(StatusVenda.FECHADA);
 		this.venda.setData(Calendar.getInstance());
-		
-		if(this.venda.getCliente() != null) {
-			
+
+		if (this.venda.getCliente() != null) {
+
 			this.venda.setCliente(et.merge(this.venda.getCliente()));
-			
+
 		}
-		
-		this.venda.getProdutos().stream().forEach(p->p.setProduto(et.merge(p.getProduto())));
+
+		this.venda.getProdutos().stream().forEach(p -> p.setProduto(et.merge(p.getProduto())));
 
 		try {
 
@@ -175,6 +213,13 @@ public class FrenteCaixa extends Modulo {
 
 			if (this.formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 
+				if (this.venda.getTotal() > Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))) {
+
+					alerta("Pagamento menor que o devido.");
+					return;
+
+				}
+
 				nf.setValorMeioPagamento(Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")));
 
 			}
@@ -182,18 +227,18 @@ public class FrenteCaixa extends Modulo {
 			nf.setVenda(this.venda);
 
 			List<Nota> notas = null;
-			
-			try{
-				
+
+			try {
+
 				notas = nf.getNotas();
-				
-			}catch(Exception exx){
-				
+
+			} catch (Exception exx) {
+
 				erro(exx.getMessage());
 				return;
-				
+
 			}
-			
+
 			NotaService ns = new NotaService(et);
 			ns.setEmpresa(this.empresa);
 
@@ -205,21 +250,18 @@ public class FrenteCaixa extends Modulo {
 				throw new RuntimeException("Nao é possivel criar a venda nem a nota");
 
 			}
-			
-			SAT sat = new SAT(venda.getEmpresa());//teste
-		
-			ValidadorDocumento vd = new ValidadorDocumento(ns, sat, new GeradorCupomSATModelo1());
 
-			if(this.cpf != "") {
-				
-				vd.setCpfNota(this.cpf);
-				
-			}else {
-				
-				vd.setCpfNota("");
-				
+			SAT sat = new SAT(venda.getEmpresa());// teste
+
+			ValidadorDocumento vd = new ValidadorDocumento(ns, sat, new GeradorCupomSATModelo1(),
+					new TabelaImpostoAproximado());
+
+			if (this.cpf != "") {
+
+				notas.forEach(n -> n.setCpfNotaSemDestinatario(this.cpf));
+
 			}
-			
+
 			notas.forEach(n -> {
 
 				try {
@@ -227,9 +269,9 @@ public class FrenteCaixa extends Modulo {
 					vd.validarFiscalmente(n);
 
 				} catch (Exception ex) {
-					
+
 					erro("Nao foi possivel emitir o cupom devido a inconsistencias fiscais, contate o seu contador.");
-					
+
 					ex.printStackTrace();
 
 					return;
@@ -239,12 +281,12 @@ public class FrenteCaixa extends Modulo {
 			});
 
 			this.venda = new VendaService(et).merge(venda);
-			
+
 			et.getTransaction().begin();
 			et.getTransaction().commit();
-			
-			notas = notas.stream().map(n->new NotaService(et).merge(n)).collect(Collectors.toList());
-			
+
+			notas = notas.stream().map(n -> new NotaService(et).merge(n)).collect(Collectors.toList());
+
 			this.venda.setNotas(notas);
 
 			et.getTransaction().begin();
@@ -271,10 +313,11 @@ public class FrenteCaixa extends Modulo {
 
 			Historico hi = (Historico) et.createQuery("SELECT h FROM Historico h").getResultList().get(0);
 
-			Operacao op = (Operacao) et.createQuery("SELECT o FROM Operacao o WHERE o.credito=true").getResultList().get(0);
+			Operacao op = (Operacao) et.createQuery("SELECT o FROM Operacao o WHERE o.credito=true").getResultList()
+					.get(0);
 
 			ths.addAll(notas.stream().flatMap(n -> n.getVencimentos().stream()).map(v -> {
-				
+
 				return new Thread(() -> {
 
 					Movimento m = new Movimento();
@@ -291,21 +334,23 @@ public class FrenteCaixa extends Modulo {
 					mvs.mergeMovimento(m, true, new MovimentoService.Listener() {
 
 						@Override
-						public void setConclusao(double porcentagem, String observacao) {
+						public void setConclusao(double porcentagem, String observacao, Movimento mov) {
 
 							if (porcentagem == 100) {
 
 								ths.removeFirst();
 
+								expediente.getMovimentos().add(mov);
+
 								et.getTransaction().begin();
 								et.getTransaction().commit();
-								
-								if (ths.size() > 0){
+
+								if (ths.size() > 0) {
 									ths.getFirst().start();
-								}else{
+								} else {
 									novaVenda();
 								}
-									
+
 							}
 
 						}
@@ -336,28 +381,11 @@ public class FrenteCaixa extends Modulo {
 	}
 
 	private String cpf;
-	
-	protected void novaVenda() {
 
-		if (this.venda != null) {
-
-			et.detach(this.venda);
-
-		}
+	protected void setVenda(Venda venda) {
 		
-		new Thread(()->{
-			
-			this.cpf = console("CPF da nota ?");
-			
-		}).start();
+		this.venda = venda;
 		
-
-		this.venda = new Venda();
-
-		this.venda.setOperador(this.operador);
-
-		this.venda.setEmpresa(this.empresa);
-
 		this.formaPagamento = this.cboFormaPagto.getItemAt(0);
 
 		this.lstProdutoVenda = new ListModelGenerica<ProdutoVenda>(this.venda.getProdutos(), ProdutoVenda.class,
@@ -375,10 +403,35 @@ public class FrenteCaixa extends Modulo {
 		this.tblVenda.setModel(this.lstProdutoVenda);
 
 		this.mostrarVenda();
-		
+
 		this.txtSubTotal.setText("");
 		this.txtDinheiro.setText("");
 		this.txtTroco.setText("");
+		
+		
+	}
+	
+	protected void novaVenda() {
+
+		if (this.venda != null) {
+
+			et.detach(this.venda);
+
+		}
+
+		new Thread(() -> {
+
+			this.cpf = console("CPF da nota ?");
+
+		}).start();
+
+		this.venda = new Venda();
+
+		this.venda.setOperador(this.operador);
+
+		this.venda.setEmpresa(this.empresa);
+
+		this.setVenda(this.venda);
 
 	}
 
@@ -426,10 +479,12 @@ public class FrenteCaixa extends Modulo {
 			this.txtCliente.setText(this.venda.getCliente().getNome());
 		}
 
+		this.lblQuantidadeItens.setText(
+				this.venda.getProdutos().size() + " " + (this.venda.getProdutos().size() > 1 ? "Itens" : "Item"));
+
 		this.txtDescricaoProduto.setText("");
 		this.txtQuantidade.setText("0 UN");
 		this.txtValorUnitario.setText("0,00");
-		
 
 		if (this.produtoSelecionado != null) {
 
@@ -458,34 +513,43 @@ public class FrenteCaixa extends Modulo {
 
 		this.lstProdutoVenda.setLista(this.venda.getProdutos());
 		this.lstProdutoVenda.atualizaListaBaseConformeFiltros();
-		
+
 		this.tblProdutos.setDefaultRenderer(String.class, new ProdCellRenderer());
-		
+
 		percProd = new PercentageColumnSetter(Produto.class);
 		percProd.resize(this.tblProdutos, this.srcProdutos);
-		
+
 	}
 
 	private ExpedienteCaixa expediente;
-	
+
+	private JButton btFinalizarPedido;
+
+	private JButton btNovaVenda;
+
+	private JButton btSangria;
+
+	private JButton btReposicao;
+
+	private JLabel lblQuantidadeItens;
+
 	public void init(Usuario operador) {
 
 		this.operador = et.merge(operador);
 		this.empresa = this.operador.getPf().getEmpresa();
-		et.detach(this.operador);
 		this.empresa = et.merge(this.empresa);
-		
+
 		try {
-			
+
 			expediente = ConfiguracaoExpediente.getExpedienteCaixa(operador);
-			
+
 		} catch (AberturaCaixaException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			erro("Nao foi possivel abrir o caixa configure o numero do caixa na tela de configuracao de caixa primerio");
 			this.dispose();
 			return;
-			
+
 		}
 
 		this.setTitle(operador.getPf().getEmpresa().getPj().getNome() + " - Operador: " + operador.getPf().getNome());
@@ -669,6 +733,10 @@ public class FrenteCaixa extends Modulo {
 
 					this.txtBipe.requestFocus();
 
+				}else if(this.tbpBP.getSelectedIndex() == 2) {
+					
+					this.txtComanda.requestFocus();
+					
 				}
 
 				try {
@@ -682,74 +750,339 @@ public class FrenteCaixa extends Modulo {
 
 		}).start();
 
+		this.btNovaVenda.addActionListener(a -> {
+			novaVenda();
+		});
+
+		this.btFinalizarPedido.addActionListener(a -> {
+
+			if (venda.getProdutos().size() == 0) {
+
+				alerta("Coloque produtos na venda");
+				return;
+			}
+
+			boolean pf = true;
+
+			if (tbpBP.getSelectedIndex() == 0) {
+
+				txtBipe.setText("");
+				tbpBP.setSelectedIndex(1);
+
+			}
+
+			if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+				try {
+
+					Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
+
+				} catch (Exception exx) {
+					txtDinheiro.requestFocus();
+					pf = false;
+				}
+			}
+
+			if (pf)
+				finalizarVenda();
+
+		});
+
+		this.btSangria.addActionListener(a -> {
+			String senha = console("Senha de Administrador");
+
+			Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha, TipoPermissao.GERENCIA_CAIXAS,
+					operador.getPf().getEmpresa());
+
+			if (gerente == null) {
+
+				erro("Senha invalida");
+				return;
+
+			}
+
+			double valor = Double.parseDouble(console("Digite o valor").replaceAll(",", "."));
+
+			try {
+
+				ExpedienteCaixa exp = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
+
+				if (valor > exp.getSaldo_final_atual()) {
+
+					erro("O Valor e maior que o saldo desse caixa");
+					return;
+
+				}
+
+				Sangria sangria = new Sangria();
+				sangria.setExpediente(exp);
+				sangria.setMomento(Calendar.getInstance());
+				sangria.setValor(valor);
+				sangria.setGerente(gerente);
+
+				exp.getSangrias().add(sangria);
+
+				new ExpedienteCaixaService(et).merge(exp);
+
+				et.getTransaction().begin();
+				et.getTransaction().commit();
+
+				new GeradorCupomSangria().gerarCupom(sangria);
+
+			} catch (Exception e1) {
+
+				e1.printStackTrace();
+
+				alerta("Nao existe expediente aberto");
+
+			}
+		});
+
+		this.btReposicao.addActionListener(a -> {
+			String senha = console("Senha de Administrador");
+
+			Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha, TipoPermissao.GERENCIA_CAIXAS,
+					operador.getPf().getEmpresa());
+
+			if (gerente == null) {
+
+				erro("Senha invalida");
+				return;
+
+			}
+
+			double valor = Double.parseDouble(console("Digite o valor").replaceAll(",", "."));
+
+			try {
+
+				ExpedienteCaixa exp = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
+
+				Reposicao reposicao = new Reposicao();
+				reposicao.setExpediente(exp);
+				reposicao.setMomento(Calendar.getInstance());
+				reposicao.setValor(valor);
+				reposicao.setGerente(gerente);
+
+				exp.getReposicoes().add(reposicao);
+
+				new ExpedienteCaixaService(et).merge(exp);
+
+				et.getTransaction().begin();
+				et.getTransaction().commit();
+
+				new GeradorCupomReposicao().gerarCupom(reposicao);
+
+			} catch (Exception e1) {
+
+				e1.printStackTrace();
+
+				alerta("Nao existe expediente aberto");
+				return;
+
+			}
+
+		});
+		
+		this.txtComanda.addActionListener(a->{
+			
+			String codigo = this.txtComanda.getText();
+			
+			VendaService vs = new VendaService(et);
+			
+			
+			Venda venda = vs.getVendaPorComanda(codigo);
+			
+			if(venda == null) {
+				
+				alerta("Nao existe nada nessa comanda");
+				this.txtComanda.setText("");
+				return;
+				
+			}
+			
+			this.setVenda(venda);
+			
+			this.txtComanda.setText("");
+			
+		});
+
 		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		final FrenteCaixa este = this;
-		keyManager.addKeyEventDispatcher(new KeyEventDispatcher() {
+
+		FrenteCaixa.atalhos.forEach(d -> keyManager.removeKeyEventDispatcher(d));
+
+		KeyEventDispatcher disp = new KeyEventDispatcher() {
 
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
-				if(este.isDisplayable()) {
+				if (este.isDisplayable()) {
 					if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F1) {
-	
+
 						tbpBP.setSelectedIndex(0);
 						txtPesquisa.setText("");
-	
+
 						return true;
-	
+
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F2) {
-	
+
 						txtBipe.setText("");
 						tbpBP.setSelectedIndex(1);
-	
+
 						return true;
-	
-					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F3) {
-	
-						novaVenda();
-	
-						return true;
-	
-					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
+
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F5) {
+
+						txtComanda.setText("");
+						tbpBP.setSelectedIndex(2);
 						
-						if(venda.getProdutos().size() == 0){
-							
+						return true;
+
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F3) {
+
+						novaVenda();
+
+						return true;
+
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
+
+						if (venda.getProdutos().size() == 0) {
+
 							alerta("Coloque produtos na venda");
 							return true;
-							
+
 						}
-						
+
 						boolean pf = true;
-	
-						if (tbpBP.getSelectedIndex() == 0) {
-	
+
+						if (tbpBP.getSelectedIndex() == 0 || tbpBP.getSelectedIndex() == 2) {
+
 							txtBipe.setText("");
 							tbpBP.setSelectedIndex(1);
-	
+
 						}
-						
+
 						if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-							try{
-								
+							try {
+
 								Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
-								
-							}catch(Exception exx){
+
+							} catch (Exception exx) {
 								txtDinheiro.requestFocus();
 								pf = false;
 							}
 						}
-	
+
 						if (pf)
 							finalizarVenda();
-	
+
 						return true;
-	
+
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F7) {
+
+						String senha = console("Senha de Administrador");
+
+						Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha,
+								TipoPermissao.GERENCIA_CAIXAS, operador.getPf().getEmpresa());
+
+						if (gerente == null) {
+
+							erro("Senha invalida");
+							return false;
+
+						}
+
+						double valor = Double.parseDouble(console("Digite o valor").replaceAll(",", "."));
+
+						try {
+
+							ExpedienteCaixa exp = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
+
+							if (valor > exp.getSaldo_final_atual()) {
+
+								erro("O Valor e maior que o saldo desse caixa");
+								return false;
+
+							}
+
+							Sangria sangria = new Sangria();
+							sangria.setExpediente(exp);
+							sangria.setMomento(Calendar.getInstance());
+							sangria.setValor(valor);
+							sangria.setGerente(gerente);
+
+							exp.getSangrias().add(sangria);
+
+							new ExpedienteCaixaService(et).merge(exp);
+
+							et.getTransaction().begin();
+							et.getTransaction().commit();
+
+							new GeradorCupomSangria().gerarCupom(sangria);
+
+						} catch (Exception e1) {
+
+							e1.printStackTrace();
+
+							alerta("Nao existe expediente aberto");
+							return false;
+
+						}
+
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F8) {
+
+						String senha = console("Senha de Administrador");
+
+						Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha,
+								TipoPermissao.GERENCIA_CAIXAS, operador.getPf().getEmpresa());
+
+						if (gerente == null) {
+
+							erro("Senha invalida");
+							return false;
+
+						}
+
+						double valor = Double.parseDouble(console("Digite o valor").replaceAll(",", "."));
+
+						try {
+
+							ExpedienteCaixa exp = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
+
+							Reposicao reposicao = new Reposicao();
+							reposicao.setExpediente(exp);
+							reposicao.setMomento(Calendar.getInstance());
+							reposicao.setValor(valor);
+							reposicao.setGerente(gerente);
+
+							exp.getReposicoes().add(reposicao);
+
+							new ExpedienteCaixaService(et).merge(exp);
+
+							et.getTransaction().begin();
+							et.getTransaction().commit();
+
+							new GeradorCupomReposicao().gerarCupom(reposicao);
+
+						} catch (Exception e1) {
+
+							e1.printStackTrace();
+
+							alerta("Nao existe expediente aberto");
+							return false;
+
+						}
+
 					}
+
 				}
 				return false;
-				
+
 			}
 
-		});
+		};
+
+		keyManager.addKeyEventDispatcher(disp);
+
+		FrenteCaixa.atalhos.add(disp);
 
 		this.btCliente.addActionListener(x -> {
 
@@ -766,6 +1099,37 @@ public class FrenteCaixa extends Modulo {
 		this.novaVenda();
 
 	}
+	
+	
+	
+	private double wrebase = 900;
+	private double hrebase = 650;
+	private JPanel panel_2;
+	private JTextField txtComanda;
+	
+	private void rebase() {
+		
+		double nw = this.getWidth();
+		double nh = this.getHeight();
+		
+		this.percorrerComponentes(c->{
+			
+			Rectangle rect = c.getBounds();
+			
+			rect.height *= nh/hrebase;
+			rect.y *= nh/hrebase;
+			
+			rect.width *= nw/wrebase;
+			rect.x *= nw/wrebase;
+			
+			c.setBounds(rect);
+			
+		});
+		
+		this.wrebase = nw;
+		this.hrebase = nh;
+		
+	}
 
 	public FrenteCaixa() {
 		setResizable(false);
@@ -773,10 +1137,13 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().setBackground(Color.WHITE);
 		getContentPane().setLayout(null);
 
-		this.setBounds(0, 0, 908, 652);
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		
+		
+		this.setBounds(0, 0, (int)tk.getScreenSize().getWidth(), (int)tk.getScreenSize().getHeight());
 
 		srcProdutos = new JScrollPane();
-		srcProdutos.setBounds(10, 67, 323, 483);
+		srcProdutos.setBounds(10, 67, 323, 433);
 		getContentPane().add(srcProdutos);
 
 		tblProdutos = new JTable();
@@ -829,7 +1196,7 @@ public class FrenteCaixa extends Modulo {
 		txtValorUnitario = new JTextField();
 		txtValorUnitario.setFont(new Font("Tahoma", Font.BOLD, 23));
 		txtValorUnitario.setHorizontalAlignment(SwingConstants.CENTER);
-		txtValorUnitario.setBounds(359, 173, 146, 55);
+		txtValorUnitario.setBounds(359, 173, 146, 45);
 		getContentPane().add(txtValorUnitario);
 		txtValorUnitario.setColumns(10);
 
@@ -837,7 +1204,7 @@ public class FrenteCaixa extends Modulo {
 		txtQuantidade.setHorizontalAlignment(SwingConstants.CENTER);
 		txtQuantidade.setFont(new Font("Tahoma", Font.BOLD, 23));
 		txtQuantidade.setColumns(10);
-		txtQuantidade.setBounds(546, 173, 146, 55);
+		txtQuantidade.setBounds(546, 173, 146, 45);
 		getContentPane().add(txtQuantidade);
 
 		txtSubTotal = new JTextField();
@@ -846,7 +1213,7 @@ public class FrenteCaixa extends Modulo {
 		txtSubTotal.setFont(new Font("Tahoma", Font.BOLD, 25));
 		txtSubTotal.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSubTotal.setColumns(10);
-		txtSubTotal.setBounds(718, 173, 166, 55);
+		txtSubTotal.setBounds(718, 173, 166, 45);
 		getContentPane().add(txtSubTotal);
 
 		JLabel lblNewLabel_2 = new JLabel("X");
@@ -862,7 +1229,7 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(label);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(359, 239, 525, 194);
+		scrollPane_1.setBounds(359, 229, 525, 145);
 		getContentPane().add(scrollPane_1);
 
 		tblVenda = new JTable();
@@ -874,21 +1241,21 @@ public class FrenteCaixa extends Modulo {
 		txtTotal.setForeground(new Color(124, 252, 0));
 		txtTotal.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTotal.setColumns(10);
-		txtTotal.setBounds(652, 460, 232, 87);
+		txtTotal.setBounds(652, 420, 232, 68);
 		getContentPane().add(txtTotal);
 
 		JLabel lblTotal_1 = new JLabel("Total");
 		lblTotal_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTotal_1.setBounds(654, 444, 88, 14);
+		lblTotal_1.setBounds(652, 395, 88, 14);
 		getContentPane().add(lblTotal_1);
 
 		JLabel lblFormaDePagamento = new JLabel("Forma de Pagamento");
 		lblFormaDePagamento.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblFormaDePagamento.setBounds(359, 444, 196, 14);
+		lblFormaDePagamento.setBounds(359, 395, 196, 14);
 		getContentPane().add(lblFormaDePagamento);
 
 		cboFormaPagto = new JComboBox<FormaPagamento>();
-		cboFormaPagto.setBounds(359, 460, 275, 20);
+		cboFormaPagto.setBounds(359, 420, 275, 20);
 		getContentPane().add(cboFormaPagto);
 
 		txtDinheiro = new JTextField();
@@ -896,7 +1263,7 @@ public class FrenteCaixa extends Modulo {
 		txtDinheiro.setFont(new Font("Tahoma", Font.BOLD, 19));
 		txtDinheiro.setHorizontalAlignment(SwingConstants.CENTER);
 		txtDinheiro.setColumns(10);
-		txtDinheiro.setBounds(359, 510, 118, 37);
+		txtDinheiro.setBounds(359, 451, 118, 37);
 		getContentPane().add(txtDinheiro);
 
 		txtTroco = new JTextField();
@@ -904,34 +1271,22 @@ public class FrenteCaixa extends Modulo {
 		txtTroco.setFont(new Font("Tahoma", Font.BOLD, 19));
 		txtTroco.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTroco.setColumns(10);
-		txtTroco.setBounds(487, 510, 147, 37);
+		txtTroco.setBounds(487, 451, 147, 37);
 		getContentPane().add(txtTroco);
 
 		JLabel lblDinheiro = new JLabel("Dinheiro");
 		lblDinheiro.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblDinheiro.setBounds(359, 549, 118, 14);
+		lblDinheiro.setBounds(359, 490, 118, 14);
 		getContentPane().add(lblDinheiro);
 
 		JLabel lblTroco = new JLabel("Troco");
 		lblTroco.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTroco.setBounds(487, 549, 118, 14);
+		lblTroco.setBounds(487, 490, 118, 14);
 		getContentPane().add(lblTroco);
 
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 586, 874, 2);
+		separator.setBounds(10, 545, 874, 2);
 		getContentPane().add(separator);
-
-		JLabel lblFFinalizar = new JLabel("F4 - Finalizar pedido");
-		lblFFinalizar.setForeground(new Color(30, 144, 255));
-		lblFFinalizar.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblFFinalizar.setBounds(10, 599, 118, 14);
-		getContentPane().add(lblFFinalizar);
-
-		JLabel lblFnovoPedido = new JLabel("F3 -Nova Venda");
-		lblFnovoPedido.setForeground(new Color(255, 165, 0));
-		lblFnovoPedido.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblFnovoPedido.setBounds(159, 599, 118, 14);
-		getContentPane().add(lblFnovoPedido);
 
 		tbpBP = new JTabbedPane(JTabbedPane.LEFT);
 		tbpBP.setBounds(10, 11, 566, 47);
@@ -943,7 +1298,7 @@ public class FrenteCaixa extends Modulo {
 
 		txtBipe = new JTextField();
 		txtBipe.setBackground(new Color(173, 216, 230));
-		txtBipe.setBounds(10, 11, 460, 20);
+		txtBipe.setBounds(10, 11, 344, 20);
 		panel.add(txtBipe);
 		txtBipe.setColumns(10);
 
@@ -955,14 +1310,58 @@ public class FrenteCaixa extends Modulo {
 		txtPesquisa.setColumns(10);
 		txtPesquisa.setBounds(10, 11, 345, 20);
 		panel_1.add(txtPesquisa);
+		
+		panel_2 = new JPanel();
+		tbpBP.addTab("Comanda (F5)", null, panel_2, null);
+		panel_2.setLayout(null);
+		
+		txtComanda = new JTextField();
+		txtComanda.setBounds(10, 11, 336, 20);
+		panel_2.add(txtComanda);
+		txtComanda.setColumns(10);
 
 		lblPg = new JLabel("New label");
-		lblPg.setBounds(287, 561, 46, 14);
+		lblPg.setBounds(287, 511, 46, 14);
 		getContentPane().add(lblPg);
 
 		slider = new JSlider();
-		slider.setBounds(10, 561, 267, 23);
+		slider.setBounds(10, 511, 267, 23);
 		getContentPane().add(slider);
+
+		btFinalizarPedido = new JButton("F4 - Finalizar pedido");
+		btFinalizarPedido.setForeground(new Color(30, 144, 255));
+		btFinalizarPedido.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btFinalizarPedido.setBounds(10, 558, 173, 54);
+		getContentPane().add(btFinalizarPedido);
+
+		btNovaVenda = new JButton("F3 Nova Venda");
+		btNovaVenda.setForeground(Color.BLACK);
+		btNovaVenda.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btNovaVenda.setBounds(193, 558, 173, 54);
+		getContentPane().add(btNovaVenda);
+
+		btSangria = new JButton("F7 - Sangria");
+		btSangria.setForeground(Color.RED);
+		btSangria.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btSangria.setBounds(376, 558, 173, 54);
+		getContentPane().add(btSangria);
+
+		btReposicao = new JButton("F8 - Reposicao");
+		btReposicao.setForeground(Color.GREEN);
+		btReposicao.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btReposicao.setBounds(559, 558, 173, 54);
+		getContentPane().add(btReposicao);
+
+		lblQuantidadeItens = new JLabel("1 Item");
+		lblQuantidadeItens.setHorizontalAlignment(SwingConstants.CENTER);
+		lblQuantidadeItens.setForeground(SystemColor.text);
+		lblQuantidadeItens.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblQuantidadeItens.setOpaque(true);
+		lblQuantidadeItens.setBackground(SystemColor.textHighlight);
+		lblQuantidadeItens.setBounds(750, 385, 134, 24);
+		getContentPane().add(lblQuantidadeItens);
+		
+		this.rebase();
 
 	}
 
@@ -983,35 +1382,33 @@ public class FrenteCaixa extends Modulo {
 	}
 }
 
-
-class ProdCellRenderer extends DefaultTableCellRenderer{
+class ProdCellRenderer extends DefaultTableCellRenderer {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row,int col) {
 
-	    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-	    
-	    if(col==0){
-	    	((JLabel)c).setHorizontalAlignment(JLabel.CENTER);
-	    }else{
-	    	((JLabel)c).setHorizontalAlignment(JLabel.LEFT);
-	    }
-	    
-	    if(!isSelected){
-		    if (row%2 == 0) {
-		        c.setBackground(Color.LIGHT_GRAY);
-		    }
-		    else {
-		        c.setBackground(Color.WHITE);
-		    }
-	    }
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int col) {
 
-	    return c;
+		Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+		if (col == 0) {
+			((JLabel) c).setHorizontalAlignment(JLabel.CENTER);
+		} else {
+			((JLabel) c).setHorizontalAlignment(JLabel.LEFT);
+		}
+
+		if (!isSelected) {
+			if (row % 2 == 0) {
+				c.setBackground(Color.LIGHT_GRAY);
+			} else {
+				c.setBackground(Color.WHITE);
+			}
+		}
+
+		return c;
 	}
-	
-}
 
+}

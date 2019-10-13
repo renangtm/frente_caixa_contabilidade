@@ -70,6 +70,8 @@ public class EmpresaService implements Service<Empresa>{
 			if(emp.getParametrosEmissao() != null)
 				emp.getParametrosEmissao().setEmpresa(emp);
 			
+			obj.getPj().setEmpresa(emp);
+			
 			return emp;
 			
 		}

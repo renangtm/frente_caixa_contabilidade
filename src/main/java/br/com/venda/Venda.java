@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -53,13 +54,16 @@ public class Venda {
 	private StatusVenda status;
 	
 	//mappedBy='venda'
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="id_venda")
 	private List<ProdutoVenda> produtos;
 	
 	@ManyToOne
 	@JoinColumn(name="id_empresa")
 	private Empresa empresa;
+	
+	@Column
+	private String comandaRepresentada;
 	
 	
 	public Venda() {
@@ -71,8 +75,19 @@ public class Venda {
 		
 	}
 	
-	
-	
+
+	public String getComandaRepresentada() {
+		return comandaRepresentada;
+	}
+
+
+	public void setComandaRepresentada(String comandaRepresentada) {
+		this.comandaRepresentada = comandaRepresentada;
+	}
+
+
+
+
 	public Pessoa getCliente() {
 		return cliente;
 	}

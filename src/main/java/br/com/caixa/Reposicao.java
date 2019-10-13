@@ -9,7 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
+import br.com.usuario.Usuario;
 import br.com.utilidades.Campo;
 
 @Entity
@@ -30,9 +32,26 @@ public class Reposicao {
 	@Campo(nome="data")
 	private Calendar momento;
 
+	@OneToOne
+	private Usuario gerente;
+	
 	public int getId() {
 		return id;
 	}
+	
+	
+
+	public Usuario getGerente() {
+		return gerente;
+	}
+
+
+
+	public void setGerente(Usuario gerente) {
+		this.gerente = gerente;
+	}
+
+
 
 	public void setId(int id) {
 		this.id = id;

@@ -64,6 +64,9 @@ public class Nota {
 
 	@Column
 	private String chave_referenciada;
+	
+	@Column
+	private String cpfNotaSemDestinatario;
 
 	@ManyToOne(optional = true,cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinColumn(name = "id_xml")
@@ -78,7 +81,7 @@ public class Nota {
 	private SaidaEntrada operacao;
 
 	//mappedBy='nota' por conta do join column nao precisa
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<ProdutoNota> produtos;
 
@@ -108,7 +111,7 @@ public class Nota {
 	private FormaPagamentoNota forma_pagamento;
 
 	//mappedBy='nota'
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<Vencimento> vencimentos;
 
@@ -163,6 +166,20 @@ public class Nota {
 		return OperacaoLogistica.VENDA_DENTRO_ESTADO;
 
 	}
+	
+	
+
+	public String getCpfNotaSemDestinatario() {
+		return cpfNotaSemDestinatario;
+	}
+
+
+
+	public void setCpfNotaSemDestinatario(String cpfNotaSemDestinatario) {
+		this.cpfNotaSemDestinatario = cpfNotaSemDestinatario;
+	}
+
+
 
 	public double getTotalIpi() {
 

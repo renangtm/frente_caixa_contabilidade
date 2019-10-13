@@ -1,4 +1,4 @@
-package br.com.geradoresCupom;
+package br.com.impressao;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -25,7 +25,7 @@ import net.sf.jasperreports.view.JasperViewer;
 public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 	@Override
-	public void gerarCupomFiscal(Nota nota, String base64) {
+	public void gerarCupomFiscal(Nota nota, double impostosAproximados, String base64) {
 
 		try {
 
@@ -46,6 +46,20 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 			String cnpjcpfConsumidor = "------------";
 
+			if(nota.getDestinatario() == null) {
+				
+				if(nota.getCpfNotaSemDestinatario() != null) {
+					
+					if(!nota.getCpfNotaSemDestinatario().isEmpty()) {
+					
+						cnpjcpfConsumidor = nota.getCpfNotaSemDestinatario();
+					
+					}
+					
+				}
+				
+			}
+			
 			if (nota.getDestinatario() != null) {
 
 				if (nota.getDestinatario().getClass().equals(PessoaFisica.class)) {
@@ -114,8 +128,6 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(nota.getEmpresa().getLogo().getArquivo()));
 
-			double impostos = nota.getProdutos().stream().mapToDouble(x->x.getImposto().getTotalImpostos()).sum();
-			
 			Map<String, Object> parametros = new HashMap<String, Object>();
 
 			parametros.put("qrCode", qrCode);
@@ -135,13 +147,13 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 			parametros.put("troco", troco);
 			parametros.put("formaPagamento", formaPagamento);
 			parametros.put("valorPagamento", valorPagamento);
-			parametros.put("valorImpostos", impostos);
+			parametros.put("valorImpostos", impostosAproximados);
 
 			JRDataSource jrd = new JRBeanCollectionDataSource(produtos);
 
 			JasperPrint jp = JasperFillManager.fillReport(jr, parametros, jrd);
 
-			JasperViewer.viewReport(jp);
+			JasperViewer.viewReport(jp,false);
 
 		} catch (Exception ex) {
 

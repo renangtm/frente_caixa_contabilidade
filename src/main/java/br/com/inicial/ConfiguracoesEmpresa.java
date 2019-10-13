@@ -97,6 +97,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 	private Logo logo;
 	private JButton btnConfirmar;
+	private JTextField txtTokenApi;
 
 	@Override
 	public void init(Usuario u) {
@@ -108,7 +109,8 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		this.txtCodigoAtivacaoSAT.setText(this.empresa.getParametrosEmissao().getSenha_sat());
 		this.txtNumeroSAT.setText(this.empresa.getParametrosEmissao().getNumeroSat());
-
+		this.txtTokenApi.setText(this.empresa.getTokenAPIImpostosAproximados());
+		
 		logo = new Logo();
 
 		if (this.empresa.getLogo() != null) {
@@ -149,6 +151,8 @@ public class ConfiguracoesEmpresa extends Modulo {
 			
 			pa.setSenha_sat(this.txtCodigoAtivacaoSAT.getText());
 			pa.setNumeroSat(this.txtNumeroSAT.getText());
+			
+			this.empresa.setTokenAPIImpostosAproximados(this.txtTokenApi.getText());
 
 			pa.setEmpresa(this.empresa);
 
@@ -255,7 +259,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 		setResizable(false);
 		getContentPane().setLayout(null);
 
-		this.setBounds(0, 0, 450, 265);
+		this.setBounds(0, 0, 450, 294);
 
 		JLabel lblNewLabel = new JLabel("Configuracoes da Empresa");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -286,7 +290,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 		txtNumeroSAT.setColumns(10);
 
 		btnConfirmar = new JButton("Confirmar");
-		btnConfirmar.setBounds(330, 191, 104, 23);
+		btnConfirmar.setBounds(330, 231, 104, 23);
 		getContentPane().add(btnConfirmar);
 
 		JLabel lbl = new JLabel("Cod. Ativacao SAT:");
@@ -297,6 +301,15 @@ public class ConfiguracoesEmpresa extends Modulo {
 		txtCodigoAtivacaoSAT.setColumns(10);
 		txtCodigoAtivacaoSAT.setBounds(120, 192, 176, 20);
 		getContentPane().add(txtCodigoAtivacaoSAT);
+		
+		JLabel lblTokenApiI = new JLabel("Token API Impostos:");
+		lblTokenApiI.setBounds(10, 220, 112, 14);
+		getContentPane().add(lblTokenApiI);
+		
+		txtTokenApi = new JTextField();
+		txtTokenApi.setColumns(10);
+		txtTokenApi.setBounds(120, 217, 176, 20);
+		getContentPane().add(txtTokenApi);
 
 	}
 }

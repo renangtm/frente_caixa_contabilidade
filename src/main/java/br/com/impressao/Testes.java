@@ -1,4 +1,4 @@
-package br.com.geradoresCupom;
+package br.com.impressao;
 
 import java.io.IOException;
 
@@ -43,7 +43,7 @@ public class Testes {
 		
 		
 		System.out.println(b64);
-		g.gerarCupomFiscal(nota, b64);
+		g.gerarCupomFiscal(nota,10, b64);
 		
 		
 	}

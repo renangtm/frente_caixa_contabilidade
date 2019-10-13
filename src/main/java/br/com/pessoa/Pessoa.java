@@ -39,10 +39,10 @@ public class Pessoa {
 	@Column
 	private String skype;
 	
-	@OneToOne(mappedBy="pessoa",fetch=FetchType.LAZY)
+	@OneToOne(mappedBy="pessoa",fetch=FetchType.LAZY,cascade={CascadeType.MERGE,CascadeType.PERSIST})
 	private Cliente cliente;
 	
-	@OneToOne(fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.EAGER,cascade={CascadeType.MERGE,CascadeType.PERSIST})
 	@JoinColumn(name="id_empresa")
 	private Empresa empresa;
 	

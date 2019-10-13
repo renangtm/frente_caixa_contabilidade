@@ -1,9 +1,10 @@
 package br.com.venda;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import br.com.base.Service;
 import br.com.produto.Estoque;
@@ -17,8 +18,26 @@ public class VendaService implements Service<Venda>{
 		this.et = et;
 		
 	}
+	
+	public Venda getVendaPorComanda(String comanda) {
+		
+		Query q = et.createQuery("SELECT v FROM Venda v WHERE v.comandaRepresentada = :comanda AND v.status = :status");
+		q.setParameter("comanda", comanda);
+		q.setParameter("status", StatusVenda.EM_EXECUCAO);
+		
+		if(q.getResultList().size()>0) {
+			
+			return (Venda)q.getResultList().get(0);
+			
+		}
+		
+		return null;
+		
+	}
 
 	public boolean verificacaoPersistencia(Venda venda) {
+		
+		List<Integer> refreshed = new ArrayList<Integer>();
 		
 		for (ProdutoVenda pv : venda.getProdutos()) {
 			
@@ -27,7 +46,13 @@ public class VendaService implements Service<Venda>{
 			double infres = meta - pv.reservaInfluenciada;
 
 			Estoque estoque = pv.getProduto().getEstoque();
-			et.refresh(estoque);
+			
+			if(!refreshed.contains(estoque.getId())) {
+				
+				et.refresh(estoque);
+				refreshed.add(estoque.getId());
+				
+			}
 
 			double influenciaRealRes = pv.tipoQuantidade.para(estoque.getTipo(), pv.getProduto(), infres);
 
@@ -43,24 +68,12 @@ public class VendaService implements Service<Venda>{
 		
 	}
 	
-	private ProdutoVenda pmv(ProdutoVenda pn) {
-		
-		if(pn.getId() == 0) {
-			
-			et.persist(pn);
-			return pn;
-			
-		}
-		
-		return et.merge(pn);
-		
-	}
 	
 	@Override
 	public Venda merge(Venda venda) {
-		
-		venda.setProdutos(venda.getProdutos().stream().map(this::pmv).collect(Collectors.toList()));
-		
+	
+		List<Integer> refreshed = new ArrayList<Integer>();
+	
 		for (ProdutoVenda pv : venda.getProdutos()) {
 			
 			double meta = (venda.getStatus().isDisponivel() ? pv.getQuantidade() : 0);
@@ -68,7 +81,13 @@ public class VendaService implements Service<Venda>{
 			double infres = meta - pv.reservaInfluenciada;
 
 			Estoque estoque = pv.getProduto().getEstoque();
-			et.refresh(estoque);
+			
+			if(!refreshed.contains(estoque.getId())) {
+				
+				et.refresh(estoque);
+				refreshed.add(estoque.getId());
+				
+			}
 
 			double influenciaRealRes = pv.tipoQuantidade.para(estoque.getTipo(), pv.getProduto(), infres);
 

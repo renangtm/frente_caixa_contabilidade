@@ -143,6 +143,13 @@ public class CadastroPessoa extends Modulo {
 	
 	private void setPessoaFisica(Pessoa p) {
 
+		this.btDetalheUsuario.setEnabled(false);
+		this.btDetalheBanco.setEnabled(false);
+		this.btDetalheCliente.setEnabled(false);
+		this.btDetalheCliente2.setEnabled(false);
+		this.btDetalheTransp.setEnabled(false);
+		this.btDetalheFornecedor.setEnabled(false);
+		
 		this.p = p;
 
 		this.usuario = null;
@@ -197,6 +204,12 @@ public class CadastroPessoa extends Modulo {
 				this.tabbedPane.setEnabledAt(1, false);
 				
 				this.chkColaborador.setSelected(pf.getUsuario() != null);
+				
+				if(this.chkColaborador.isSelected()) {
+					
+					this.btDetalheUsuario.setEnabled(true);
+					
+				}
 				
 				this.chkCliente.setSelected(pf.getCliente() != null);
 				
@@ -347,9 +360,19 @@ public class CadastroPessoa extends Modulo {
 				pf.setEndereco(e);
 				
 				if(this.usuario == null && pf.getUsuario() != null)et.remove(pf.getUsuario());
+				
 				pf.setUsuario(this.usuario);
+				
+				if(this.usuario != null) {
+					this.usuario.setPf(pf);
+				}
+				
 				if(this.cliente == null && pf.getCliente() != null)et.remove(pf.getCliente());
 				pf.setCliente(this.cliente);
+				
+				if(this.cliente != null) {
+					this.cliente.setPessoa(pf);
+				}
 				
 			}catch(Exception ex){
 				
@@ -361,9 +384,10 @@ public class CadastroPessoa extends Modulo {
 				
 			}
 			
+			et.getTransaction().begin();
+			
 			new PessoaFisicaService(et).merge(pf);
 			
-			et.getTransaction().begin();
 			et.getTransaction().commit();
 			
 			info("Operacao efetuada com sucesso");
@@ -415,12 +439,27 @@ public class CadastroPessoa extends Modulo {
 				
 				if(this.banco == null && pf.getBanco() != null)et.remove(pf.getBanco());
 				pf.setBanco(this.banco);
+				if(this.banco != null) {
+					this.banco.setPj(pf);
+				}
+				
 				if(this.cliente == null && pf.getCliente() != null)et.remove(pf.getCliente());
 				pf.setCliente(this.cliente);
+				if(this.cliente != null) {
+					this.cliente.setPessoa(pf);
+				}
+				
 				if(this.fornecedor == null && pf.getFornecedor() != null)et.remove(pf.getFornecedor());
 				pf.setFornecedor(this.fornecedor);
+				if(this.fornecedor != null) {
+					this.fornecedor.setPj(pf);
+				}
+				
 				if(this.transportadora == null && pf.getTransportadora() != null)et.remove(pf.getTransportadora());
 				pf.setTransportadora(this.transportadora);
+				if(this.transportadora != null) {
+					this.transportadora.setPj(pf);
+				}
 				
 			}catch(Exception ex2){
 				
@@ -463,13 +502,18 @@ public class CadastroPessoa extends Modulo {
 	private JCheckBox chkClienteJ;
 	private JCheckBox chkFornecedor;
 	private JCheckBox chkBanco;
+	private JButton btDetalheUsuario;
+	private JButton btDetalheCliente;
+	private JButton btDetalheFornecedor;
+	private JButton btDetalheCliente2;
+	private JButton btDetalheTransp;
+	private JButton btDetalheBanco;
 	
 	public void init(Usuario usu) {
 
 		
 		this.operador = et.merge(usu);
 		this.empresa = this.operador.getPf().getEmpresa();
-		et.detach(this.operador);
 		this.empresa = et.merge(this.empresa);
 		
 		//====================================
@@ -498,6 +542,12 @@ public class CadastroPessoa extends Modulo {
 
 		});
 
+		this.chkColaborador.addActionListener(a->{
+			
+			this.btDetalheUsuario.setEnabled(this.chkColaborador.isSelected());
+			
+		});
+		
 		this.btNovaPessoa.addActionListener(e -> {
 
 			PessoaFisica pf = new PessoaFisica();
@@ -549,7 +599,6 @@ public class CadastroPessoa extends Modulo {
 					this.banco = pj.getBanco();
 				}else{
 					this.banco = new Banco();
-					this.banco.setPj(pj);
 				}
 			}
 			
@@ -600,8 +649,9 @@ public class CadastroPessoa extends Modulo {
 				if(pf.getUsuario() != null){
 					this.usuario = pf.getUsuario();
 				}else{
+					
 					this.usuario = new Usuario();
-					this.usuario.setPf(pf);
+					
 				}
 				
 			}
@@ -622,7 +672,6 @@ public class CadastroPessoa extends Modulo {
 					this.fornecedor = pj.getFornecedor();
 				}else{
 					this.fornecedor = new Fornecedor();
-					this.fornecedor.setPj(pj);
 				}
 				
 			}
@@ -641,10 +690,18 @@ public class CadastroPessoa extends Modulo {
 					this.transportadora = pj.getTransportadora();
 				}else{
 					this.transportadora = new Transportadora();
-					this.transportadora.setPj(pj);
 				}
 				
 			}
+			
+		});
+		
+		this.btDetalheUsuario.addActionListener(a->{
+			
+			DetalhesUsuario du = new DetalhesUsuario();
+			du.et = this.et;
+			du.init(this.usuario);
+			du.setVisible(true);
 			
 		});
 		
@@ -674,7 +731,7 @@ public class CadastroPessoa extends Modulo {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Contatos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(323, 70, 312, 205);
+		panel_1.setBounds(323, 70, 312, 218);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -807,7 +864,7 @@ public class CadastroPessoa extends Modulo {
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBorder(new TitledBorder(null, "Dados da Pessoa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		tabbedPane.setBounds(18, 67, 306, 208);
+		tabbedPane.setBounds(18, 67, 306, 221);
 		contentPane.add(tabbedPane);
 		
 		JPanel panel = new JPanel();
@@ -856,12 +913,12 @@ public class CadastroPessoa extends Modulo {
 		txtDtNasc.setBounds(96, 84, 166, 20);
 		panel.add(txtDtNasc);
 		
-		JButton btDetalheUsuario = new JButton("...");
-		btDetalheUsuario.setBounds(10, 132, 31, 14);
+		btDetalheUsuario = new JButton("...");
+		btDetalheUsuario.setBounds(10, 132, 31, 25);
 		panel.add(btDetalheUsuario);
 		
-		JButton btDetalheCliente = new JButton("...");
-		btDetalheCliente.setBounds(108, 132, 31, 14);
+		btDetalheCliente = new JButton("...");
+		btDetalheCliente.setBounds(108, 132, 31, 25);
 		panel.add(btDetalheCliente);
 		
 		JPanel panel_3 = new JPanel();
@@ -916,5 +973,21 @@ public class CadastroPessoa extends Modulo {
 		chkBanco = new JCheckBox("Banco");
 		chkBanco.setBounds(220, 111, 59, 23);
 		panel_3.add(chkBanco);
+		
+		btDetalheFornecedor = new JButton("...");
+		btDetalheFornecedor.setBounds(10, 134, 31, 25);
+		panel_3.add(btDetalheFornecedor);
+		
+		btDetalheCliente2 = new JButton("...");
+		btDetalheCliente2.setBounds(92, 135, 31, 25);
+		panel_3.add(btDetalheCliente2);
+		
+		btDetalheTransp = new JButton("...");
+		btDetalheTransp.setBounds(153, 135, 31, 25);
+		panel_3.add(btDetalheTransp);
+		
+		btDetalheBanco = new JButton("...");
+		btDetalheBanco.setBounds(220, 135, 31, 25);
+		panel_3.add(btDetalheBanco);
 	}
 }

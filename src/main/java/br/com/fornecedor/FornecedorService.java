@@ -48,13 +48,13 @@ public class FornecedorService implements Service<Fornecedor>{
 		if(obj.getId() == 0) {
 			
 			et.persist(obj);
+			
 			return obj;
 			
 		}
 		
 		Fornecedor f = et.merge(obj);
-		
-		f.getPJ().setFornecedor(f);
+		obj.getPJ().setFornecedor(f);
 		
 		return f;
 		

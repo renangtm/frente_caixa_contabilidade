@@ -99,13 +99,6 @@ public class PessoaService implements Service<Pessoa> {
 			
 		}
 		
-		if(pessoa.getCliente() != null) {
-			
-			pessoa.setCliente(et.merge(obj.getCliente()));
-			obj.getCliente().setPessoa(pessoa);
-			
-		}
-		
 		return pessoa;
 		
 	}

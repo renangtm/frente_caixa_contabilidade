@@ -30,7 +30,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import br.com.base.CFG;
+import br.com.base.ET;
 import br.com.base.Resources;
+import br.com.usuario.PresetPermissao;
 import br.com.usuario.Usuario;
 
 class ImagePanel extends JComponent {
@@ -69,10 +71,29 @@ public class MenuPrincipal extends Tela {
 
 	public MenuPrincipal(Usuario usuario) throws IOException {
 
-		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: ", 0, 0, 100, 100, false);
+		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: "+usuario.getPf().getEmpresa().getPj().getCnpj(), 0, 0, 100, 100, false);
 
 		this.usuario = usuario;
-
+		
+		if(PresetPermissao.CAIXA.encaixe(this.usuario.getPermissoes()) == 1){
+			
+			Loading.getLoading(()->{
+				
+				FrenteCaixa fc = new FrenteCaixa();
+				fc.setVisible(false);
+				fc.et = ET.nova();
+				fc.init(this.usuario);
+				fc.setVisible(true);
+				
+				fc.centralizar();
+				
+			});
+			
+			this.dispose();
+			return;
+			
+		}
+		
 		this.setVisible(true);
 
 		this.setContentPane(new ImagePanel(Resources.getFundo()));
@@ -119,11 +140,6 @@ public class MenuPrincipal extends Tela {
 		 * Auto-generated catch block e.printStackTrace(); } catch (IOException e) { //
 		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
-
-		JLabel logo = new JLabel();
-		logo.setIcon(new ImageIcon(Resources.getLogo()));
-		getContentPane().add(logo);
-		this.lr.setDimensoesComponente(logo, 70, 85, 30, 15);
 
 		JLabel logoCliente = new JLabel();
 		getContentPane().add(logoCliente);

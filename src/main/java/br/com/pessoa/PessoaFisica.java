@@ -2,11 +2,13 @@ package br.com.pessoa;
 
 import java.util.Calendar;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import br.com.usuario.Usuario;
@@ -24,7 +26,8 @@ public class PessoaFisica extends Pessoa{
 	@Column
 	private Calendar data_nascimento;
 	
-	@OneToOne(mappedBy="pf",fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.LAZY,cascade={CascadeType.MERGE,CascadeType.PERSIST})
+	@JoinColumn(name="id_pessoa")
 	private Usuario usuario;
 	
 	

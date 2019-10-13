@@ -53,6 +53,8 @@ public class Login extends Tela {
 	@SuppressWarnings("unused")
 	private int habilitado;
 
+	private EntityManager et;
+	
 	public Login() throws IOException {
 
 		super("Login", 37, 30, 26, 40, true);
@@ -85,6 +87,7 @@ public class Login extends Tela {
 		this.txtLogin = new JTextField();
 		this.add(this.txtLogin);
 		this.lr.setDimensoesComponente(this.txtLogin, 25, 40, 65, 9);
+		this.txtLogin.requestFocus();
 
 		this.txtSenha = new JPasswordField();
 		this.add(this.txtSenha);
@@ -100,12 +103,14 @@ public class Login extends Tela {
 		this.add(this.lblEstado);
 		this.lr.setDimensoesComponente(this.lblEstado, 5, 90, 90, 10);
 
+		this.et = ET.nova();
+		
 		this.atribuirLogar(this);
 
 		this.lblEstado.setText("Status do sistema: conectado.");
 		this.lblEstado.setForeground(new Color(0, 100, 0));
 		this.btLogar.setEnabled(true);
-		this.txtLogin.requestFocus();
+		
 
 		this.btLogar.addActionListener(new ActionListener() {
 
@@ -117,13 +122,13 @@ public class Login extends Tela {
 			}
 
 		});
+		
 
 	}
 
 	private void logar() {
 
-		EntityManager et = ET.nova();
-		
+			
 		final Login este = this;
 
 		final UsuarioService us = new UsuarioService(et);

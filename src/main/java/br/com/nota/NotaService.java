@@ -1,7 +1,7 @@
 package br.com.nota;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -37,6 +37,8 @@ public class NotaService implements Service<Nota> {
 	}
 
 	public boolean verificacaoPersistencia(Nota nota) {
+		
+		List<Integer> refreshed = new ArrayList<Integer>();
 
 		for (ProdutoNota pn : nota.getProdutos()) {
 
@@ -59,10 +61,14 @@ public class NotaService implements Service<Nota> {
 			double dif = meta - pn.influenciaEstoques;
 
 			Estoque est = pn.getProduto().getEstoque();
-			et.refresh(est);
+			
+			if(!refreshed.contains(est.getId())) {
+				
+				et.refresh(est);
+				refreshed.add(est.getId());
+				
+			}
 
-			
-			
 			double realDif = pn.getTipoInfluenciaEstoque().para(est.getTipo(), pn.getProduto(), dif);
 
 			if (est.getQuantidade() + realDif < 0 || est.getDisponivel() + realDif < 0) {
@@ -76,32 +82,7 @@ public class NotaService implements Service<Nota> {
 		return true;
 
 	}
-	
-	private Vencimento pmv(Vencimento pn) {
-		
-		if(pn.getId() == 0) {
-			
-			et.persist(pn);
-			return pn;
-			
-		}
-		
-		return et.merge(pn);
-		
-	}
-	
-	private ProdutoNota pmp(ProdutoNota pn) {
-		
-		if(pn.getId() == 0) {
-			
-			et.persist(pn);
-			return pn;
-			
-		}
-		
-		return et.merge(pn);
-		
-	}
+
 
 	public Nota merge(Nota nota){
 
@@ -110,9 +91,6 @@ public class NotaService implements Service<Nota> {
 			throw new RuntimeException("Nota sem integridade");
 
 		}
-
-		nota.setProdutos(nota.getProdutos().stream().map(this::pmp).collect(Collectors.toList()));
-		nota.setVencimentos(nota.getVencimentos().stream().map(this::pmv).collect(Collectors.toList()));
 		
 		nota.setEmpresa(et.merge(nota.getEmpresa()));
 		
@@ -120,6 +98,8 @@ public class NotaService implements Service<Nota> {
 			nota.setDestinatario(et.merge(nota.getDestinatario()));
 		
 		nota.setEmitente(et.merge(nota.getEmitente()));
+		
+		List<Integer> refreshed = new ArrayList<Integer>();
 		
 		for (ProdutoNota pn : nota.getProdutos()) {
 
@@ -144,7 +124,13 @@ public class NotaService implements Service<Nota> {
 				double dif = meta - pn.influenciaEstoques;
 
 				Estoque est = pn.getProduto().getEstoque();
-				et.refresh(est);
+				
+				if(!refreshed.contains(est.getId())) {
+					
+					et.refresh(est);
+					refreshed.add(est.getId());
+					
+				}
 
 				double realDif = pn.getTipoInfluenciaEstoque().para(est.getTipo(), pn.getProduto(), dif);
 

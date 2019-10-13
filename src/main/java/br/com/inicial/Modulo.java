@@ -19,6 +19,12 @@ import javax.swing.UIManager;
 import br.com.base.ET;
 import br.com.usuario.Usuario;
 
+interface ComponentIteractor{
+	
+	void iteract(Component c);
+	
+}
+
 public class Modulo extends Tela {
 
 	/**
@@ -38,6 +44,7 @@ public class Modulo extends Tela {
 		return this.validarContainer(this.getContentPane());
 
 	}
+	
 
 	public boolean vc(Component comp) {
 
@@ -69,6 +76,46 @@ public class Modulo extends Tela {
 		}
 
 		return true;
+
+	}
+	
+	public void percorrerComponentes(ComponentIteractor ci) {
+
+		for (Component c : this.getContentPane().getComponents()) {
+			
+			ci.iteract(c);
+			
+			try {
+
+				Container f = (Container) c;
+
+				this.percorrerComponentes(f,ci);
+
+			} catch (Exception ex) {
+
+			}
+
+		}
+
+	}
+	
+	public void percorrerComponentes(Container comp,ComponentIteractor ci) {
+
+		for (Component c : comp.getComponents()) {
+			
+			ci.iteract(c);
+			
+			try {
+
+				Container f = (Container) c;
+
+				this.percorrerComponentes(f,ci);
+
+			} catch (Exception ex) {
+
+			}
+
+		}
 
 	}
 
@@ -210,7 +257,7 @@ public class Modulo extends Tela {
 	public Modulo() {
 		super();
 		this.setVisible(true);
-		//this.et = ET.nova();
+		this.et = ET.nova();
 		this.addWindowListener(new WindowListener() {
 
 			@Override
