@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import br.com.base.ET;
 import br.com.base.Resources;
+import br.com.config.CertificadoPFX;
+import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
 import br.com.empresa.Logo;
 import br.com.empresa.ParametrosEmissao;
@@ -98,6 +100,38 @@ public class ConfiguracoesEmpresa extends Modulo {
 	private Logo logo;
 	private JButton btnConfirmar;
 	private JTextField txtTokenApi;
+	private JTextField txtUltimaNFe;
+	private JTextField txtIdLote;
+	private JTextField txtSenhaCertificado;
+	private JButton btCertificado;
+
+	private byte[] certificado;
+
+	private void printCertificado() {
+
+		try {
+
+			CertificadoPFX c = new CertificadoPFX(new ByteArrayInputStream(this.certificado),
+					this.txtSenhaCertificado.getText());
+
+			String validade = "De: "
+					+ new ConversorDate().paraString(new java.sql.Date(c.getPublicKey().getNotBefore().getTime()));
+			validade += " Até: "
+					+ new ConversorDate().paraString(new java.sql.Date(c.getPublicKey().getNotAfter().getTime()));
+
+			this.btCertificado.setText(validade);
+
+		} catch (Exception ex) {
+
+			if (this.certificado == null) {
+				this.btCertificado.setText("Sem certificado");
+			} else {
+				this.btCertificado.setText("Senha invalida");
+			}
+
+		}
+
+	}
 
 	@Override
 	public void init(Usuario u) {
@@ -110,7 +144,20 @@ public class ConfiguracoesEmpresa extends Modulo {
 		this.txtCodigoAtivacaoSAT.setText(this.empresa.getParametrosEmissao().getSenha_sat());
 		this.txtNumeroSAT.setText(this.empresa.getParametrosEmissao().getNumeroSat());
 		this.txtTokenApi.setText(this.empresa.getTokenAPIImpostosAproximados());
-		
+
+		this.txtUltimaNFe.setText(this.empresa.getParametrosEmissao().getUltimaNFe() + "");
+
+		if (this.empresa.getParametrosEmissao().getSenhaCertificado() != null)
+			this.txtSenhaCertificado.setText(this.empresa.getParametrosEmissao().getSenhaCertificado() + "");
+		else
+			this.txtSenhaCertificado.setText("");
+
+		this.txtIdLote.setText(this.empresa.getParametrosEmissao().getIdLote() + "");
+
+		this.certificado = this.empresa.getParametrosEmissao().getCertificadoDigital();
+
+		this.printCertificado();
+
 		logo = new Logo();
 
 		if (this.empresa.getLogo() != null) {
@@ -131,11 +178,56 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		}
 
+		this.btCertificado.addActionListener(a -> {
+
+			JFileChooser jfc = new JFileChooser();
+
+			jfc.showOpenDialog(this);
+
+			File file = jfc.getSelectedFile();
+
+			if (file == null)
+				return;
+
+			try {
+
+				@SuppressWarnings("resource")
+				FileInputStream fis = new FileInputStream(file);
+
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+				int l = 0;
+				byte[] buffer = new byte[1024];
+
+				while ((l = fis.read(buffer, 0, buffer.length)) > 0) {
+
+					baos.write(buffer, 0, l);
+
+				}
+
+				this.certificado = baos.toByteArray();
+
+				this.printCertificado();
+
+			} catch (Exception ex) {
+
+				erro("Ocorreu um problema ao ler o arquivo");
+				return;
+
+			}
+
+		});
+
+		this.txtSenhaCertificado.addCaretListener(c -> {
+
+			this.printCertificado();
+
+		});
+
 		this.btnConfirmar.addActionListener(e -> {
 
-			if (
-					!vc(this.txtCodigoAtivacaoSAT) || 
-					!vc(this.txtNumeroSAT)) {
+			if (!vc(this.txtCodigoAtivacaoSAT) || !vc(this.txtNumeroSAT) || !vc(this.txtIdLote)
+					|| !vc(this.txtSenhaCertificado) || !vc(this.txtUltimaNFe) || !vc(this.txtTokenApi)) {
 
 				return;
 
@@ -148,20 +240,39 @@ public class ConfiguracoesEmpresa extends Modulo {
 				pa = this.empresa.getParametrosEmissao();
 
 			}
-			
+
+			try {
+
+				int idLote = Integer.parseInt(this.txtIdLote.getText());
+
+				int numeroNFe = Integer.parseInt(this.txtUltimaNFe.getText());
+
+				pa.setIdLote(idLote);
+
+				pa.setUltimaNFe(numeroNFe);
+
+			} catch (Exception ex) {
+
+				erro("Preencha os campos adequadamente");
+				return;
+
+			}
+
 			pa.setSenha_sat(this.txtCodigoAtivacaoSAT.getText());
 			pa.setNumeroSat(this.txtNumeroSAT.getText());
-			
+			pa.setCertificadoDigital(this.certificado);
+			pa.setSenhaCertificado(this.txtSenhaCertificado.getText());
+
 			this.empresa.setTokenAPIImpostosAproximados(this.txtTokenApi.getText());
 
 			pa.setEmpresa(this.empresa);
 
 			this.empresa.setParametrosEmissao(et.merge(pa));
 			this.empresa.setLogo(et.merge(logo));
-			
+
 			et.getTransaction().begin();
 			et.getTransaction().commit();
-			
+
 			info("Operacao efetuada com sucesso");
 
 		});
@@ -259,7 +370,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 		setResizable(false);
 		getContentPane().setLayout(null);
 
-		this.setBounds(0, 0, 450, 294);
+		this.setBounds(0, 0, 450, 395);
 
 		JLabel lblNewLabel = new JLabel("Configuracoes da Empresa");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -285,12 +396,12 @@ public class ConfiguracoesEmpresa extends Modulo {
 		getContentPane().add(lblNewLabel_1);
 
 		txtNumeroSAT = new JTextField();
-		txtNumeroSAT.setBounds(110, 167, 186, 20);
+		txtNumeroSAT.setBounds(110, 167, 324, 20);
 		getContentPane().add(txtNumeroSAT);
 		txtNumeroSAT.setColumns(10);
 
 		btnConfirmar = new JButton("Confirmar");
-		btnConfirmar.setBounds(330, 231, 104, 23);
+		btnConfirmar.setBounds(330, 332, 104, 23);
 		getContentPane().add(btnConfirmar);
 
 		JLabel lbl = new JLabel("Cod. Ativacao SAT:");
@@ -299,17 +410,52 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		txtCodigoAtivacaoSAT = new JTextField();
 		txtCodigoAtivacaoSAT.setColumns(10);
-		txtCodigoAtivacaoSAT.setBounds(120, 192, 176, 20);
+		txtCodigoAtivacaoSAT.setBounds(120, 192, 314, 20);
 		getContentPane().add(txtCodigoAtivacaoSAT);
-		
+
 		JLabel lblTokenApiI = new JLabel("Token API Impostos:");
 		lblTokenApiI.setBounds(10, 220, 112, 14);
 		getContentPane().add(lblTokenApiI);
-		
+
 		txtTokenApi = new JTextField();
 		txtTokenApi.setColumns(10);
-		txtTokenApi.setBounds(120, 217, 176, 20);
+		txtTokenApi.setBounds(120, 217, 314, 20);
 		getContentPane().add(txtTokenApi);
+
+		JLabel lblUtimaNfe = new JLabel("Utima NFe:");
+		lblUtimaNfe.setBounds(10, 244, 53, 14);
+		getContentPane().add(lblUtimaNfe);
+
+		JLabel lblIdLote = new JLabel("Id Lote:");
+		lblIdLote.setBounds(274, 247, 38, 14);
+		getContentPane().add(lblIdLote);
+
+		JLabel lblCertificado = new JLabel("Certificado:");
+		lblCertificado.setBounds(10, 269, 77, 14);
+		getContentPane().add(lblCertificado);
+
+		JLabel lblSenhaCertificado = new JLabel("Senha Certificado:");
+		lblSenhaCertificado.setBounds(10, 291, 92, 14);
+		getContentPane().add(lblSenhaCertificado);
+
+		txtUltimaNFe = new JTextField();
+		txtUltimaNFe.setColumns(10);
+		txtUltimaNFe.setBounds(67, 241, 117, 20);
+		getContentPane().add(txtUltimaNFe);
+
+		txtIdLote = new JTextField();
+		txtIdLote.setColumns(10);
+		txtIdLote.setBounds(322, 244, 112, 20);
+		getContentPane().add(txtIdLote);
+
+		btCertificado = new JButton("Sem certificado");
+		btCertificado.setBounds(77, 265, 295, 23);
+		getContentPane().add(btCertificado);
+
+		txtSenhaCertificado = new JTextField();
+		txtSenhaCertificado.setColumns(10);
+		txtSenhaCertificado.setBounds(102, 290, 220, 20);
+		getContentPane().add(txtSenhaCertificado);
 
 	}
 }

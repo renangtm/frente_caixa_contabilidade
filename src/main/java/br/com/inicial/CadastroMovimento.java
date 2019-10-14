@@ -31,9 +31,12 @@ import br.com.conta.Conta;
 import br.com.conta.ContaService;
 import br.com.conta.RepresentadorConta;
 import br.com.conta.TipoConta;
+import br.com.conversores.ConversorCalendar;
 import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
 import br.com.historico.Historico;
+import br.com.impressao.AgrupadoresData;
+import br.com.impressao.GeradorRelatorioContas;
 import br.com.movimento_financeiro.Movimento;
 import br.com.movimento_financeiro.MovimentoService;
 import br.com.movimento_financeiro.RepresentadorMovimento;
@@ -155,6 +158,12 @@ public class CadastroMovimento extends Modulo {
 	private JLabel lblPgContasPagar;
 	private GerenciadorLista<Conta> apagar;
 	private GerenciadorLista<Conta> areceber;
+	private JPanel panel_5;
+	private JComboBox<AgrupadoresData> cboAgrupamento;
+	private JFormattedTextField txtFim;
+	private JFormattedTextField txtInicio;
+	private JComboBox<TipoConta> cboTipo;
+	private JButton btnEmitirRelatorio;
 
 	private void setMovimento(Movimento m) throws ParseException {
 
@@ -205,7 +214,7 @@ public class CadastroMovimento extends Modulo {
 		this.empresa = et.merge(this.empresa);
 
 		// ====================================
-
+		
 		Query q = et.createQuery("SELECT b FROM Banco b WHERE b.pj.empresa.id = :empresa");
 		q.setParameter("empresa", this.empresa.getId());
 
@@ -213,6 +222,10 @@ public class CadastroMovimento extends Modulo {
 
 		this.comboBox.setModel(new DefaultComboBoxModel<Banco>(bancos.toArray(new Banco[bancos.size()])));
 
+		this.cboAgrupamento.setModel(new DefaultComboBoxModel<AgrupadoresData>(AgrupadoresData.values()));
+		
+		this.cboTipo.setModel(new DefaultComboBoxModel<TipoConta>(TipoConta.values()));
+		
 		this.comboBox.addActionListener(a -> {
 
 			this.banco = (Banco) this.comboBox.getSelectedItem();
@@ -314,12 +327,12 @@ public class CadastroMovimento extends Modulo {
 
 					if (p == 100) {
 
-						if(m.getExpediente() != null) {
-							
+						if (m.getExpediente() != null) {
+
 							m.getExpediente().getMovimentos().add(m);
-							
+
 						}
-						
+
 						et.getTransaction().begin();
 						et.getTransaction().commit();
 
@@ -568,6 +581,40 @@ public class CadastroMovimento extends Modulo {
 
 		areceber.atualizar();
 
+		this.btnEmitirRelatorio.addActionListener(a -> {
+
+			if (!vc(this.txtInicio) || !vc(this.txtFim)) {
+
+				return;
+
+			}
+
+			try {
+
+				Calendar inicio = new ConversorCalendar().paraObjeto(this.txtInicio.getText());
+				Calendar fim = new ConversorCalendar().paraObjeto(this.txtFim.getText());
+
+				TipoConta tipo = (TipoConta) this.cboTipo.getSelectedItem();
+
+				AgrupadoresData agrupador = (AgrupadoresData) this.cboAgrupamento.getSelectedItem();
+
+				ContaService cs = new ContaService(et);
+				cs.setEmpresa(this.operador.getPf().getEmpresa());
+				cs.setTipo(tipo);
+
+				List<Conta> contas = cs.getContas(inicio, fim);
+
+				new GeradorRelatorioContas().gerarReltorio(contas, agrupador.getAgrupador(), empresa, inicio, fim);
+
+			} catch (Exception ex) {
+
+				erro("Ocorreu um problema");
+				return;
+
+			}
+
+		});
+
 	}
 
 	/**
@@ -589,7 +636,7 @@ public class CadastroMovimento extends Modulo {
 		contentPane.add(lblNewLabel);
 
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 44, 465, 2);
+		separator.setBounds(10, 44, 379, 2);
 		contentPane.add(separator);
 
 		JPanel panel = new JPanel();
@@ -646,19 +693,19 @@ public class CadastroMovimento extends Modulo {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Fechamentos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(656, 57, 216, 343);
+		panel_1.setBounds(656, 207, 216, 193);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 25, 196, 230);
+		scrollPane_1.setBounds(10, 21, 196, 124);
 		panel_1.add(scrollPane_1);
 
 		tblFechamento = new JTable();
 		scrollPane_1.setViewportView(tblFechamento);
 
 		btnFechar = new JButton("Fechar");
-		btnFechar.setBounds(117, 307, 89, 23);
+		btnFechar.setBounds(117, 156, 89, 23);
 		panel_1.add(btnFechar);
 
 		JLabel lblNewLabel_2 = new JLabel("Pesquisar Movimento:");
@@ -680,7 +727,7 @@ public class CadastroMovimento extends Modulo {
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Movimento", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(437, 57, 220, 343);
+		panel_2.setBounds(437, 44, 220, 356);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 
@@ -864,6 +911,53 @@ public class CadastroMovimento extends Modulo {
 		lblPgContasReceber = new JLabel("New label");
 		lblPgContasReceber.setBounds(361, 233, 46, 14);
 		panel_4.add(lblPgContasReceber);
+
+		panel_5 = new JPanel();
+		panel_5.setBorder(
+				new TitledBorder(null, "Relatorios Contas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_5.setBounds(667, 44, 205, 152);
+		contentPane.add(panel_5);
+		panel_5.setLayout(null);
+
+		JLabel lblTipo = new JLabel("Tipo:");
+		lblTipo.setBounds(10, 21, 46, 14);
+		panel_5.add(lblTipo);
+
+		JLabel lblInicio = new JLabel("Inicio:");
+		lblInicio.setBounds(10, 46, 46, 14);
+		panel_5.add(lblInicio);
+
+		JLabel lblFim = new JLabel("Fim:");
+		lblFim.setBounds(10, 71, 23, 14);
+		panel_5.add(lblFim);
+
+		JLabel lblAgrupamento = new JLabel("Agrupamento:");
+		lblAgrupamento.setBounds(10, 96, 77, 14);
+		panel_5.add(lblAgrupamento);
+
+		btnEmitirRelatorio = new JButton("Emitir Relatorio");
+		btnEmitirRelatorio.setBounds(60, 118, 135, 23);
+		panel_5.add(btnEmitirRelatorio);
+
+		cboAgrupamento = new JComboBox<AgrupadoresData>();
+		cboAgrupamento.setBounds(97, 93, 98, 20);
+		panel_5.add(cboAgrupamento);
+
+		txtFim = new JFormattedTextField();
+		txtFim.setBounds(43, 68, 152, 20);
+		panel_5.add(txtFim);
+
+		Masks.data().install(txtFim);
+
+		txtInicio = new JFormattedTextField();
+		txtInicio.setBounds(43, 43, 152, 20);
+		panel_5.add(txtInicio);
+
+		Masks.data().install(txtInicio);
+
+		cboTipo = new JComboBox<TipoConta>();
+		cboTipo.setBounds(43, 18, 152, 20);
+		panel_5.add(cboTipo);
 
 	}
 }

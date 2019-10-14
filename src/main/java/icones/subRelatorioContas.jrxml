@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="575" pageHeight="200" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
+	<property name="ireport.zoom" value="2.5937424601000383"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.lang.Object"/>
+	<parameter name="nomeEmpresa" class="java.lang.String"/>
+	<parameter name="cnpjEmpresa" class="java.lang.String"/>
+	<parameter name="ieEmpresa" class="java.lang.String"/>
+	<parameter name="cidadeEmpresa" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.Double"/>
+	<parameter name="ruaEmpresa" class="java.lang.String"/>
+	<parameter name="cepEmpresa" class="java.lang.String"/>
+	<parameter name="caixa" class="java.lang.String"/>
+	<parameter name="gerente" class="java.lang.String"/>
+	<field name="tipo" class="java.lang.Object"/>
+	<field name="destino" class="java.lang.String"/>
+	<field name="pessoa" class="java.lang.String"/>
+	<field name="vencimento" class="java.util.Date"/>
+	<field name="pendencia" class="java.lang.Double"/>
+	<field name="total" class="java.lang.Double"/>
+	<field name="nota" class="java.lang.Integer"/>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="84" height="20" uuid="47b23e40-1c1a-4a15-90aa-cfa34566d6f0"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="0" width="84" height="20" uuid="bdab76c8-c646-4b4f-b8c3-0e5ce1aafc65"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Vencimento]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="134" y="0" width="160" height="20" uuid="516243b3-b17c-40b7-9845-2b4488f90a0d"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="84" y="0" width="50" height="20" uuid="02f3fe7e-c8ef-4fa9-aba7-36b56b151be8"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="84" y="0" width="50" height="20" uuid="a115fc55-8d86-46ce-9777-593aff1cedc8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Nota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="0" width="139" height="20" uuid="205bb4a2-f5a1-4321-a151-468865267e11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Pessoa]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="294" y="0" width="89" height="20" uuid="7d1ccd5c-2abe-422a-8da9-b77282bafc30"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="294" y="0" width="89" height="20" uuid="b882e66f-80dc-4650-88dd-ad80f830d77b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Total R$]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="383" y="0" width="89" height="20" uuid="cfe5bebd-5445-480a-9ea6-e8b9aac1664e"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="383" y="0" width="89" height="20" uuid="3f87c2d4-8703-4008-92d2-409ded31952e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Pago R$]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="472" y="0" width="83" height="20" uuid="512e3248-f6ec-4153-90ff-58a7e46163f5"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="472" y="0" width="83" height="20" uuid="4da6bbc3-e1cc-48e2-ba76-962b9a22332e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Pendente R$]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Prevent">
+			<rectangle>
+				<reportElement x="0" y="0" width="84" height="20" uuid="40b73f4a-fbc5-4dda-94ee-3a8ab5275cff"/>
+			</rectangle>
+			<textField>
+				<reportElement x="0" y="0" width="84" height="20" uuid="77d267f6-4c3a-4d50-b4b9-0a5fbecab63f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{vencimento})]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="84" y="0" width="50" height="20" uuid="e8194633-446c-4262-ae0d-a41f5fc226f0"/>
+			</rectangle>
+			<textField>
+				<reportElement x="84" y="0" width="50" height="20" uuid="5162bd5e-1c0a-419e-afe8-e9e9e7ab8867"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nota}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="134" y="0" width="160" height="20" uuid="6727f60a-a30b-47ac-b081-b64bf0295504"/>
+			</rectangle>
+			<textField>
+				<reportElement x="134" y="0" width="160" height="20" uuid="0c1eab07-33dc-4f21-be57-6abab81ba739"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{destino} == null)?"-------------":$F{destino}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="294" y="0" width="89" height="20" uuid="79ce869d-393f-45cc-b0dd-219b02d01c87"/>
+			</rectangle>
+			<textField>
+				<reportElement x="295" y="0" width="88" height="20" uuid="5d7086f5-3759-437f-9929-d837a7ea68dc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{total})]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="383" y="0" width="89" height="20" uuid="e37ce6a0-4a45-44b7-ae9e-e4369913fb51"/>
+			</rectangle>
+			<textField pattern="">
+				<reportElement x="384" y="0" width="88" height="20" uuid="7d86b3af-3efa-4377-8777-9f52f8bbe8d8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{total} - $F{pendencia})]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="472" y="0" width="83" height="20" uuid="94a74b03-4095-44ba-8fb3-eaeb62ffc095"/>
+			</rectangle>
+			<textField pattern="">
+				<reportElement x="472" y="0" width="83" height="20" uuid="ab1fa0cd-50e3-4b79-8d63-596467538b2e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{pendencia})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

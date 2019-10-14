@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
+	<property name="ireport.zoom" value="1.6105100000000248"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.lang.Object"/>
+	<parameter name="nomeEmpresa" class="java.lang.String"/>
+	<parameter name="cnpjEmpresa" class="java.lang.String"/>
+	<parameter name="ieEmpresa" class="java.lang.String"/>
+	<parameter name="cidadeEmpresa" class="java.lang.String"/>
+	<parameter name="ruaEmpresa" class="java.lang.String"/>
+	<parameter name="cepEmpresa" class="java.lang.String"/>
+	<parameter name="dataInicial" class="java.util.Date"/>
+	<parameter name="dataFinal" class="java.util.Date"/>
+	<parameter name="subReport" class="java.lang.Object" isForPrompting="false"/>
+	<parameter name="padraoData" class="java.lang.String"/>
+	<field name="contas" class="java.util.List"/>
+	<field name="data" class="java.util.Date"/>
+	<field name="tipo" class="java.lang.Object"/>
+	<field name="total" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="78" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="68" height="56" uuid="25949cd1-d3df-423a-9b69-e34029a210ac"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="465" y="0" width="110" height="15" uuid="23d52a38-69a6-456e-b58d-1b7b5dbe672a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nomeEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="24" y="60" width="63" height="17" uuid="581f541a-cc4a-4e15-a9c7-cb880e0cb815"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cnpjEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="105" y="60" width="95" height="17" uuid="9ed2a1ee-9adb-42aa-9e63-aa30a30dfcd7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ieEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="465" y="15" width="110" height="15" uuid="f638d787-8e7c-4419-beec-9e5aa98c67c3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cidadeEmpresa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="60" width="24" height="17" uuid="3887438e-20d0-4ceb-8fd9-393f893df9a9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[CNPJ:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="87" y="60" width="18" height="17" uuid="a5fbc3a7-27db-4da8-8b09-af39a9832484"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[IE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="465" y="30" width="110" height="15" uuid="d718de7b-c271-4b90-9d01-3cb670341299"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ruaEmpresa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="465" y="45" width="110" height="15" uuid="177d5926-1f99-4d12-94de-5750f251f99c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cepEmpresa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="128" y="12" width="337" height="31" uuid="21e6dc0d-a861-4310-ad70-3359754378cb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relatório de Contas]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="128" y="43" width="337" height="17" uuid="629b4c65-e468-4717-bbbd-cc3d30d70532"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["De: "+new SimpleDateFormat("dd/MM/yyyy").format($P{dataInicial})+"  Até: "+new SimpleDateFormat("dd/MM/yyyy").format($P{dataFinal})]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="6" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="575" height="1" uuid="adab19e1-54f4-4398-9f1e-0741fd06a859"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="9" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="90" splitType="Prevent">
+			<staticText>
+				<reportElement x="0" y="0" width="51" height="17" uuid="1a0c4ed7-4853-4118-8479-da0aac397ef1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Vencimento:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="51" y="0" width="139" height="17" uuid="f348c3e6-0079-4fce-ac5e-64e4a5a39600"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat($P{padraoData}).format($F{data})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="190" y="0" width="51" height="17" uuid="d63501de-bbb2-44e9-ae1b-61f56de0a906"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Tipo:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="241" y="0" width="101" height="17" uuid="f6abcc48-775c-4e71-81c8-8c310a8eee6d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo}.toString()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="342" y="0" width="51" height="17" uuid="bc22d8b9-9ec4-4623-9bcc-5cc5ea3ef7d8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="393" y="0" width="182" height="17" uuid="b7f088d6-f5a2-42c5-b269-9e0cf7ae7562"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($F{total})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="17" width="575" height="1" uuid="fa2ec1b7-a07c-45c9-b216-89764a5cef98"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<subreport>
+				<reportElement x="0" y="18" width="575" height="72" uuid="629876f8-81ea-47e8-9fe4-4211b595d673"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{contas})  ]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{subReport}]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="6" splitType="Immediate"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="6" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="11" splitType="Immediate"/>
+	</summary>
+</jasperReport>

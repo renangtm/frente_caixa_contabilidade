@@ -20,6 +20,7 @@ import br.com.nota.ProdutoNota;
 import br.com.nota.RepresentadorNotaCompleto;
 import br.com.nota.RepresentadorProdutoNota;
 import br.com.nota.RepresentadorVencimento;
+import br.com.nota.SaidaEntrada;
 import br.com.nota.StatusNota;
 import br.com.nota.TipoNota;
 import br.com.nota.Vencimento;
@@ -259,14 +260,11 @@ public class Notas extends Modulo {
 
 	private void setNota(Nota n) {
 
+		boolean eq = this.nota == n;
+
 		if (this.nota != null) {
 
-			if (this.nota.getId() == 0) {
-
-				et.detach(this.nota);
-
-			} else {
-
+			if (!eq) {
 				try {
 
 					this.nota.getVencimentos().removeIf(v -> v.getId() == 0);
@@ -275,86 +273,91 @@ public class Notas extends Modulo {
 				} catch (Exception ex) {
 
 				}
-
 			}
 
 		}
 
 		this.nota = n;
 
-		this.txtNumero.requestFocus();
+		if (!eq) {
 
-		this.btNovaNota.setEnabled(this.nota.getId() > 0);
+			this.txtNumero.requestFocus();
 
-		this.cboModelo.setSelectedItem(this.nota.getModelo());
-		this.cboSituacao.setSelectedItem(this.nota.getStatus());
-		this.cboTipo.setSelectedItem(this.nota.getTipo());
-		this.txtData.setValue(new ConversorDate().paraString(this.nota.getData_emissao()));
+			this.cboEntradaSaida.setSelectedItem(this.nota.getOperacao());
+			
+			this.btNovaNota.setEnabled(this.nota.getId() > 0);
 
-		this.txtEmit.setText(n.getEmitente().getNome());
-		this.lblCnpjEmitente.setText("CNPJ: " + n.getEmitente().getCnpj());
-		this.lblIEemitente.setText("IE: " + n.getEmitente().getInscricao_estadual());
-		this.lblCidadeEmitente.setText(n.getEmitente().getEndereco().getCidade() + " - "
-				+ n.getEmitente().getEndereco().getCidade().getEstado().getSigla());
+			this.cboModelo.setSelectedItem(this.nota.getModelo());
+			this.cboSituacao.setSelectedItem(this.nota.getStatus());
+			this.cboTipo.setSelectedItem(this.nota.getTipo());
+			this.txtData.setValue(new ConversorDate().paraString(this.nota.getData_emissao()));
 
-		if (n.getDestinatario() != null) {
+			this.txtEmit.setText(n.getEmitente().getNome());
+			this.lblCnpjEmitente.setText("CNPJ: " + n.getEmitente().getCnpj());
+			this.lblIEemitente.setText("IE: " + n.getEmitente().getInscricao_estadual());
+			this.lblCidadeEmitente.setText(n.getEmitente().getEndereco().getCidade() + " - "
+					+ n.getEmitente().getEndereco().getCidade().getEstado().getSigla());
 
-			this.txtDestinatario.setText(n.getDestinatario().getNome());
+			if (n.getDestinatario() != null) {
 
-			if (n.getDestinatario().getClass().equals(PessoaFisica.class)) {
+				this.txtDestinatario.setText(n.getDestinatario().getNome());
 
-				PessoaFisica d = (PessoaFisica) n.getDestinatario();
+				if (n.getDestinatario().getClass().equals(PessoaFisica.class)) {
 
-				this.lblInfoDestinatario.setText("CPF: " + d.getCpf());
-				this.lblInfo2Destinatario.setText("RG:" + d.getRg());
+					PessoaFisica d = (PessoaFisica) n.getDestinatario();
 
-				if (d.getEndereco() != null)
-					this.lblCidadeDestinatario.setText(
-							d.getEndereco().getCidade() + " - " + d.getEndereco().getCidade().getEstado().getSigla());
+					this.lblInfoDestinatario.setText("CPF: " + d.getCpf());
+					this.lblInfo2Destinatario.setText("RG:" + d.getRg());
+
+					if (d.getEndereco() != null)
+						this.lblCidadeDestinatario.setText(d.getEndereco().getCidade() + " - "
+								+ d.getEndereco().getCidade().getEstado().getSigla());
+
+				} else {
+
+					PessoaJuridica d = (PessoaJuridica) n.getDestinatario();
+
+					this.lblInfoDestinatario.setText("CNPJ: " + d.getCnpj());
+					this.lblInfo2Destinatario.setText("IE:" + d.getInscricao_estadual());
+
+					if (d.getEndereco() != null)
+						this.lblCidadeDestinatario.setText(d.getEndereco().getCidade() + " - "
+								+ d.getEndereco().getCidade().getEstado().getSigla());
+
+				}
 
 			} else {
 
-				PessoaJuridica d = (PessoaJuridica) n.getDestinatario();
-
-				this.lblInfoDestinatario.setText("CNPJ: " + d.getCnpj());
-				this.lblInfo2Destinatario.setText("IE:" + d.getInscricao_estadual());
-
-				if (d.getEndereco() != null)
-					this.lblCidadeDestinatario.setText(
-							d.getEndereco().getCidade() + " - " + d.getEndereco().getCidade().getEstado().getSigla());
+				this.txtDestinatario.setText("Sem destinatario");
+				this.lblInfoDestinatario.setText("");
+				this.lblInfo2Destinatario.setText("");
+				this.lblCidadeDestinatario.setText("");
 
 			}
 
-		} else {
+			if (n.getTransportadora() != null) {
 
-			this.txtDestinatario.setText("Sem destinatario");
-			this.lblInfoDestinatario.setText("");
-			this.lblInfo2Destinatario.setText("");
-			this.lblCidadeDestinatario.setText("");
+				this.txtTransportadora.setText(n.getTransportadora().getPj().getNome());
+				this.lblCnpjTransp.setText(n.getTransportadora().getPj().getCnpj());
+				this.lblIeTransp.setText(n.getTransportadora().getPj().getInscricao_estadual());
 
-		}
+				if (n.getTransportadora().getPj().getEndereco() != null)
+					this.lblCidadeDestinatario.setText(n.getTransportadora().getPj().getEndereco().getCidade() + " - "
+							+ n.getTransportadora().getPj().getEndereco().getCidade().getEstado().getSigla());
 
-		if (n.getTransportadora() != null) {
+			} else {
 
-			this.txtTransportadora.setText(n.getTransportadora().getPj().getNome());
-			this.lblCnpjTransp.setText(n.getTransportadora().getPj().getCnpj());
-			this.lblIeTransp.setText(n.getTransportadora().getPj().getInscricao_estadual());
+				this.txtTransportadora.setText("Sem transportadora");
+				this.lblIeTransp.setText("");
+				this.lblCidadeDestinatario.setText("");
 
-			if (n.getTransportadora().getPj().getEndereco() != null)
-				this.lblCidadeDestinatario.setText(n.getTransportadora().getPj().getEndereco().getCidade() + " - "
-						+ n.getTransportadora().getPj().getEndereco().getCidade().getEstado().getSigla());
+			}
 
-		} else {
-
-			this.txtTransportadora.setText("Sem transportadora");
-			this.lblIeTransp.setText("");
-			this.lblCidadeDestinatario.setText("");
+			this.txtChave.setText(n.getChave());
+			this.txtNumero.setText(n.getNumero() + "");
+			this.txtSerie.setText(n.getSerie() + "");
 
 		}
-
-		this.txtChave.setText(n.getChave());
-		this.txtNumero.setText(n.getNumero() + "");
-		this.txtSerie.setText(n.getSerie() + "");
 
 		this.setProdutos(n);
 		this.setVencimentos(n);
@@ -365,6 +368,7 @@ public class Notas extends Modulo {
 
 	private Produto aAdicionar;
 	private JFormattedTextField txtData;
+	private JComboBox<SaidaEntrada> cboEntradaSaida;
 
 	private void salvarNota() {
 
@@ -388,6 +392,8 @@ public class Notas extends Modulo {
 			this.nota.setNumero(Integer.parseInt(this.txtNumero.getText()));
 			this.nota.setSerie(Integer.parseInt(this.txtSerie.getText()));
 
+			this.nota.setOperacao((SaidaEntrada)this.cboEntradaSaida.getSelectedItem());
+			
 			this.nota.setModelo((ModeloNota) this.cboModelo.getSelectedItem());
 			this.nota.setStatus((StatusNota) this.cboSituacao.getSelectedItem());
 			this.nota.setTipo((TipoNota) this.cboTipo.getSelectedItem());
@@ -402,14 +408,12 @@ public class Notas extends Modulo {
 		}
 
 		try {
-			
-			
-			
-			if(!new NotaService(et).verificacaoPersistencia(nota)) {
-				
+
+			if (!new NotaService(et).verificacaoPersistencia(nota)) {
+
 				erro("As alteracoes efetuadas nao podem ser salvas");
 				return;
-				
+
 			}
 
 			new NotaService(et).merge(nota);
@@ -417,8 +421,10 @@ public class Notas extends Modulo {
 			et.getTransaction().begin();
 			et.getTransaction().commit();
 
-		} catch (Exception ex) {
+			this.setNota(nota);
 			
+		} catch (Exception ex) {
+
 			ex.printStackTrace();
 
 			info("A nota não tem integridade, verifique se os vencimentos batem com o valor total");
@@ -444,6 +450,8 @@ public class Notas extends Modulo {
 
 		// ===================
 
+		this.cboEntradaSaida.setModel(new DefaultComboBoxModel<SaidaEntrada>(SaidaEntrada.values()));
+		
 		this.btAddVencimento.addActionListener(x -> {
 
 			if (!vc(this.txtDataVencimento) || !vc(this.txtValorVencimento)) {
@@ -458,9 +466,9 @@ public class Notas extends Modulo {
 				v.setValor(((Number) this.txtValorVencimento.getValue()).doubleValue());
 				v.setData(Masks.getData(this.txtDataVencimento.getText()));
 				v.setNota(this.nota);
-				
-				//et.persist(v);
-				
+
+				// et.persist(v);
+
 				this.nota.getVencimentos().add(v);
 
 				this.setVencimentos(this.nota);
@@ -550,8 +558,6 @@ public class Notas extends Modulo {
 
 			}
 
-			
-			
 			ProdutoNota pn = new ProdutoNota();
 			pn.setNota(this.nota);
 			pn.setProduto(et.merge(aAdicionar));
@@ -560,8 +566,8 @@ public class Notas extends Modulo {
 
 			pn.setCfop(et.merge(aAdicionar.getCategoria().getTabelaCfop().getCFOP(this.nota.getOperacaoLogistica())));
 
-			//et.persist(pn);
-			
+			// et.persist(pn);
+
 			this.nota.getProdutos().add(pn);
 
 			aAdicionar = null;
@@ -759,10 +765,14 @@ public class Notas extends Modulo {
 		panel_2.add(lblData);
 
 		txtData = new JFormattedTextField();
-		txtData.setBounds(57, 118, 129, 20);
+		txtData.setBounds(57, 118, 102, 20);
 		panel_2.add(txtData);
 
 		Masks.data().install(txtData);
+		
+		cboEntradaSaida = new JComboBox<SaidaEntrada>();
+		cboEntradaSaida.setBounds(169, 118, 119, 20);
+		panel_2.add(cboEntradaSaida);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(null, "Totais", TitledBorder.LEADING, TitledBorder.TOP, null, null));

@@ -25,7 +25,7 @@ public class Empresa{
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="empresa")
 	private List<PadraoCodigo> padroesCodigo;
 	
-	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.PERSIST)
 	@JoinColumn(name="id_parametros")
 	private ParametrosEmissao parametrosEmissao;
 	
@@ -105,5 +105,32 @@ public class Empresa{
 		this.padroesCodigo = padroesCodigo;
 	}
 
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Empresa other = (Empresa) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	
 	
 }

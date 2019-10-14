@@ -19,6 +19,7 @@ public class UsuarioService implements Service<Usuario> {
 
 	}
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 
 		EntityManager et = ET.nova();

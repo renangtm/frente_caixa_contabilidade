@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="danfe_duplicata" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="892ad538-9dad-4554-99b5-e150098c7738">
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="fatura" class="java.lang.String"/>
+	<field name="vencimento" class="java.lang.String"/>
+	<field name="valor" class="java.lang.String"/>
+	<columnHeader>
+		<band height="1" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement x="21" y="0" width="91" height="10" uuid="3096b4c4-b26c-40b5-8e51-27d518b97abe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Numero: "+$F{fatura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="112" y="0" width="124" height="10" uuid="09656536-5053-444b-86e9-1c25a61b4892"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Vencimento: "+$F{vencimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="272" y="0" width="91" height="10" uuid="b2ce637e-954e-419e-9f04-d85dbd956866"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Valor: "+$F{valor}+" Reais"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="6" y="11" width="385" height="1" uuid="a5208f03-0d05-4695-abb6-f2e7730364df"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

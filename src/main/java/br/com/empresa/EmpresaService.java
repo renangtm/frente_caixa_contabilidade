@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import br.com.base.Service;
 
@@ -39,6 +40,16 @@ public class EmpresaService implements Service<Empresa>{
 	@Override
 	public void lixeira(Empresa obj) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Empresa> getEmpresas(String filtro){
+		
+		Query q = this.et.createQuery("SELECT e FROM Empresa e WHERE e.pj.nome like :filtro");
+		q.setParameter("filtro", "%"+filtro+"%");
+		
+		return (List<Empresa>)(List<?>)q.getResultList();
 		
 	}
 

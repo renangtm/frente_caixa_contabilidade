@@ -26,6 +26,9 @@ public class RepresentadorNotaCompleto extends Representador<Nota>{
 	@Campo(nome="Serie",ordem="{{et}}.serie")
 	private int serie;
 	
+	@Campo(nome="Operacao",ordem="{{et}}.operacao")
+	private String operacao;
+	
 	@Campo(nome="Status",ordem="{{et}}.status")
 	private String status;
 	
@@ -49,6 +52,8 @@ public class RepresentadorNotaCompleto extends Representador<Nota>{
 		this.total = n.getValorTotalNota();
 		this.serie = n.getSerie();
 		this.status = n.getStatus().name();
+		
+		this.operacao = n.getOperacao().toString();
 		
 		if(this.transportadora == null) {
 
