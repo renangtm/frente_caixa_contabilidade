@@ -49,11 +49,11 @@ public class GetDocumentosEmpresasRTC {
 								443));
 
 				for (Getter getter : getters) {
-
+					
 					getter.executar(empresa, et);
 
 				}
-
+				
 				// Ciencia Da Operacao com intencao de download do XML;
 				
 				List<XML> xmls = xmlService.getXMLsNaoVistadosSistema(TipoXML.NFE_REDUZIDA, empresa);

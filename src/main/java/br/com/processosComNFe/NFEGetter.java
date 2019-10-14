@@ -147,7 +147,8 @@ public class NFEGetter implements Getter {
 
 		}
 
-		empresa.getParametrosEmissao().setUltimoNSuNFe(max);
+		if(max > 0)
+			empresa.getParametrosEmissao().setUltimoNSuNFe(max);
 		
 		et.getTransaction().begin();
 		et.getTransaction().commit();

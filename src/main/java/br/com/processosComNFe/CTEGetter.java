@@ -135,7 +135,8 @@ public class CTEGetter implements Getter {
 
 		}
 
-		empresa.getParametrosEmissao().setUltimoNSuCTe(max);
+		if(max > 0)
+			empresa.getParametrosEmissao().setUltimoNSuCTe(max);
 
 		et.getTransaction().begin();
 		et.getTransaction().commit();
