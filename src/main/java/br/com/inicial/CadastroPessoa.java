@@ -702,6 +702,7 @@ public class CadastroPessoa extends Modulo {
 			du.et = this.et;
 			du.init(this.usuario);
 			du.setVisible(true);
+			du.centralizar();
 			
 		});
 		

@@ -423,11 +423,11 @@ public class ConfiguracoesEmpresa extends Modulo {
 		getContentPane().add(txtTokenApi);
 
 		JLabel lblUtimaNfe = new JLabel("Utima NFe:");
-		lblUtimaNfe.setBounds(10, 244, 53, 14);
+		lblUtimaNfe.setBounds(10, 244, 92, 14);
 		getContentPane().add(lblUtimaNfe);
 
 		JLabel lblIdLote = new JLabel("Id Lote:");
-		lblIdLote.setBounds(274, 247, 38, 14);
+		lblIdLote.setBounds(255, 244, 67, 14);
 		getContentPane().add(lblIdLote);
 
 		JLabel lblCertificado = new JLabel("Certificado:");
@@ -440,12 +440,12 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		txtUltimaNFe = new JTextField();
 		txtUltimaNFe.setColumns(10);
-		txtUltimaNFe.setBounds(67, 241, 117, 20);
+		txtUltimaNFe.setBounds(110, 241, 117, 20);
 		getContentPane().add(txtUltimaNFe);
 
 		txtIdLote = new JTextField();
 		txtIdLote.setColumns(10);
-		txtIdLote.setBounds(322, 244, 112, 20);
+		txtIdLote.setBounds(322, 241, 112, 20);
 		getContentPane().add(txtIdLote);
 
 		btCertificado = new JButton("Sem certificado");

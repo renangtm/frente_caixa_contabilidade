@@ -1,5 +1,6 @@
 package br.com.inicial;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JPanel;
@@ -7,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
@@ -50,6 +52,16 @@ public class DetalhesUsuario extends Tela {
 		} catch (IOException e) {
 			return null;
 		}
+
+	}
+	
+	public void centralizar() {
+
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension size = tk.getScreenSize();
+
+		this.setLocation((int) (size.getWidth() / 2 - this.getWidth() / 2),
+				(int) (size.getHeight() / 2 - this.getHeight() / 2));
 
 	}
 
@@ -338,7 +350,7 @@ public class DetalhesUsuario extends Tela {
 	public DetalhesUsuario() {
 		setTitle("Detalhes do Usuario");
 		setResizable(false);
-		setBounds(100, 100, 561, 596);
+		setBounds(100, 100, 561, 680);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -356,7 +368,7 @@ public class DetalhesUsuario extends Tela {
 		panel = new JPanel();
 		panel.setBorder(
 				new TitledBorder(null, "Atribuicao de permissoes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 138, 535, 423);
+		panel.setBounds(10, 138, 535, 502);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -411,7 +423,7 @@ public class DetalhesUsuario extends Tela {
 		panel.add(separator_3);
 
 		btConfirmar = new JButton("Confirmar");
-		btConfirmar.setBounds(402, 389, 123, 23);
+		btConfirmar.setBounds(402, 468, 123, 23);
 		panel.add(btConfirmar);
 
 		panel_1 = new JPanel();

@@ -41,6 +41,19 @@ public class XMLService implements Service<XML> {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<XML> getXMLsNaoVistadosUsuario(Empresa empresa) {
+
+		Query q = this.et.createQuery(
+				"SELECT x FROM XML x WHERE x.empresa = :empresa AND x.visto = false AND (x.tipo = :tipo1 OR x.tipo = :tipo2)");
+		q.setParameter("tipo1", TipoXML.CTE);
+		q.setParameter("tipo2", TipoXML.NFE);
+		q.setParameter("empresa", empresa);
+
+		return (List<XML>) (List<?>) q.getResultList();
+
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<XML> getXMLsNaoVistadosSistema(TipoXML tipo, Empresa empresa) {

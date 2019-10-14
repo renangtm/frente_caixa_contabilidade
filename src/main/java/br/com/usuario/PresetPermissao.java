@@ -5,18 +5,28 @@ import java.util.List;
 
 public enum PresetPermissao {
 
-	CAIXA(new Object[][] { 
-		  new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true } }),
-	GERENTE(new Object[][] { 
-			new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true },
+	CAIXA(new Object[][] { new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true } }),
+	OPERADOR_COMANDA(new Object[][] { new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true } }),
+	GERENTE(new Object[][] { new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true },
 			new Object[] { TipoPermissao.NOTAS, true, true, true, true },
 			new Object[] { TipoPermissao.GERENCIA_CAIXAS, true, true, true, true },
 			new Object[] { TipoPermissao.FINANCEIRO, true, true, true, true },
 			new Object[] { TipoPermissao.CADASTRO_PESSOA, true, true, true, true },
+			new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true },
 			new Object[] { TipoPermissao.CADASTRO_PRODUTO, true, true, true, true },
 			new Object[] { TipoPermissao.CADASTRO_OPERACAO, true, true, true, true },
 			new Object[] { TipoPermissao.CADASTRO_HISTORICO, true, true, true, true },
 			new Object[] { TipoPermissao.CONFIGURACAO_EMPRESA, true, true, true, true },
+			new Object[] { TipoPermissao.APROVACAO_XML, true, true, true, true },
+			new Object[] { TipoPermissao.DADOS_CONTABEIS_PRODUTO, true, true, true, true } }),
+	CONTADOR(new Object[][] { new Object[] { TipoPermissao.APROVACAO_XML, true, true, true, true },
+			new Object[] { TipoPermissao.FINANCEIRO, true, true, true, true },
+			new Object[] { TipoPermissao.CADASTRO_OPERACAO, true, true, true, true },
+			new Object[] { TipoPermissao.CADASTRO_HISTORICO, true, true, true, true },
+			new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true },
+			new Object[] { TipoPermissao.CADASTRO_PRODUTO, true, true, true, true },
+			new Object[] { TipoPermissao.CADASTRO_CFOP, true, true, true, true },
+			new Object[] { TipoPermissao.CADASTRO_NCM, true, true, true, true },
 			new Object[] { TipoPermissao.DADOS_CONTABEIS_PRODUTO, true, true, true, true } });
 
 	private List<Permissao> preset;
@@ -40,21 +50,16 @@ public enum PresetPermissao {
 
 	}
 
-	
-	
 	public List<Permissao> getPreset() {
 		return preset;
 	}
-
-
 
 	public double encaixe(List<Permissao> perms) {
 
 		double ok = 0;
 		double div = 0;
 
-		lbl:
-		for (Permissao p : perms) {
+		lbl: for (Permissao p : perms) {
 
 			for (Permissao pp : this.preset) {
 
@@ -81,11 +86,11 @@ public enum PresetPermissao {
 						div++;
 
 					continue lbl;
-					
+
 				}
 
 			}
-			
+
 			div += 4;
 
 		}
