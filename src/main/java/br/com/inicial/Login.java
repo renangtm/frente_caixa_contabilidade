@@ -149,7 +149,8 @@ public class Login extends Tela {
 					if (usuario == null) {
 
 						JOptionPane.showMessageDialog(este, "Esse usuario nao existe");
-
+						return;
+						
 					}
 
 					try {
@@ -181,11 +182,10 @@ public class Login extends Tela {
 
 				} catch (Exception ex) {
 
-					JOptionPane.showMessageDialog(este, ex.toString());
+					JOptionPane.showMessageDialog(este, "Ocorreu um problema");
 
 				}finally {
 					
-					et.close();
 					
 				}
 

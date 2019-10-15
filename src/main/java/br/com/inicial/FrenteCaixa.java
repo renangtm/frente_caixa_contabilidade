@@ -503,8 +503,7 @@ public class FrenteCaixa extends Modulo {
 
 		if (this.formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 			try {
-				this.txtTroco.setText((Math.max(0,
-						Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")) - this.venda.getTotal())
+				this.txtTroco.setText(((Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")) - this.venda.getTotal())
 						+ "").replaceAll("\\.", ","));
 			} catch (Exception ex) {
 
@@ -1347,7 +1346,7 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(btSangria);
 
 		btReposicao = new JButton("F8 - Reposicao");
-		btReposicao.setForeground(Color.GREEN);
+		btReposicao.setForeground(Color.BLUE);
 		btReposicao.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btReposicao.setBounds(559, 558, 173, 54);
 		getContentPane().add(btReposicao);
