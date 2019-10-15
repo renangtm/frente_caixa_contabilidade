@@ -9,6 +9,8 @@ public class CFG {
 	
 	public static ConfiguracaoLocalCaixa clc;
 	
+	public static String lookAndFeel = "com.jtattoo.plaf.acryl.AcrylLookAndFeel";
+	
 	private CFG(){
 		
 	}

@@ -32,6 +32,7 @@ import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.JComboBox;
+import javax.swing.JDesktopPane;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -702,7 +704,17 @@ public class CadastroPessoa extends Modulo {
 			du.et = this.et;
 			du.init(this.usuario);
 			du.setVisible(true);
+			
+			((JDesktopPane)this.getParent()).add(du);
+			
 			du.centralizar();
+			
+			try {
+				du.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 		});
 		

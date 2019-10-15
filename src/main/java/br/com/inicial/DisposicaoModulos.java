@@ -38,7 +38,7 @@ public class DisposicaoModulos {
 		
 		if (usuario.getPermissao(TipoPermissao.CADASTRO_CFOP).isConsultar()) {
 
-			disposicao.add(CadastroCFOP_.class);
+			disposicao.add(CadastroCFOP.class);
 
 		}
 

@@ -2,6 +2,7 @@ package br.com.inicial;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -22,6 +23,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,6 +36,7 @@ import br.com.base.ET;
 import br.com.base.Resources;
 import br.com.usuario.PresetPermissao;
 import br.com.usuario.Usuario;
+import br.com.utilidades.U;
 
 class ImagePanel extends JComponent {
 
@@ -55,7 +58,7 @@ class ImagePanel extends JComponent {
 	}
 }
 
-public class MenuPrincipal extends Tela {
+public class MenuPrincipal extends TelaFrame {
 
 	/**
 	 * 
@@ -65,15 +68,24 @@ public class MenuPrincipal extends Tela {
 	private HashMap<Component, Integer> leveis = new HashMap<Component, Integer>();
 	private final List<JPanel> pnlMiniBanner = new ArrayList<JPanel>();
 
+	private JDesktopPane jdp;
+	
 	private static final long serialVersionUID = 1L;
+	
+	@SuppressWarnings("unused")
+	private MenuPrincipal este;
 
 	private Usuario usuario;
+	
+	private int index = 100;
 
 	public MenuPrincipal(Usuario usuario) throws IOException {
 
 		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: "+usuario.getPf().getEmpresa().getPj().getCnpj(), 0, 0, 100, 100, false);
 
 		this.usuario = usuario;
+		
+		this.este = this;
 		
 		if(PresetPermissao.CAIXA.encaixe(this.usuario.getPermissoes()) == 1){
 			
@@ -95,11 +107,36 @@ public class MenuPrincipal extends Tela {
 		}
 		
 		this.setVisible(true);
+		
+		final Image fundo = U.resizeImage(Resources.getFundo(), this.getWidth(), this.getHeight());
 
-		this.setContentPane(new ImagePanel(Resources.getFundo()));
+		this.jdp = new JDesktopPane(){
 
-		this.getContentPane().setBackground(Color.LIGHT_GRAY);
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+            protected void paintComponent(Graphics grphcs) {
+                super.paintComponent(grphcs);
+                grphcs.drawImage(fundo, 0, 0, null);
+            }
 
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(getWidth(), getHeight());
+            }
+			
+		};
+		
+		
+		this.jdp.setBounds(this.getBounds());
+		this.jdp.setLayout(null);
+		this.setContentPane(this.jdp);
+
+		this.jdp.putClientProperty("JDesktopPane.dragMode", "outline");
+		
 		this.addFocusListener(new FocusListener() {
 
 			@Override
@@ -155,7 +192,7 @@ public class MenuPrincipal extends Tela {
 
 		}
 
-		final Tela este = this;
+		final TelaFrame este = this;
 
 		this.addMouseListener(new MouseListener() {
 
@@ -223,7 +260,16 @@ public class MenuPrincipal extends Tela {
 
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-		formarMenu(modulos, 15, 0, Math.min(6, 70 / modulos.size()));
+		double perc = 6;
+		
+		if((this.getHeight()*(perc/100))%1 > 0){
+			
+			perc = (Math.ceil(this.getHeight()*(perc/100))/this.getHeight())*100;
+		
+		}
+		
+			
+		formarMenu(modulos, 15, 0, perc);
 
 		if (!CFG.moduloSat.isOperavel()) {
 
@@ -287,7 +333,7 @@ public class MenuPrincipal extends Tela {
 
 	}
 
-	private void formarMenu(List<Object> o, int y_base, int level, int h) {
+	private void formarMenu(List<Object> o, double y_base, int level, double h) {
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -310,26 +356,26 @@ public class MenuPrincipal extends Tela {
 
 		int largura = 13;
 		int largura_img = 4;
-		int espacamento = 1;
+		int espacamento = 0;
 
 		Color submenu_color = new Color(100, 160, 100);
 
-		int comprimento = h;
+		double comprimento = h;
 
-		int initial_y_base = y_base;
+		double initial_y_base = y_base;
 
 		while (y_base + comprimento * o.size() > 100)
 			y_base -= comprimento + espacamento;
 
-		final Tela este = this;
+		final TelaFrame este = this;
 
 		int i = 0;
 		for (Object item : o) {
 
-			final int z = y_base + (comprimento + espacamento) * i;
+			final double z = y_base + (comprimento + espacamento) * i;
 
 			final JPanel lbl = new JPanel();
-			lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+			lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY, 0, true));
 			getContentPane().add(lbl);
 
 			if (level == 0 || z == initial_y_base) {
@@ -433,7 +479,7 @@ public class MenuPrincipal extends Tela {
 				this.lr.setDimensoesComponente(lbl3, 0, 0, largura_img + 2, comprimento);
 			}
 
-			getContentPane().add(lbl);
+			//getContentPane().add(lbl);
 
 			leveis.put(lbl, level);
 			objetos.put(lbl, item);
@@ -521,9 +567,17 @@ public class MenuPrincipal extends Tela {
 									mod.init(usuario);
 
 									mod.setVisible(true);
+									
+									JDesktopPane frm = ((JDesktopPane)este.getContentPane());
+									
+									frm.add(mod, ++index);
 
 									mod.centralizar();
+									
+									mod.requestFocus();
 
+									mod.setSelected(true);
+									
 								} catch (Exception ee) {
 									ee.printStackTrace();
 								}
@@ -629,7 +683,7 @@ public class MenuPrincipal extends Tela {
 		esconde();
 
 		try {
-			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+			UIManager.setLookAndFeel(CFG.lookAndFeel);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block

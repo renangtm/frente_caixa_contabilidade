@@ -28,7 +28,7 @@ import br.com.emissao.SAT;
 import br.com.usuario.Usuario;
 import br.com.usuario.UsuarioService;
 
-public class Login extends Tela {
+public class Login extends TelaFrame {
 
 	/**
 	 * 
@@ -57,10 +57,10 @@ public class Login extends Tela {
 	
 	public Login() throws IOException {
 
-		super("Login", 37, 30, 26, 40, true);
+		super("Login", 37, 30, 26, 40, false);
 
 		try {
-			UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+			UIManager.setLookAndFeel(CFG.lookAndFeel);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			// TODO Auto-generated catch block
@@ -101,7 +101,7 @@ public class Login extends Tela {
 
 		this.lblEstado = new JLabel("Status do sistema: Testando conexão...");
 		this.add(this.lblEstado);
-		this.lr.setDimensoesComponente(this.lblEstado, 5, 90, 90, 10);
+		this.lr.setDimensoesComponente(this.lblEstado, 5, 87, 90, 10);
 
 		this.et = ET.nova();
 		
@@ -181,7 +181,8 @@ public class Login extends Tela {
 					este.dispose();
 
 				} catch (Exception ex) {
-
+					
+					ex.printStackTrace();
 					JOptionPane.showMessageDialog(este, "Ocorreu um problema");
 
 				}finally {

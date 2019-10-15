@@ -3,18 +3,18 @@ package br.com.inicial;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import javax.swing.JInternalFrame;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
 import br.com.utilidades.LayoutRelativo;
 
-public class Tela extends JInternalFrame{
+public class TelaFrame extends JFrame{
 
 	
 	private static final long serialVersionUID = 1L;
 	public LayoutRelativo lr;
-	protected final Tela este = this;
+	protected final TelaFrame este = this;
 	
 	
 	protected boolean option(String str){
@@ -58,13 +58,13 @@ public class Tela extends JInternalFrame{
 		
 	}
 	
-	public Tela(){
-		super("",true, true, true, true);
+	public TelaFrame(){
+		super();
 	};
 	
-	public Tela(String titulo,int x,int y, int width, int height,boolean res){
+	public TelaFrame(String titulo,int x,int y, int width, int height,boolean res){
 		
-		super(titulo, true, true, true, true);
+		super(titulo);
 		
 		this.setLayout(null);
 		this.lr = new LayoutRelativo(this, x, y, width, height);

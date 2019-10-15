@@ -28,7 +28,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JSlider;
 
-public class CadastroCFOP_ extends Modulo {
+public class CadastroCFOP extends Modulo {
 
 	/**
 	 * 
@@ -93,7 +93,7 @@ public class CadastroCFOP_ extends Modulo {
 			public void run() {
 				try {
 
-					CadastroCFOP_ frame = new CadastroCFOP_();
+					CadastroCFOP frame = new CadastroCFOP();
 					frame.setVisible(true);
 					frame.init(null);
 
@@ -170,10 +170,9 @@ public class CadastroCFOP_ extends Modulo {
 	 * Create the frame.
 	 */
 
-	public CadastroCFOP_() {
+	public CadastroCFOP() {
 		setTitle("Cadastro de CFOP");
-		setResizable(false);
-		setBounds(100, 100, 452, 381);
+		setBounds(100, 100, 461, 381);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -207,11 +206,11 @@ public class CadastroCFOP_ extends Modulo {
 		panel.add(lblCodEx);
 
 		txtNcm = new JFormattedTextField();
-		txtNcm.setBounds(50, 19, 223, 20);
+		txtNcm.setBounds(54, 19, 223, 20);
 		panel.add(txtNcm);
 
 		txtDescricao = new JFormattedTextField();
-		txtDescricao.setBounds(71, 47, 343, 20);
+		txtDescricao.setBounds(81, 47, 333, 20);
 		panel.add(txtDescricao);
 
 		txtCodigoEx = new JFormattedTextField();
@@ -219,7 +218,7 @@ public class CadastroCFOP_ extends Modulo {
 		panel.add(txtCodigoEx);
 
 		btnConfirmar = new JButton("Confirmar");
-		btnConfirmar.setBounds(353, 152, 81, 23);
+		btnConfirmar.setBounds(350, 152, 81, 23);
 		contentPane.add(btnConfirmar);
 
 		btnNovoNcm = new JButton("+ CFOP");
@@ -227,11 +226,11 @@ public class CadastroCFOP_ extends Modulo {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnNovoNcm.setBounds(269, 152, 83, 23);
+		btnNovoNcm.setBounds(269, 152, 71, 23);
 		contentPane.add(btnNovoNcm);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 186, 424, 125);
+		scrollPane.setBounds(10, 186, 425, 125);
 		contentPane.add(scrollPane);
 
 		tblNcm = new JTable();
@@ -242,7 +241,7 @@ public class CadastroCFOP_ extends Modulo {
 		contentPane.add(lblPesquisarNcm);
 
 		txtPesquisar = new JTextField();
-		txtPesquisar.setBounds(93, 152, 166, 20);
+		txtPesquisar.setBounds(114, 152, 145, 20);
 		contentPane.add(txtPesquisar);
 		txtPesquisar.setColumns(10);
 		

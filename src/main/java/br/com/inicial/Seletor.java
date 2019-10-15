@@ -11,7 +11,6 @@ import java.util.Arrays;
 import javax.persistence.EntityManager;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.CaretEvent;
@@ -116,9 +115,9 @@ public class Seletor<T> extends JDialog {
 	 * Create the dialog.
 	 */
 	public Seletor(Class<T> classe, Service<T> buscador, Class<? extends Representador<T>> rep, OnSelect<T> os,
-			JFrame owner) {
-		super(owner);
-		setTitle("Selecao de");
+			Tela owner) {
+		
+		setTitle("Selecao de ");
 		setResizable(false);
 		setBounds(100, 100, 315, 300);
 

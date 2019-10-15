@@ -65,11 +65,11 @@ public class LayoutRelativo {
 		
 	}
 
-	private int p(int x, int y) {
+	private int p(double x, double y) {
 		return (int)(((double)x * (double)y)/100);
 	}
 	
-	public void setDimensoesComponente(Component componente, int x, int y, int width, int height){
+	public void setDimensoesComponente(Component componente, double x, double y, double width, double height){
 		componente.setBounds(p(this.width-5, x), p(this.height-30, y), p(this.width-5, width),
 				p(this.height-30, height));
 		for(Component componente_:this.componentes)if(componente_==componente)return;
@@ -91,7 +91,7 @@ public class LayoutRelativo {
 			Rectangle dimensoes = this.reg.get(i);
 			
 			Rectangle d2 = new Rectangle();
-			d2.setBounds((int)((double)dimensoes.getX()*x_fat),(int)((double)dimensoes.getY()*y_fat), (int)((double)dimensoes.getWidth()*x_fat), (int)((double)dimensoes.getHeight()*y_fat));
+			d2.setBounds((int)Math.round((double)dimensoes.getX()*x_fat),(int)Math.round((double)dimensoes.getY()*y_fat), (int)((double)dimensoes.getWidth()*x_fat), (int)Math.round((double)dimensoes.getHeight()*y_fat));
 			
 			componente.setBounds(d2);
 			

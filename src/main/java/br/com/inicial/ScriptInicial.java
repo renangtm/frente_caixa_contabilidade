@@ -20,7 +20,7 @@ public class ScriptInicial {
 		PreparedStatement ps = Conexoes.getConexao().prepareStatement("SELECT p.codigo,p.custo,p.imagem,p.estoque,p.ncm,p.nome,p.peso_bruto,p.valor_base,p.quantidade_unidade,p.id_categoria,p.disponivel FROM novo_rtc.produto p WHERE p.id_empresa=2069 AND p.excluido=false");
 		ResultSet rs = ps.executeQuery();
 		
-		while(rs.next()) {
+		while(rs.next()) {123
 		
 			Produto p = new Produto();
 			p.setNome(rs.getString("p.nome"));

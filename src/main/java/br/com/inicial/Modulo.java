@@ -5,8 +5,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -190,6 +188,26 @@ public class Modulo extends Tela {
 
 		this.setVisible(true);
 		this.et = ET.nova();
+		
+		this.addVetoableChangeListener((pce)->{
+			
+			if(pce.getPropertyName().equals(IS_CLOSED_PROPERTY)){
+				
+				boolean estado = ((Boolean)pce.getNewValue()).booleanValue();
+				
+				if(estado){
+					
+					et.close();
+					managers.forEach(e->e.close());
+					
+					
+				}
+				
+			}
+			
+		});
+		
+		/*
 		this.addWindowListener(new WindowListener() {
 
 			@Override
@@ -238,6 +256,7 @@ public class Modulo extends Tela {
 			
 			
 		});
+		*/
 	}
 
 	public void centralizar() {
@@ -258,6 +277,26 @@ public class Modulo extends Tela {
 		super();
 		this.setVisible(true);
 		this.et = ET.nova();
+		
+		this.addVetoableChangeListener((pce)->{
+			
+			if(pce.getPropertyName().equals(IS_CLOSED_PROPERTY)){
+				
+				boolean estado = ((Boolean)pce.getNewValue()).booleanValue();
+				
+				if(estado){
+					
+					et.close();
+					managers.forEach(e->e.close());
+					
+					
+				}
+				
+			}
+			
+		});
+		
+		/*
 		this.addWindowListener(new WindowListener() {
 
 			@Override
@@ -305,6 +344,7 @@ public class Modulo extends Tela {
 			
 			
 		});
+		*/
 	}
 
 	public Modulo(String titulo, int x, int y, int width, int height, boolean res, boolean contrato) {
@@ -313,6 +353,25 @@ public class Modulo extends Tela {
 		this.setVisible(true);
 		//this.et = ET.nova();
 		
+		this.addVetoableChangeListener((pce)->{
+			
+			if(pce.getPropertyName().equals(IS_CLOSED_PROPERTY)){
+				
+				boolean estado = ((Boolean)pce.getNewValue()).booleanValue();
+				
+				if(estado){
+					
+					et.close();
+					managers.forEach(e->e.close());
+					
+					
+				}
+				
+			}
+			
+		});
+		
+		/*
 		this.addWindowListener(new WindowListener() {
 
 			@Override
@@ -360,6 +419,7 @@ public class Modulo extends Tela {
 			
 			
 		});
+		*/
 		
 	}
 

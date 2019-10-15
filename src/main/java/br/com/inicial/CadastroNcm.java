@@ -190,7 +190,7 @@ public class CadastroNcm extends Modulo {
 	public CadastroNcm() {
 		setTitle("Cadastro de NCM");
 		setResizable(false);
-		setBounds(100, 100, 452, 381);
+		setBounds(100, 100, 456, 381);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -237,7 +237,7 @@ public class CadastroNcm extends Modulo {
 		this.txtAliqIpi.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
 
 		txtDescricao = new JFormattedTextField();
-		txtDescricao.setBounds(71, 72, 343, 20);
+		txtDescricao.setBounds(81, 72, 333, 20);
 		panel.add(txtDescricao);
 
 		txtCodigoEx = new JFormattedTextField();
@@ -248,12 +248,12 @@ public class CadastroNcm extends Modulo {
 		btnConfirmar.setBounds(353, 167, 81, 23);
 		contentPane.add(btnConfirmar);
 
-		btnNovoNcm = new JButton("Novo NCM");
+		btnNovoNcm = new JButton("+ NCM");
 		btnNovoNcm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnNovoNcm.setBounds(269, 167, 83, 23);
+		btnNovoNcm.setBounds(271, 167, 72, 23);
 		contentPane.add(btnNovoNcm);
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -268,7 +268,7 @@ public class CadastroNcm extends Modulo {
 		contentPane.add(lblPesquisarNcm);
 
 		txtPesquisar = new JTextField();
-		txtPesquisar.setBounds(93, 168, 166, 20);
+		txtPesquisar.setBounds(114, 168, 145, 20);
 		contentPane.add(txtPesquisar);
 		txtPesquisar.setColumns(10);
 		

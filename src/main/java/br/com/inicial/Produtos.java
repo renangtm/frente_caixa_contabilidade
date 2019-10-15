@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,11 +54,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
+import javax.swing.JDesktopPane;
 import javax.swing.JFormattedTextField;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import java.awt.Dimension;
 
 public class Produtos extends Modulo {
 
@@ -372,6 +375,16 @@ public class Produtos extends Modulo {
 			Categorias c = new Categorias(this.produto.getCategoria(), this.et);
 			c.init(this.operador);
 			c.setVisible(true);
+			
+			((JDesktopPane)this.getParent()).add(c);
+			
+			try {
+				c.setSelected(true);
+			} catch (PropertyVetoException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			c.centralizar();
 
 		});
@@ -948,12 +961,11 @@ public class Produtos extends Modulo {
 
 		btGerarRelatorio = new JButton();
 		btGerarRelatorio.setText("Gerar Relatorio");
-		btGerarRelatorio.setBounds(10, 141, 240, 35);
+		btGerarRelatorio.setBounds(10, 141, 255, 35);
 		panel.add(btGerarRelatorio);
 		getContentPane().setLayout(layout);
 
-		setSize(new java.awt.Dimension(816, 538));
-		setLocationRelativeTo(null);
+		setSize(new Dimension(915, 538));
 
 		this.txtCusto.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
 		this.txtValor.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));

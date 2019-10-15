@@ -138,7 +138,6 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		this.operador = et.merge(u);
 		this.empresa = this.operador.getPf().getEmpresa();
-		et.detach(operador);
 		this.empresa = et.merge(empresa);
 
 		this.txtCodigoAtivacaoSAT.setText(this.empresa.getParametrosEmissao().getSenha_sat());

@@ -504,7 +504,6 @@ public class CodigosExternos extends Modulo{
         );
 
         setSize(new Dimension(340, 538));
-        setLocationRelativeTo(null);
 	}
 	
 	 javax.swing.JButton btConfirmar;
