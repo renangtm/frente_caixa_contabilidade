@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 
 
-public class Loading extends Tela{
+public class Loading extends TelaFrame{
 
 	/**
 	 * 

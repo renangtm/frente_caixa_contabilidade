@@ -28,14 +28,20 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import br.com.base.AberturaCaixaException;
 import br.com.base.CFG;
+import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
 import br.com.base.Resources;
+import br.com.caixa.ExpedienteCaixa;
 import br.com.usuario.PresetPermissao;
 import br.com.usuario.Usuario;
+import br.com.utilidades.LayoutRelativo;
 import br.com.utilidades.U;
 
 class ImagePanel extends JComponent {
@@ -69,74 +75,86 @@ public class MenuPrincipal extends TelaFrame {
 	private final List<JPanel> pnlMiniBanner = new ArrayList<JPanel>();
 
 	private JDesktopPane jdp;
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@SuppressWarnings("unused")
 	private MenuPrincipal este;
 
 	private Usuario usuario;
-	
+
 	private int index = 100;
+
+	private JPanel lblTopo;
+	private JLabel lblStatus;
+	private JLabel lblSaldo;
+	private JLabel lblCaixa;
 
 	public MenuPrincipal(Usuario usuario) throws IOException {
 
-		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: "+usuario.getPf().getEmpresa().getPj().getCnpj(), 0, 0, 100, 100, false);
+		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: "
+				+ usuario.getPf().getEmpresa().getPj().getCnpj(), 0, 0, 100, 100, false);
 
 		this.usuario = usuario;
-		
+
 		this.este = this;
-		
-		if(PresetPermissao.CAIXA.encaixe(this.usuario.getPermissoes()) == 1){
-			
-			Loading.getLoading(()->{
-				
+
+		if (PresetPermissao.CAIXA.encaixe(this.usuario.getPermissoes()) == 1) {
+
+			Loading.getLoading(() -> {
+
 				FrenteCaixa fc = new FrenteCaixa();
 				fc.setVisible(false);
 				fc.et = ET.nova();
 				fc.init(this.usuario);
 				fc.setVisible(true);
-				
+
 				fc.centralizar();
-				
+
 			});
-			
+
 			this.dispose();
 			return;
-			
+
 		}
-		
+
 		this.setVisible(true);
-		
+
 		final Image fundo = U.resizeImage(Resources.getFundo(), this.getWidth(), this.getHeight());
 
-		this.jdp = new JDesktopPane(){
+		this.jdp = new JDesktopPane() {
 
 			/**
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-			
-			@Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                grphcs.drawImage(fundo, 0, 0, null);
-            }
 
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(getWidth(), getHeight());
-            }
-			
+			@Override
+			protected void paintComponent(Graphics grphcs) {
+				super.paintComponent(grphcs);
+				// grphcs.drawImage(fundo, 0, 0, null);
+			}
+
+			@Override
+			public Dimension getPreferredSize() {
+				return new Dimension(getWidth(), getHeight());
+			}
+
 		};
-		
-		
+
 		this.jdp.setBounds(this.getBounds());
 		this.jdp.setLayout(null);
 		this.setContentPane(this.jdp);
 
+		this.lblTopo = new JPanel();
+
+		this.lblTopo.setOpaque(true);
+		this.lblTopo.setBackground(new Color(50, 50, 50, 90));
+
+		this.add(this.lblTopo);
+
 		this.jdp.putClientProperty("JDesktopPane.dragMode", "outline");
-		
+
 		this.addFocusListener(new FocusListener() {
 
 			@Override
@@ -169,18 +187,52 @@ public class MenuPrincipal extends TelaFrame {
 		/*
 		 * try {
 		 * 
-		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage bi =
-		 * ImageIO.read(imagem); JLabel lblFundo = new JLabel(); lblFundo.setIcon(new
-		 * ImageIcon(bi));
+		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage
+		 * bi = ImageIO.read(imagem); JLabel lblFundo = new JLabel();
+		 * lblFundo.setIcon(new ImageIcon(bi));
 		 * 
-		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } catch (IOException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); }
+		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); } catch
+		 * (IOException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
 		 */
 
+		this.lblTopo.setLayout(null);
+
+		LayoutRelativo lrp = new LayoutRelativo(this.lblTopo, 0, 0, 110, 13, this.lr);
+
 		JLabel logoCliente = new JLabel();
-		getContentPane().add(logoCliente);
-		this.lr.setDimensoesComponente(logoCliente, 1, 1, 30, 15);
+
+		this.lblTopo.add(logoCliente);
+
+		logoCliente.setOpaque(true);
+		logoCliente.setBackground(new Color(255, 255, 255, 100));
+		logoCliente.setHorizontalAlignment(JLabel.CENTER);
+		lrp.setDimensoesComponente(logoCliente, 1, 30, 25, 90);
+
+		JLabel lblOperador = new JLabel();
+		lblOperador.setOpaque(true);
+		lblOperador.setForeground(Color.GRAY);
+		lblOperador.setFont(new Font("Arial", Font.BOLD, 13));
+		lblOperador.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+		
+		lblOperador.setText(
+				usuario.getPf().getNome() + " - " + PresetPermissao.getMaisProximo(usuario.getPermissoes()).toString());
+
+		lrp.setDimensoesComponente(lblOperador, 28, 30, 28, 30);
+
+		lblTopo.add(lblOperador);
+
+		lblStatus = new JLabel();
+		lblStatus.setOpaque(true);
+		lblStatus.setForeground(new Color(255, 255, 255, 100));
+		lblStatus.setFont(new Font("Arial", Font.BOLD, 13));
+		lblStatus.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+		lblStatus.setText("SAT: CONSULTANDO...");
+
+		lblTopo.add(lblStatus);
+		
+		lrp.setDimensoesComponente(lblStatus, 28, 61, 28, 30);
 
 		try {
 
@@ -190,6 +242,49 @@ public class MenuPrincipal extends TelaFrame {
 
 			logoCliente.setIcon(new ImageIcon(Resources.getLogo()));
 
+		}
+		
+		if(PresetPermissao.getMaisProximo(usuario.getPermissoes()).equals(PresetPermissao.GERENTE)){
+			
+			lblCaixa = new JLabel();
+			lblCaixa.setOpaque(true);
+			lblCaixa.setForeground(new Color(50, 150, 50));
+			lblCaixa.setFont(new Font("Arial", Font.BOLD, 13));
+			lblCaixa.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+			lblCaixa.setText("CAIXA: ");
+			
+			SwingWorker<Void,Void> sw = new SwingWorker<Void,Void>(){
+
+				@Override
+				protected Void doInBackground() throws Exception {
+					
+					while(true){
+						
+						try {
+
+							ExpedienteCaixa exc = ConfiguracaoExpediente.getExpedienteCaixa(usuario);
+							lblCaixa.setText("CAIXA: R$ "+exc.getCaixa().getSaldoAtual());
+							
+						} catch (Exception e1) {
+							
+							lblSaldo.setText("SEM CAIXA ABERTO, FAVOR CONFIGURAR");
+							
+							e1.printStackTrace();
+						}
+						
+						Thread.sleep(20000);
+						
+					}
+					
+				}
+				
+			};
+			sw.execute();
+
+			lblTopo.add(lblCaixa);
+			
+			lrp.setDimensoesComponente(lblCaixa, 28, 91, 28, 30);
+			
 		}
 
 		final TelaFrame este = this;
@@ -260,50 +355,57 @@ public class MenuPrincipal extends TelaFrame {
 
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-		double perc = 6;
-		
-		if((this.getHeight()*(perc/100))%1 > 0){
-			
-			perc = (Math.ceil(this.getHeight()*(perc/100))/this.getHeight())*100;
-		
-		}
-		
-			
-		formarMenu(modulos, 15, 0, perc);
+		SwingWorker<Void, Void> w = new SwingWorker<Void, Void>() {
 
-		if (!CFG.moduloSat.isOperavel()) {
+			@Override
+			protected Void doInBackground() throws Exception {
 
-			JOptionPane.showMessageDialog(null, "O Sat nao esta operando", "Erro", JOptionPane.ERROR_MESSAGE);
+				double perc = 6;
 
-		} else {
+				if ((getHeight() * (perc / 100)) % 1 > 0) {
 
-			while (true) {
+					perc = (Math.ceil(getHeight() * (perc / 100)) / getHeight()) * 100;
 
-				try {
+				}
 
-					CFG.moduloSat.iniciar();
+				if (!CFG.moduloSat.isOperavel()) {
 
-					break;
+					
+					lblStatus.setText("SAT: NAO ESTA OPERANDO");
+					lblStatus.setForeground(new Color(150, 50, 50));
 
-				} catch (Exception ex) {
+				} else {
 
-					JOptionPane.showMessageDialog(null, "O Sistema nao esta conseguindo inicializar o SAT", "Erro",
-							JOptionPane.ERROR_MESSAGE);
+					while (true) {
 
-					try {
+						try {
 
-						Thread.sleep(200000);
+							CFG.moduloSat.iniciar();
 
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+							lblStatus.setText("SAT: EM OPERACAO");
+							lblStatus.setForeground(Color.CYAN);
+
+							break;
+
+						} catch (Exception ex) {
+
+							lblStatus.setText("SAT: FORA DE OPERACAO");
+							lblStatus.setForeground(Color.ORANGE);
+
+						}
+
 					}
 
 				}
 
+				formarMenu(modulos, 15, 0, perc);
+
+				return null;
+
 			}
 
-		}
+		};
+		w.execute();
 
 	}
 
@@ -358,7 +460,7 @@ public class MenuPrincipal extends TelaFrame {
 		int largura_img = 4;
 		int espacamento = 0;
 
-		Color submenu_color = new Color(100, 160, 100);
+		Color submenu_color = new Color(50, 50, 50);
 
 		double comprimento = h;
 
@@ -414,14 +516,12 @@ public class MenuPrincipal extends TelaFrame {
 			lbl2.setBackground(new Color(20 * (level + 4), 20 * (level + 4), 20 * (level + 4)));
 
 			try {
-				((JLabel) lbl2).setHorizontalAlignment(JLabel.CENTER);
+				((JLabel) lbl2).setHorizontalAlignment(JLabel.LEFT);
 				((JLabel) lbl2).setVerticalAlignment(JLabel.CENTER);
 			} catch (Exception ex) {
-				((JButton) lbl2).setHorizontalAlignment(JLabel.CENTER);
+				((JButton) lbl2).setHorizontalAlignment(JLabel.LEFT);
 				((JButton) lbl2).setVerticalAlignment(JLabel.CENTER);
 			}
-
-			lbl.add(lbl2);
 
 			if (level == 0 || z == initial_y_base) {
 
@@ -462,6 +562,7 @@ public class MenuPrincipal extends TelaFrame {
 			}
 
 			lbl2.setFont(new Font("Arial", Font.BOLD, 13));
+			lbl.add(lbl2);
 
 			final JLabel lbl3 = new JLabel();
 			lbl3.setForeground(new Color(255, 255, 255));
@@ -479,7 +580,7 @@ public class MenuPrincipal extends TelaFrame {
 				this.lr.setDimensoesComponente(lbl3, 0, 0, largura_img + 2, comprimento);
 			}
 
-			//getContentPane().add(lbl);
+			// getContentPane().add(lbl);
 
 			leveis.put(lbl, level);
 			objetos.put(lbl, item);
@@ -493,9 +594,9 @@ public class MenuPrincipal extends TelaFrame {
 				Method method = classe.getMethod("nome");
 				String ob = method.invoke(null).toString();
 				try {
-					((JLabel) lbl2).setText(ob);
+					((JLabel) lbl2).setText("  " + ob);
 				} catch (Exception ex) {
-					((JButton) lbl2).setText(ob);
+					((JButton) lbl2).setText("  " + ob);
 				}
 
 				lbl.setBackground(lbl2.getBackground());
@@ -510,7 +611,7 @@ public class MenuPrincipal extends TelaFrame {
 				Object[] sub_menu = (Object[]) item;
 				lbl.setBackground(submenu_color);
 
-				((JLabel) lbl2).setText(sub_menu[0].toString());
+				((JLabel) lbl2).setText("  " + sub_menu[0].toString());
 
 				try {
 
@@ -567,17 +668,17 @@ public class MenuPrincipal extends TelaFrame {
 									mod.init(usuario);
 
 									mod.setVisible(true);
-									
-									JDesktopPane frm = ((JDesktopPane)este.getContentPane());
-									
+
+									JDesktopPane frm = ((JDesktopPane) este.getContentPane());
+
 									frm.add(mod, ++index);
 
 									mod.centralizar();
-									
+
 									mod.requestFocus();
 
 									mod.setSelected(true);
-									
+
 								} catch (Exception ee) {
 									ee.printStackTrace();
 								}

@@ -31,6 +31,28 @@ public enum PresetPermissao {
 
 	private List<Permissao> preset;
 
+	public static PresetPermissao getMaisProximo(List<Permissao> perms){
+		
+		PresetPermissao ps = null;
+		double px = 0;
+		
+		for(PresetPermissao p:PresetPermissao.values()){
+			
+			double pp = p.encaixe(perms);
+			
+			if(pp>px || ps == null){
+				
+				ps = p;
+				px = pp;
+				
+			}
+			
+		}
+	
+		return ps;
+		
+	}
+	
 	private PresetPermissao(Object[][] obj) {
 
 		this.preset = new ArrayList<Permissao>();

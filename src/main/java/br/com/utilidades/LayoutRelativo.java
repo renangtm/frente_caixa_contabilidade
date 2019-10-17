@@ -66,16 +66,25 @@ public class LayoutRelativo {
 	}
 
 	private int p(double x, double y) {
-		return (int)(((double)x * (double)y)/100);
+		return (int)Math.round(((double)x * (double)y)/100);
 	}
 	
 	public void setDimensoesComponente(Component componente, double x, double y, double width, double height){
 		componente.setBounds(p(this.width-5, x), p(this.height-30, y), p(this.width-5, width),
 				p(this.height-30, height));
-		for(Component componente_:this.componentes)if(componente_==componente)return;
 		
-		this.componentes.add(componente);
-		this.reg.add(componente.getBounds());
+		int i=0;
+		for(Component componente_:this.componentes){
+			if(componente_==componente){
+				
+				this.componentes.set(i,componente);
+				this.reg.set(i,componente.getBounds());
+				
+			}
+			i++;
+		}
+		
+		
 		
 		this.reload();
 	}

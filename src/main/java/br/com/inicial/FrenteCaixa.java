@@ -540,7 +540,7 @@ public class FrenteCaixa extends Modulo {
 
 		try {
 
-			expediente = ConfiguracaoExpediente.getExpedienteCaixa(operador);
+			expediente = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
 
 		} catch (AberturaCaixaException e1) {
 			// TODO Auto-generated catch block
