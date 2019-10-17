@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -208,8 +209,12 @@ public class MenuPrincipal extends TelaFrame {
 		logoCliente.setOpaque(true);
 		logoCliente.setBackground(new Color(255, 255, 255, 100));
 		logoCliente.setHorizontalAlignment(JLabel.CENTER);
-		lrp.setDimensoesComponente(logoCliente, 1, 30, 25, 90);
-
+		lrp.setDimensoesComponente(logoCliente, 1, 10, 25, 80);
+		
+		
+		logoCliente.setBounds((int)logoCliente.getBounds().getX(), (int)logoCliente.getBounds().getY()+15, logoCliente.getWidth(), logoCliente.getHeight());
+		
+		
 		JLabel lblOperador = new JLabel();
 		lblOperador.setOpaque(true);
 		lblOperador.setForeground(Color.GRAY);
@@ -262,14 +267,20 @@ public class MenuPrincipal extends TelaFrame {
 						
 						try {
 
-							ExpedienteCaixa exc = ConfiguracaoExpediente.getExpedienteCaixa(usuario);
+							EntityManager et = ET.nova();
+							
+							ExpedienteCaixa exc = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(usuario));
 							lblCaixa.setText("CAIXA: R$ "+exc.getCaixa().getSaldoAtual());
 							
-						} catch (Exception e1) {
+							et.close();
 							
-							lblSaldo.setText("SEM CAIXA ABERTO, FAVOR CONFIGURAR");
+						} catch (RuntimeException e1) {
 							
 							e1.printStackTrace();
+							
+							lblCaixa.setText("SEM CAIXA ABERTO, FAVOR CONFIGURAR");
+							
+							
 						}
 						
 						Thread.sleep(20000);

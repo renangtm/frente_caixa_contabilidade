@@ -39,6 +39,7 @@ public class ScriptInicial {
 			p.setNcm(ncm);
 			
 			try {
+			
 				p.getEstoque().setQuantidades(rs.getDouble("p.disponivel"), rs.getDouble("p.estoque"));
 				
 				p.setVolume(rs.getDouble("p.quantidade_unidade"));
