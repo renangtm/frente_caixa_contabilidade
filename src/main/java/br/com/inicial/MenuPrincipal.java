@@ -99,28 +99,7 @@ public class MenuPrincipal extends TelaFrame {
 
 		this.este = this;
 
-		if (PresetPermissao.CAIXA.encaixe(this.usuario.getPermissoes()) == 1) {
-
-			Loading.getLoading(() -> {
-
-				FrenteCaixa fc = new FrenteCaixa();
-				fc.setVisible(false);
-				fc.et = ET.nova();
-				fc.init(this.usuario);
-				fc.setVisible(true);
-
-				fc.centralizar();
-
-			});
-
-			this.dispose();
-			return;
-
-		}
-
 		this.setVisible(true);
-
-		final Image fundo = ImageIO.read(new ByteArrayInputStream(usuario.getPf().getEmpresa().getLogo().getFundo()));
 
 		this.jdp = new JDesktopPane() {
 
@@ -132,7 +111,14 @@ public class MenuPrincipal extends TelaFrame {
 			@Override
 			protected void paintComponent(Graphics grphcs) {
 				super.paintComponent(grphcs);
-				grphcs.drawImage(fundo, getWidth() - fundo.getWidth(null), 0, null);
+				try {
+					Image fundo = ImageIO
+							.read(new ByteArrayInputStream(usuario.getPf().getEmpresa().getLogo().getFundo()));
+
+					grphcs.drawImage(fundo, getWidth() - fundo.getWidth(null), 0, null);
+				} catch (Exception exx) {
+
+				}
 			}
 
 			@Override
@@ -146,6 +132,27 @@ public class MenuPrincipal extends TelaFrame {
 		this.jdp.setLayout(null);
 		this.setContentPane(this.jdp);
 
+		if (PresetPermissao.CAIXA.encaixe(this.usuario.getPermissoes()) == 1) {
+
+			Loading.getLoading(() -> {
+
+				FrenteCaixa fc = new FrenteCaixa();
+				fc.setVisible(false);
+				fc.et = ET.nova();
+				fc.init(this.usuario);
+				fc.setVisible(true);
+				jdp.add(fc);
+				fc.centralizar();
+				fc.setMaximizable(false);
+				fc.setClosable(false);
+				fc.setIconifiable(false);
+
+			});
+
+			return;
+
+		}
+		
 		this.lblTopo = new JPanel();
 
 		this.lblTopo.setOpaque(true);
@@ -187,14 +194,13 @@ public class MenuPrincipal extends TelaFrame {
 		/*
 		 * try {
 		 * 
-		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage
-		 * bi = ImageIO.read(imagem); JLabel lblFundo = new JLabel();
-		 * lblFundo.setIcon(new ImageIcon(bi));
+		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage bi =
+		 * ImageIO.read(imagem); JLabel lblFundo = new JLabel(); lblFundo.setIcon(new
+		 * ImageIcon(bi));
 		 * 
-		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); } catch
-		 * (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
+		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } catch (IOException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
 		 */
 
 		this.lblTopo.setLayout(null);

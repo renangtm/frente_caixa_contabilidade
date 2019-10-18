@@ -45,7 +45,7 @@ public class Visual {
 	public byte[] getFundo() {
 		
 		if(this.fundo == null){
-			
+			/*
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			
 			try {
@@ -58,7 +58,7 @@ public class Visual {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			*/
 		}
 		
 		return fundo;
