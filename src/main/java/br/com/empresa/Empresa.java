@@ -31,12 +31,13 @@ public class Empresa{
 	
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="id_logo")
-	private Logo logo;
+	private Visual logo;
 	
 	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.PERSIST)
 	@JoinColumn(name="id_pessoa")
 	private PessoaJuridica pj;
-
+	
+	
 	@Column
 	private String tokenAPIImpostosAproximados;
 	
@@ -55,7 +56,7 @@ public class Empresa{
 	public Empresa(){
 		
 		this.pj = new PessoaJuridica();
-		this.logo = new Logo();
+		this.logo = new Visual();
 		
 	}
 	
@@ -89,11 +90,11 @@ public class Empresa{
 		this.pj = pj;
 	}
 	
-	public Logo getLogo() {
+	public Visual getLogo() {
 		return logo;
 	}
 
-	public void setLogo(Logo logo) {
+	public void setLogo(Visual logo) {
 		this.logo = logo;
 	}
 

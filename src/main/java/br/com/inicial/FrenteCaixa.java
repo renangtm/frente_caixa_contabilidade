@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -50,7 +49,6 @@ import br.com.impressao.GeradorCupomSATModelo1;
 import br.com.impressao.GeradorCupomSangria;
 import br.com.movimento_financeiro.Movimento;
 import br.com.movimento_financeiro.MovimentoService;
-import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Nota;
 import br.com.nota.NotaFactory;
 import br.com.nota.NotaService;
@@ -68,7 +66,6 @@ import br.com.utilidades.GerenciadorLista;
 import br.com.utilidades.ListModelGenerica;
 import br.com.utilidades.PercentageColumnSetter;
 import br.com.venda.FormaPagamento;
-import br.com.venda.FormaPagamentoVendaService;
 import br.com.venda.ProdutoVenda;
 import br.com.venda.RepresentadorProdutoVenda;
 import br.com.venda.StatusVenda;
@@ -82,14 +79,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JSeparator;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JSlider;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
+import javax.swing.border.TitledBorder;
 
 public class FrenteCaixa extends Modulo {
 
@@ -106,8 +102,6 @@ public class FrenteCaixa extends Modulo {
 	private JTextField txtQuantidade;
 	private JTextField txtSubTotal;
 	private JTextField txtTotal;
-	private JTextField txtDinheiro;
-	private JTextField txtTroco;
 	private JTextField txtBipe;
 	private JTextField txtPesquisa;
 	private JTable tblProdutos;
@@ -116,8 +110,6 @@ public class FrenteCaixa extends Modulo {
 	private static List<KeyEventDispatcher> atalhos = new ArrayList<KeyEventDispatcher>();
 
 	private JTabbedPane tbpBP;
-
-	private JComboBox<FormaPagamento> cboFormaPagto;
 
 	private JLabel lblPg;
 
@@ -210,19 +202,6 @@ public class FrenteCaixa extends Modulo {
 			nf.setParcelas(1);
 			nf.setPrazoPagamento(0);
 			nf.setTransportadora(null);
-
-			if (this.formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-
-				if (this.venda.getTotal() > Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))) {
-
-					alerta("Pagamento menor que o devido.");
-					return;
-
-				}
-
-				nf.setValorMeioPagamento(Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")));
-
-			}
 
 			nf.setVenda(this.venda);
 
@@ -386,7 +365,6 @@ public class FrenteCaixa extends Modulo {
 		
 		this.venda = venda;
 		
-		this.formaPagamento = this.cboFormaPagto.getItemAt(0);
 
 		this.lstProdutoVenda = new ListModelGenerica<ProdutoVenda>(this.venda.getProdutos(), ProdutoVenda.class,
 				RepresentadorProdutoVenda.class);
@@ -405,8 +383,6 @@ public class FrenteCaixa extends Modulo {
 		this.mostrarVenda();
 
 		this.txtSubTotal.setText("");
-		this.txtDinheiro.setText("");
-		this.txtTroco.setText("");
 		
 		
 	}
@@ -501,14 +477,6 @@ public class FrenteCaixa extends Modulo {
 
 		this.txtTotal.setText((this.venda.getTotal() + "").replaceAll("\\.", ","));
 
-		if (this.formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-			try {
-				this.txtTroco.setText(((Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")) - this.venda.getTotal())
-						+ "").replaceAll("\\.", ","));
-			} catch (Exception ex) {
-
-			}
-		}
 
 		this.lstProdutoVenda.setLista(this.venda.getProdutos());
 		this.lstProdutoVenda.atualizaListaBaseConformeFiltros();
@@ -533,6 +501,8 @@ public class FrenteCaixa extends Modulo {
 	private JLabel lblQuantidadeItens;
 
 	public void init(Usuario operador) {
+		
+		final FrenteCaixa este = this;
 
 		this.operador = et.merge(operador);
 		this.empresa = this.operador.getPf().getEmpresa();
@@ -620,50 +590,6 @@ public class FrenteCaixa extends Modulo {
 				}
 
 			}
-
-		});
-
-		FormaPagamentoVendaService fps = new FormaPagamentoVendaService();
-
-		List<FormaPagamento> fp = fps.getFormasPagamento();
-
-		this.cboFormaPagto
-				.setModel(new DefaultComboBoxModel<FormaPagamento>(fp.toArray(new FormaPagamento[fp.size()])));
-
-		this.cboFormaPagto.addActionListener(x -> {
-
-			FormaPagamento f = (FormaPagamento) this.cboFormaPagto.getSelectedItem();
-
-			if (f.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-
-				this.txtDinheiro.setEnabled(false);
-				this.txtTroco.setEnabled(false);
-
-				this.txtDinheiro.setText("0,00");
-				this.txtTroco.setText("0,00");
-				this.txtDinheiro.setEnabled(false);
-				this.txtTroco.setEnabled(false);
-
-				this.txtDinheiro.setText("0,00");
-				this.txtTroco.setText("0,00");
-
-			} else {
-
-				this.txtDinheiro.setEnabled(true);
-				this.txtTroco.setEnabled(true);
-
-				this.txtDinheiro.setText("0,00");
-				this.txtTroco.setText("0,00");
-
-			}
-
-			this.setFormaPagamento(f);
-
-		});
-
-		this.txtDinheiro.addCaretListener(x -> {
-
-			this.mostrarVenda();
 
 		});
 
@@ -761,7 +687,7 @@ public class FrenteCaixa extends Modulo {
 				return;
 			}
 
-			boolean pf = true;
+			//boolean pf = true;
 
 			if (tbpBP.getSelectedIndex() == 0) {
 
@@ -769,7 +695,11 @@ public class FrenteCaixa extends Modulo {
 				tbpBP.setSelectedIndex(1);
 
 			}
-
+			SelecaoFormaPagamento sf = new SelecaoFormaPagamento(venda,et,expediente,cpf,este);
+			sf.setVisible(true);
+			sf.centralizar();
+			sf.requestFocus();
+			/*
 			if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 				try {
 
@@ -783,7 +713,7 @@ public class FrenteCaixa extends Modulo {
 
 			if (pf)
 				finalizarVenda();
-
+			*/
 		});
 
 		this.btSangria.addActionListener(a -> {
@@ -905,7 +835,7 @@ public class FrenteCaixa extends Modulo {
 		});
 
 		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-		final FrenteCaixa este = this;
+		
 
 		FrenteCaixa.atalhos.forEach(d -> keyManager.removeKeyEventDispatcher(d));
 
@@ -950,7 +880,7 @@ public class FrenteCaixa extends Modulo {
 
 						}
 
-						boolean pf = true;
+						//boolean pf = true;
 
 						if (tbpBP.getSelectedIndex() == 0 || tbpBP.getSelectedIndex() == 2) {
 
@@ -958,7 +888,13 @@ public class FrenteCaixa extends Modulo {
 							tbpBP.setSelectedIndex(1);
 
 						}
-
+						
+						SelecaoFormaPagamento sf = new SelecaoFormaPagamento(venda,et,expediente,cpf,este);
+						sf.setVisible(true);
+						sf.centralizar();
+						sf.requestFocus();
+						
+						/*
 						if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
 							try {
 
@@ -972,7 +908,7 @@ public class FrenteCaixa extends Modulo {
 
 						if (pf)
 							finalizarVenda();
-
+						 */
 						return true;
 
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F7) {
@@ -1142,7 +1078,7 @@ public class FrenteCaixa extends Modulo {
 		this.setBounds(0, 0, (int)tk.getScreenSize().getWidth(), (int)tk.getScreenSize().getHeight());
 
 		srcProdutos = new JScrollPane();
-		srcProdutos.setBounds(10, 67, 323, 433);
+		srcProdutos.setBounds(10, 66, 267, 153);
 		getContentPane().add(srcProdutos);
 
 		tblProdutos = new JTable();
@@ -1150,7 +1086,7 @@ public class FrenteCaixa extends Modulo {
 
 		JLabel lblDescricao = new JLabel("Descricao:");
 		lblDescricao.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblDescricao.setBounds(359, 67, 88, 14);
+		lblDescricao.setBounds(287, 67, 88, 14);
 		getContentPane().add(lblDescricao);
 
 		txtDescricaoProduto = new JLabel("");
@@ -1159,7 +1095,7 @@ public class FrenteCaixa extends Modulo {
 		txtDescricaoProduto.setForeground(Color.WHITE);
 		txtDescricaoProduto.setOpaque(true);
 		txtDescricaoProduto.setHorizontalAlignment(SwingConstants.CENTER);
-		txtDescricaoProduto.setBounds(359, 92, 525, 45);
+		txtDescricaoProduto.setBounds(287, 92, 597, 45);
 		getContentPane().add(txtDescricaoProduto);
 
 		JLabel lblCliente = new JLabel("Cliente:");
@@ -1179,23 +1115,23 @@ public class FrenteCaixa extends Modulo {
 
 		JLabel lblValorUnitario = new JLabel("Valor Unitario:");
 		lblValorUnitario.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblValorUnitario.setBounds(359, 148, 88, 14);
+		lblValorUnitario.setBounds(287, 148, 88, 14);
 		getContentPane().add(lblValorUnitario);
 
 		JLabel lblQuantidade = new JLabel("Quantidade:");
 		lblQuantidade.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblQuantidade.setBounds(546, 148, 88, 14);
+		lblQuantidade.setBounds(474, 148, 88, 14);
 		getContentPane().add(lblQuantidade);
 
 		JLabel lblTotal = new JLabel("Sub Total");
 		lblTotal.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTotal.setBounds(718, 148, 88, 14);
+		lblTotal.setBounds(646, 148, 88, 14);
 		getContentPane().add(lblTotal);
 
 		txtValorUnitario = new JTextField();
 		txtValorUnitario.setFont(new Font("Tahoma", Font.BOLD, 23));
 		txtValorUnitario.setHorizontalAlignment(SwingConstants.CENTER);
-		txtValorUnitario.setBounds(359, 173, 146, 45);
+		txtValorUnitario.setBounds(287, 173, 146, 45);
 		getContentPane().add(txtValorUnitario);
 		txtValorUnitario.setColumns(10);
 
@@ -1203,7 +1139,7 @@ public class FrenteCaixa extends Modulo {
 		txtQuantidade.setHorizontalAlignment(SwingConstants.CENTER);
 		txtQuantidade.setFont(new Font("Tahoma", Font.BOLD, 23));
 		txtQuantidade.setColumns(10);
-		txtQuantidade.setBounds(546, 173, 146, 45);
+		txtQuantidade.setBounds(474, 173, 146, 45);
 		getContentPane().add(txtQuantidade);
 
 		txtSubTotal = new JTextField();
@@ -1212,23 +1148,23 @@ public class FrenteCaixa extends Modulo {
 		txtSubTotal.setFont(new Font("Tahoma", Font.BOLD, 25));
 		txtSubTotal.setHorizontalAlignment(SwingConstants.CENTER);
 		txtSubTotal.setColumns(10);
-		txtSubTotal.setBounds(718, 173, 166, 45);
+		txtSubTotal.setBounds(646, 173, 166, 45);
 		getContentPane().add(txtSubTotal);
 
 		JLabel lblNewLabel_2 = new JLabel("X");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setBounds(511, 173, 25, 55);
+		lblNewLabel_2.setBounds(439, 173, 25, 55);
 		getContentPane().add(lblNewLabel_2);
 
 		JLabel label = new JLabel("=");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setFont(new Font("Tahoma", Font.BOLD, 24));
-		label.setBounds(693, 173, 25, 55);
+		label.setBounds(621, 173, 25, 55);
 		getContentPane().add(label);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(359, 229, 525, 145);
+		scrollPane_1.setBounds(287, 229, 597, 230);
 		getContentPane().add(scrollPane_1);
 
 		tblVenda = new JTable();
@@ -1240,54 +1176,11 @@ public class FrenteCaixa extends Modulo {
 		txtTotal.setForeground(new Color(124, 252, 0));
 		txtTotal.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTotal.setColumns(10);
-		txtTotal.setBounds(652, 420, 232, 68);
+		txtTotal.setBounds(652, 470, 232, 68);
 		getContentPane().add(txtTotal);
 
-		JLabel lblTotal_1 = new JLabel("Total");
-		lblTotal_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTotal_1.setBounds(652, 395, 88, 14);
-		getContentPane().add(lblTotal_1);
-
-		JLabel lblFormaDePagamento = new JLabel("Forma de Pagamento");
-		lblFormaDePagamento.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblFormaDePagamento.setBounds(359, 395, 196, 14);
-		getContentPane().add(lblFormaDePagamento);
-
-		cboFormaPagto = new JComboBox<FormaPagamento>();
-		cboFormaPagto.setBounds(359, 420, 275, 20);
-		getContentPane().add(cboFormaPagto);
-
-		txtDinheiro = new JTextField();
-		txtDinheiro.setForeground(new Color(0, 0, 255));
-		txtDinheiro.setFont(new Font("Tahoma", Font.BOLD, 19));
-		txtDinheiro.setHorizontalAlignment(SwingConstants.CENTER);
-		txtDinheiro.setColumns(10);
-		txtDinheiro.setBounds(359, 451, 118, 37);
-		getContentPane().add(txtDinheiro);
-
-		txtTroco = new JTextField();
-		txtTroco.setForeground(new Color(255, 0, 0));
-		txtTroco.setFont(new Font("Tahoma", Font.BOLD, 19));
-		txtTroco.setHorizontalAlignment(SwingConstants.CENTER);
-		txtTroco.setColumns(10);
-		txtTroco.setBounds(487, 451, 147, 37);
-		getContentPane().add(txtTroco);
-
-		JLabel lblDinheiro = new JLabel("Dinheiro");
-		lblDinheiro.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblDinheiro.setBounds(359, 490, 118, 14);
-		getContentPane().add(lblDinheiro);
-
-		JLabel lblTroco = new JLabel("Troco");
-		lblTroco.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTroco.setBounds(487, 490, 118, 14);
-		getContentPane().add(lblTroco);
-
-		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 545, 874, 2);
-		getContentPane().add(separator);
-
 		tbpBP = new JTabbedPane(JTabbedPane.LEFT);
+		tbpBP.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		tbpBP.setBounds(10, 11, 566, 47);
 		getContentPane().add(tbpBP);
 
@@ -1320,35 +1213,35 @@ public class FrenteCaixa extends Modulo {
 		txtComanda.setColumns(10);
 
 		lblPg = new JLabel("New label");
-		lblPg.setBounds(287, 511, 46, 14);
+		lblPg.setBounds(231, 230, 46, 14);
 		getContentPane().add(lblPg);
 
 		slider = new JSlider();
-		slider.setBounds(10, 511, 267, 23);
+		slider.setBounds(10, 230, 190, 23);
 		getContentPane().add(slider);
 
 		btFinalizarPedido = new JButton("F4 - Finalizar pedido");
 		btFinalizarPedido.setForeground(new Color(30, 144, 255));
 		btFinalizarPedido.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btFinalizarPedido.setBounds(10, 558, 173, 54);
+		btFinalizarPedido.setBounds(10, 261, 267, 54);
 		getContentPane().add(btFinalizarPedido);
 
 		btNovaVenda = new JButton("F3 Nova Venda");
 		btNovaVenda.setForeground(Color.BLACK);
 		btNovaVenda.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btNovaVenda.setBounds(193, 558, 173, 54);
+		btNovaVenda.setBounds(10, 321, 267, 54);
 		getContentPane().add(btNovaVenda);
 
 		btSangria = new JButton("F7 - Sangria");
 		btSangria.setForeground(Color.RED);
 		btSangria.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btSangria.setBounds(376, 558, 173, 54);
+		btSangria.setBounds(10, 381, 267, 54);
 		getContentPane().add(btSangria);
 
 		btReposicao = new JButton("F8 - Reposicao");
 		btReposicao.setForeground(Color.BLUE);
 		btReposicao.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btReposicao.setBounds(559, 558, 173, 54);
+		btReposicao.setBounds(10, 446, 267, 54);
 		getContentPane().add(btReposicao);
 
 		lblQuantidadeItens = new JLabel("1 Item");
@@ -1357,7 +1250,7 @@ public class FrenteCaixa extends Modulo {
 		lblQuantidadeItens.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblQuantidadeItens.setOpaque(true);
 		lblQuantidadeItens.setBackground(SystemColor.textHighlight);
-		lblQuantidadeItens.setBounds(750, 385, 134, 24);
+		lblQuantidadeItens.setBounds(287, 470, 173, 68);
 		getContentPane().add(lblQuantidadeItens);
 		
 		this.rebase();

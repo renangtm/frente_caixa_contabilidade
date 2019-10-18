@@ -7,12 +7,14 @@ import br.com.base.Resources;
 import br.com.config.CertificadoPFX;
 import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
-import br.com.empresa.Logo;
+import br.com.empresa.Look;
+import br.com.empresa.Visual;
 import br.com.empresa.ParametrosEmissao;
 import br.com.usuario.Usuario;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 
 import java.io.ByteArrayInputStream;
@@ -33,9 +35,11 @@ import java.awt.image.BufferedImage;
 import javax.swing.JSeparator;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JComboBox;
 
 public class ConfiguracoesEmpresa extends Modulo {
 
@@ -97,7 +101,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 		});
 	}
 
-	private Logo logo;
+	private Visual logo;
 	private JButton btnConfirmar;
 	private JTextField txtTokenApi;
 	private JTextField txtUltimaNFe;
@@ -106,6 +110,9 @@ public class ConfiguracoesEmpresa extends Modulo {
 	private JButton btCertificado;
 
 	private byte[] certificado;
+	private JComboBox<Look> cboEstilo;
+	private JButton btImagemFundo;
+	private byte[] fundo;
 
 	private void printCertificado() {
 
@@ -157,7 +164,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		this.printCertificado();
 
-		logo = new Logo();
+		logo = new Visual();
 
 		if (this.empresa.getLogo() != null) {
 
@@ -217,6 +224,54 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		});
 
+		this.btImagemFundo.addActionListener(a -> {
+
+			JFileChooser jfc = new JFileChooser();
+
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG FILES", "png");
+			jfc.setFileFilter(filter);
+			
+			
+			jfc.showOpenDialog(this);
+
+			File file = jfc.getSelectedFile();
+
+			if (file == null)
+				return;
+
+			try {
+
+				@SuppressWarnings("resource")
+				FileInputStream fis = new FileInputStream(file);
+
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+				int l = 0;
+				byte[] buffer = new byte[1024];
+
+				while ((l = fis.read(buffer, 0, buffer.length)) > 0) {
+
+					baos.write(buffer, 0, l);
+
+				}
+
+				this.fundo = baos.toByteArray();
+
+				this.printCertificado();
+
+			} catch (Exception ex) {
+
+				erro("Ocorreu um problema ao ler o arquivo");
+				return;
+
+			}
+
+		});
+		
+		this.cboEstilo.setModel(new DefaultComboBoxModel<Look>(Look.values()));
+		
+		this.cboEstilo.setSelectedItem(empresa.getLogo().getLook());
+		
 		this.txtSenhaCertificado.addCaretListener(c -> {
 
 			this.printCertificado();
@@ -266,6 +321,10 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 			pa.setEmpresa(this.empresa);
 
+			logo.setFundo(fundo);
+			
+			logo.setLook((Look)cboEstilo.getSelectedItem());
+			
 			this.empresa.setParametrosEmissao(et.merge(pa));
 			this.empresa.setLogo(et.merge(logo));
 
@@ -369,7 +428,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 		setResizable(false);
 		getContentPane().setLayout(null);
 
-		this.setBounds(0, 0, 450, 395);
+		this.setBounds(0, 0, 450, 440);
 
 		JLabel lblNewLabel = new JLabel("Configuracoes da Empresa");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -400,7 +459,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 		txtNumeroSAT.setColumns(10);
 
 		btnConfirmar = new JButton("Confirmar");
-		btnConfirmar.setBounds(330, 332, 104, 23);
+		btnConfirmar.setBounds(330, 377, 104, 23);
 		getContentPane().add(btnConfirmar);
 
 		JLabel lbl = new JLabel("Cod. Ativacao SAT:");
@@ -434,7 +493,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 		getContentPane().add(lblCertificado);
 
 		JLabel lblSenhaCertificado = new JLabel("Senha Certificado:");
-		lblSenhaCertificado.setBounds(10, 291, 92, 14);
+		lblSenhaCertificado.setBounds(10, 296, 92, 14);
 		getContentPane().add(lblSenhaCertificado);
 
 		txtUltimaNFe = new JTextField();
@@ -453,8 +512,24 @@ public class ConfiguracoesEmpresa extends Modulo {
 
 		txtSenhaCertificado = new JTextField();
 		txtSenhaCertificado.setColumns(10);
-		txtSenhaCertificado.setBounds(102, 290, 220, 20);
+		txtSenhaCertificado.setBounds(102, 293, 220, 20);
 		getContentPane().add(txtSenhaCertificado);
+		
+		JLabel lblImgf = new JLabel("Imagem de Fundo");
+		lblImgf.setBounds(10, 325, 92, 14);
+		getContentPane().add(lblImgf);
+		
+		btImagemFundo = new JButton("Colocar nova imagem");
+		btImagemFundo.setBounds(127, 321, 245, 23);
+		getContentPane().add(btImagemFundo);
+		
+		JLabel lblEstilo = new JLabel("Estilo:");
+		lblEstilo.setBounds(10, 350, 92, 14);
+		getContentPane().add(lblEstilo);
+		
+		cboEstilo = new JComboBox<Look>();
+		cboEstilo.setBounds(120, 347, 188, 20);
+		getContentPane().add(cboEstilo);
 
 	}
 }

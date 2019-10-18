@@ -13,12 +13,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -27,14 +29,11 @@ import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import br.com.base.AberturaCaixaException;
 import br.com.base.CFG;
 import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
@@ -43,7 +42,6 @@ import br.com.caixa.ExpedienteCaixa;
 import br.com.usuario.PresetPermissao;
 import br.com.usuario.Usuario;
 import br.com.utilidades.LayoutRelativo;
-import br.com.utilidades.U;
 
 class ImagePanel extends JComponent {
 
@@ -88,13 +86,14 @@ public class MenuPrincipal extends TelaFrame {
 
 	private JPanel lblTopo;
 	private JLabel lblStatus;
-	private JLabel lblSaldo;
 	private JLabel lblCaixa;
 
 	public MenuPrincipal(Usuario usuario) throws IOException {
 
 		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: "
 				+ usuario.getPf().getEmpresa().getPj().getCnpj(), 0, 0, 100, 100, false);
+
+		CFG.lookAndFeel = usuario.getPf().getEmpresa().getLogo().getLook().getLookAndFell();
 
 		this.usuario = usuario;
 
@@ -121,7 +120,7 @@ public class MenuPrincipal extends TelaFrame {
 
 		this.setVisible(true);
 
-		final Image fundo = U.resizeImage(Resources.getFundo(), this.getWidth(), this.getHeight());
+		final Image fundo = ImageIO.read(new ByteArrayInputStream(usuario.getPf().getEmpresa().getLogo().getFundo()));
 
 		this.jdp = new JDesktopPane() {
 
@@ -133,7 +132,7 @@ public class MenuPrincipal extends TelaFrame {
 			@Override
 			protected void paintComponent(Graphics grphcs) {
 				super.paintComponent(grphcs);
-				// grphcs.drawImage(fundo, 0, 0, null);
+				grphcs.drawImage(fundo, getWidth() - fundo.getWidth(null), 0, null);
 			}
 
 			@Override
@@ -210,17 +209,16 @@ public class MenuPrincipal extends TelaFrame {
 		logoCliente.setBackground(new Color(255, 255, 255, 100));
 		logoCliente.setHorizontalAlignment(JLabel.CENTER);
 		lrp.setDimensoesComponente(logoCliente, 1, 10, 25, 80);
-		
-		
-		logoCliente.setBounds((int)logoCliente.getBounds().getX(), (int)logoCliente.getBounds().getY()+15, logoCliente.getWidth(), logoCliente.getHeight());
-		
-		
+
+		logoCliente.setBounds((int) logoCliente.getBounds().getX(), (int) logoCliente.getBounds().getY() + 15,
+				logoCliente.getWidth(), logoCliente.getHeight());
+
 		JLabel lblOperador = new JLabel();
 		lblOperador.setOpaque(true);
 		lblOperador.setForeground(Color.GRAY);
 		lblOperador.setFont(new Font("Arial", Font.BOLD, 13));
-		lblOperador.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
-		
+		lblOperador.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+
 		lblOperador.setText(
 				usuario.getPf().getNome() + " - " + PresetPermissao.getMaisProximo(usuario.getPermissoes()).toString());
 
@@ -232,11 +230,11 @@ public class MenuPrincipal extends TelaFrame {
 		lblStatus.setOpaque(true);
 		lblStatus.setForeground(new Color(255, 255, 255, 100));
 		lblStatus.setFont(new Font("Arial", Font.BOLD, 13));
-		lblStatus.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+		lblStatus.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 		lblStatus.setText("SAT: CONSULTANDO...");
 
 		lblTopo.add(lblStatus);
-		
+
 		lrp.setDimensoesComponente(lblStatus, 28, 61, 28, 30);
 
 		try {
@@ -248,54 +246,53 @@ public class MenuPrincipal extends TelaFrame {
 			logoCliente.setIcon(new ImageIcon(Resources.getLogo()));
 
 		}
-		
-		if(PresetPermissao.getMaisProximo(usuario.getPermissoes()).equals(PresetPermissao.GERENTE)){
-			
+
+		if (PresetPermissao.getMaisProximo(usuario.getPermissoes()).equals(PresetPermissao.GERENTE)) {
+
 			lblCaixa = new JLabel();
 			lblCaixa.setOpaque(true);
 			lblCaixa.setForeground(new Color(50, 150, 50));
 			lblCaixa.setFont(new Font("Arial", Font.BOLD, 13));
-			lblCaixa.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+			lblCaixa.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
 			lblCaixa.setText("CAIXA: ");
-			
-			SwingWorker<Void,Void> sw = new SwingWorker<Void,Void>(){
+
+			SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
 
 				@Override
 				protected Void doInBackground() throws Exception {
-					
-					while(true){
-						
+
+					while (true) {
+
 						try {
 
 							EntityManager et = ET.nova();
-							
+
 							ExpedienteCaixa exc = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(usuario));
-							lblCaixa.setText("CAIXA: R$ "+exc.getCaixa().getSaldoAtual());
-							
+							lblCaixa.setText("CAIXA: R$ " + exc.getCaixa().getSaldoAtual());
+
 							et.close();
-							
+
 						} catch (RuntimeException e1) {
-							
+
 							e1.printStackTrace();
-							
+
 							lblCaixa.setText("SEM CAIXA ABERTO, FAVOR CONFIGURAR");
-							
-							
+
 						}
-						
+
 						Thread.sleep(20000);
-						
+
 					}
-					
+
 				}
-				
+
 			};
 			sw.execute();
 
 			lblTopo.add(lblCaixa);
-			
+
 			lrp.setDimensoesComponente(lblCaixa, 28, 91, 28, 30);
-			
+
 		}
 
 		final TelaFrame este = this;
@@ -381,7 +378,6 @@ public class MenuPrincipal extends TelaFrame {
 
 				if (!CFG.moduloSat.isOperavel()) {
 
-					
 					lblStatus.setText("SAT: NAO ESTA OPERANDO");
 					lblStatus.setForeground(new Color(150, 50, 50));
 

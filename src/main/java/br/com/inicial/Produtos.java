@@ -961,7 +961,7 @@ public class Produtos extends Modulo {
 
 		btGerarRelatorio = new JButton();
 		btGerarRelatorio.setText("Gerar Relatorio");
-		btGerarRelatorio.setBounds(10, 141, 255, 35);
+		btGerarRelatorio.setBounds(77, 120, 127, 35);
 		panel.add(btGerarRelatorio);
 		getContentPane().setLayout(layout);
 
