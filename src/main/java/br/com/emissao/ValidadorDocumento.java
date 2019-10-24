@@ -7,7 +7,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
-import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -45,7 +44,6 @@ import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS.COFINSAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS.PISAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto.MP;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total.DescAcrEntr;
-import br.com.nota.FormaPagamentoNota;
 import br.com.nota.ModeloNota;
 import br.com.nota.Nota;
 import br.com.nota.NotaService;
@@ -435,8 +433,7 @@ public class ValidadorDocumento {
 
 		MP mp = new MP();
 
-		if (Arrays.asList(FormaPagamentoNota.CARTAO_CREDITO, FormaPagamentoNota.CARTAO_DEBITO)
-				.contains(nota.getForma_pagamento())) {
+		if (nota.getForma_pagamento().toString().startsWith("CARTAO")) {
 
 			mp.setCAdmC(i3.formatar(nota.getCredenciadoraCartao()));
 
@@ -474,6 +471,7 @@ public class ValidadorDocumento {
 
 	}
 
+	@SuppressWarnings("unused")
 	public boolean validarFiscalmente(Nota nota) {
 
 		if (!this.service.verificarIntegridadeNota(nota)) {
