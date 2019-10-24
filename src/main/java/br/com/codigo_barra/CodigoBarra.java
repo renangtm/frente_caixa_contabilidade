@@ -5,80 +5,89 @@ import java.util.stream.Collectors;
 
 import br.com.produto.Produto;
 import br.com.produto.ProdutoService;
+import br.com.quantificacao.TipoQuantidade;
 
 public class CodigoBarra {
 
 	private String codigoBarra;
 
 	private double quantidade;
-	
+
 	private ProdutoService ps;
 
 	private Produto produto;
-	
-	public CodigoBarra(String codigo,ProdutoService ps) {
+
+	public CodigoBarra(String cod, List<PadraoCodigo> padroes, ProdutoService ps) {
+
+		String codigo = cod.toLowerCase();
 
 		this.ps = ps;
 
-		this.codigoBarra = codigo;
-		this.quantidade = 1;
-		
-		this.produto = this.ps.getProduto(this.codigoBarra);
-		
-		if(this.produto == null){
-			
-			throw new RuntimeException("Produto inexistente");
-			
+		int multiplicador = 1;
+
+		if (codigo.contains("x")) {
+
+			String[] pts = codigo.split("x");
+
+			try {
+
+				multiplicador = Integer.parseInt(pts[0]);
+
+			} catch (Exception ex) {
+
+			}
+
+			codigo = pts[1];
+
 		}
-		
-	}
 
-	public CodigoBarra(String codigo, List<PadraoCodigo> padroes,ProdutoService ps) {
-		
-		this.ps = ps;
-		
-		try{
-			
-			PadraoCodigo padrao = padroes.get(padroes.stream().map(x -> codigo.indexOf(x.getDigitoInicial()) == 0)
+		final String fcodigo = codigo;
+
+		try {
+
+			PadraoCodigo padrao = padroes.get(padroes.stream().map(x -> fcodigo.indexOf(x.getDigitoInicial()) == 0)
 					.collect(Collectors.toList()).indexOf(true));
-			
-			if(codigo.length() != padrao.getTamanhoCodigo()){
-				
+
+			if (codigo.length() != padrao.getTamanhoCodigo()) {
+
 				throw new RuntimeException("Padrao invalido");
-				
+
 			}
-			
-			this.codigoBarra = codigo.substring(padrao.getDigitoInicial().length(),padrao.getDigitosCodigoProduto());
-			
-			double quantidade = Double.parseDouble(codigo.substring(padrao.getDigitoInicial().length()+padrao.getDigitosCodigoProduto(),padrao.getDigitosUnidade()))/Math.pow(10, padrao.getCasasDecimais());
-			
+
+			this.codigoBarra = codigo.substring(padrao.getDigitoInicial().length(), padrao.getDigitosCodigoProduto());
+
+			double quantidade = Double.parseDouble(codigo.substring(
+					padrao.getDigitoInicial().length() + padrao.getDigitosCodigoProduto(), padrao.getDigitosUnidade()))
+					/ Math.pow(10, padrao.getCasasDecimais());
+
 			this.produto = this.ps.getProduto(this.codigoBarra);
-			
-			if(this.produto == null){
-				
+
+			if (this.produto == null) {
+
 				throw new RuntimeException("Produto inexistente");
-				
+
 			}
-			
-			this.quantidade = padrao.getTipo().para(this.produto.getEstoque().getTipo(), produto, quantidade);
-			
-		}catch(Exception ex){
-			
+
+			this.quantidade = padrao.getTipo().para(this.produto.getEstoque().getTipo(), produto, quantidade)
+					* multiplicador;
+
+		} catch (Exception ex) {
+
 			this.codigoBarra = codigo;
-			this.quantidade = 1;
-			
 			this.produto = this.ps.getProduto(this.codigoBarra);
-			
-			if(this.produto == null){
-				
+			this.quantidade = TipoQuantidade.UN.para(this.produto.getEstoque().getTipo(), this.produto, 1)
+					* multiplicador;
+
+			if (this.produto == null) {
+
 				throw new RuntimeException("Produto inexistente");
-				
+
 			}
-			
+
 		}
 
 	}
-	
+
 	public Produto getProduto() {
 		return produto;
 	}

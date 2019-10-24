@@ -8,6 +8,39 @@ public class FormaPagamentoVendaService {
 	
 	public List<FormaPagamento> getFormasPagamento(){
 		
+		FormaPagamento cheque = new FormaPagamento() {
+
+			public String toString(){
+				
+				return "Cheque";
+				
+			}
+			
+			public String getNome() {
+				// TODO Auto-generated method stub
+				return "Cheque";
+			}
+
+			@Override
+			public int codigoCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return -1;
+			}
+
+			@Override
+			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
+				// TODO Auto-generated method stub
+				return br.com.nota.FormaPagamentoNota.CHEQUE;
+			}
+
+			@Override
+			public String cnpjCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return "";
+			}
+			
+		};
+		
 		FormaPagamento dinheiro = new FormaPagamento() {
 
 			public String toString(){
@@ -42,11 +75,11 @@ public class FormaPagamentoVendaService {
 		};
 		
 		
-		FormaPagamento debito = new FormaPagamento() {
+		FormaPagamento debitoVisa = new FormaPagamento() {
 
 			public String toString(){
 				
-				return "Debito";
+				return "Debito Visa";
 				
 			}
 			
@@ -64,7 +97,7 @@ public class FormaPagamentoVendaService {
 			@Override
 			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
 				// TODO Auto-generated method stub
-				return br.com.nota.FormaPagamentoNota.OUTROS;
+				return br.com.nota.FormaPagamentoNota.CARTAO_DEBITO_VISA;
 			}
 
 			@Override
@@ -75,17 +108,50 @@ public class FormaPagamentoVendaService {
 			
 		};
 		
-		FormaPagamento credito = new FormaPagamento() {
+		FormaPagamento creditoVisa = new FormaPagamento() {
+
+			public String toString(){
+				
+				return "Credito Visa";
+				
+			}
+			
+			public String getNome() {
+				// TODO Auto-generated method stub
+				return "Credito";
+			}
+
+			@Override
+			public int codigoCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
+				// TODO Auto-generated method stub
+				return br.com.nota.FormaPagamentoNota.CARTAO_VISA;
+			}
+
+			@Override
+			public String cnpjCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return "";
+			}
+			
+		};
+		
+		FormaPagamento creditoMastercard = new FormaPagamento() {
 			
 			public String toString(){
 				
-				return "Credito";
+				return "Credito	Mastercard";
 				
 			}
 
 			public String getNome() {
 				// TODO Auto-generated method stub
-				return "Credito Visa";
+				return "Credito Mastercard";
 			}
 			
 			@Override
@@ -97,7 +163,40 @@ public class FormaPagamentoVendaService {
 			@Override
 			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
 				// TODO Auto-generated method stub
-				return br.com.nota.FormaPagamentoNota.OUTROS;
+				return br.com.nota.FormaPagamentoNota.CARTAO_MASTERCARD;
+			}
+
+			@Override
+			public String cnpjCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return "";
+			}
+			
+		};
+		
+		FormaPagamento debitoMastercard = new FormaPagamento() {
+			
+			public String toString(){
+				
+				return "Debito	Mastercard";
+				
+			}
+
+			public String getNome() {
+				// TODO Auto-generated method stub
+				return "Debito Mastercard";
+			}
+			
+			@Override
+			public int codigoCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
+				// TODO Auto-generated method stub
+				return br.com.nota.FormaPagamentoNota.CARTAO_DEBITO_MASTERCARD;
 			}
 
 			@Override
@@ -110,8 +209,11 @@ public class FormaPagamentoVendaService {
 		
 		ArrayList<FormaPagamento> fp = new ArrayList<FormaPagamento>();
 		fp.add(dinheiro);
-		fp.add(debito);
-		fp.add(credito);
+		fp.add(debitoVisa);
+		fp.add(creditoVisa);
+		fp.add(debitoMastercard);
+		fp.add(creditoMastercard);
+		fp.add(cheque);
 		
 		return fp;
 		

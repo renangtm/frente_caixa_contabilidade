@@ -276,7 +276,7 @@ public class Modulo extends Tela {
 	public Modulo() {
 		super();
 		this.setVisible(true);
-		this.et = ET.nova();
+		//this.et = ET.nova();
 		
 		this.addVetoableChangeListener((pce)->{
 			

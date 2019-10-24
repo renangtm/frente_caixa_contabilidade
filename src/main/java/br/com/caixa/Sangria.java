@@ -1,6 +1,8 @@
 package br.com.caixa;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import br.com.movimento_financeiro.Movimento;
 import br.com.usuario.Usuario;
 import br.com.utilidades.Campo;
 
@@ -35,6 +39,45 @@ public class Sangria {
 	@OneToOne(fetch=FetchType.EAGER)
 	private Usuario gerente;
 	
+	@OneToMany(mappedBy="sangria")
+	private List<Movimento> movimentos;
+	
+	@OneToMany(mappedBy="sangria")
+	private List<Reposicao> reposicoes;
+	
+	public Sangria(){
+		
+		this.reposicoes = new ArrayList<Reposicao>();
+		this.movimentos = new ArrayList<Movimento>();
+		
+	}
+	
+	
+	
+	public List<Reposicao> getReposicoes() {
+		return reposicoes;
+	}
+
+
+
+	public void setReposicoes(List<Reposicao> reposicoes) {
+		this.reposicoes = reposicoes;
+	}
+
+
+
+	public List<Movimento> getMovimentos() {
+		return movimentos;
+	}
+
+
+
+	public void setMovimentos(List<Movimento> movimentos) {
+		this.movimentos = movimentos;
+	}
+
+
+
 	public int getId() {
 		return id;
 	}

@@ -197,7 +197,7 @@ public class AssociacaoComanda extends Modulo {
 
 					this.selecionada = null;
 
-					this.lblStatus.setText("SUCESSO");
+					this.lblStatus.setText(cb.getProduto().getNome());
 
 					this.tabbedPane.setSelectedIndex(0);
 

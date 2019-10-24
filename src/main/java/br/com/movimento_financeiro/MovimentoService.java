@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import br.com.banco.Banco;
 import br.com.banco.Fechamento;
 import br.com.base.Service;
+import br.com.empresa.Empresa;
 import br.com.nota.FormaPagamentoNota;
 import br.com.nota.SaidaEntrada;
 
@@ -18,6 +19,22 @@ public class MovimentoService implements Service<Movimento> {
 	private Banco banco;
 
 	private EntityManager et;
+
+	private Empresa empresa;
+
+	private FormaPagamentoNota formaPagamento;
+
+	public void setFormaPagamentoNota(FormaPagamentoNota fpn) {
+
+		this.formaPagamento = fpn;
+
+	}
+
+	public void setEmpresa(Empresa emp) {
+
+		this.empresa = emp;
+
+	}
 
 	public void setBanco(Banco emp) {
 
@@ -59,12 +76,12 @@ public class MovimentoService implements Service<Movimento> {
 
 					pago += movimento.getValor();
 					movimento.getVencimento().getMovimentos().add(movimento);
-					
+
 				}
 
 				if (pago > movimento.getVencimento().getValor()) {
 
-					l.setConclusao(-1, "Esse valor supera o do vencimento",null);
+					l.setConclusao(-1, "Esse valor supera o do vencimento", null);
 					return;
 
 				}
@@ -73,7 +90,7 @@ public class MovimentoService implements Service<Movimento> {
 
 					if (movimento.getOperacao().isCredito()) {
 
-						l.setConclusao(-1, "Operacao de credito para entrada",null);
+						l.setConclusao(-1, "Operacao de credito para entrada", null);
 						return;
 
 					}
@@ -82,7 +99,7 @@ public class MovimentoService implements Service<Movimento> {
 
 					if (!movimento.getOperacao().isCredito()) {
 
-						l.setConclusao(-1, "Operacao de debito para saida",null);
+						l.setConclusao(-1, "Operacao de debito para saida", null);
 						return;
 
 					}
@@ -99,11 +116,11 @@ public class MovimentoService implements Service<Movimento> {
 			@SuppressWarnings("unchecked")
 			List<Fechamento> fechamentos = (List<Fechamento>) (List<?>) q.getResultList();
 
-			l.setConclusao(5, "",null);
+			l.setConclusao(5, "", null);
 
 			if (!deletarFechamentos && fechamentos.size() > 0) {
 
-				l.setConclusao(-1, "Existem fechamentos que nao podem ser apagados",null);
+				l.setConclusao(-1, "Existem fechamentos que nao podem ser apagados", null);
 				return;
 
 			}
@@ -115,11 +132,10 @@ public class MovimentoService implements Service<Movimento> {
 			q.setParameter("este", movimento.getId() == 0 ? Integer.MAX_VALUE : movimento.getId());
 			q.setMaxResults(1);
 
-
 			@SuppressWarnings("unchecked")
 			List<Movimento> anteriores = (List<Movimento>) (List<?>) q.getResultList();
 
-			l.setConclusao(10, "",null);
+			l.setConclusao(10, "", null);
 
 			double saldo_anterior = 0;
 
@@ -164,9 +180,10 @@ public class MovimentoService implements Service<Movimento> {
 
 				for (Movimento m : movimentos) {
 					currente.setSaldo(
-							saldo_anterior + ((currente.getValor()+currente.getJuros()-currente.getDescontos()) * (currente.getOperacao().isCredito() ? 1 : -1)));
+							saldo_anterior + ((currente.getValor() + currente.getJuros() - currente.getDescontos())
+									* (currente.getOperacao().isCredito() ? 1 : -1)));
 					if (currente.getSaldo() < 0) {
-						l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId(),null);
+						l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId(), null);
 						return;
 					}
 					saldo_anterior = currente.getSaldo();
@@ -174,61 +191,66 @@ public class MovimentoService implements Service<Movimento> {
 					currente = m;
 				}
 
-				l.setConclusao(10 + ((index / total) * 80), "",null);
+				l.setConclusao(10 + ((index / total) * 80), "", null);
 
 			}
 
-			currente.setSaldo(saldo_anterior + ((currente.getValor()+currente.getJuros()-currente.getDescontos()) * (currente.getOperacao().isCredito() ? 1 : -1)));
+			currente.setSaldo(saldo_anterior + ((currente.getValor() + currente.getJuros() - currente.getDescontos())
+					* (currente.getOperacao().isCredito() ? 1 : -1)));
 			if (currente.getSaldo() < 0) {
-				l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId(),null);
+				l.setConclusao(-1, "Saldo negativo no movimento " + currente.getId(), null);
 				return;
 			}
 
 			fechamentos.stream().forEach(et::remove);
 
-			if(movimento.getVencimento() != null)
+			if (movimento.getVencimento() != null)
 				movimento.setVencimento(et.merge(movimento.getVencimento()));
-			
+
 			movimento.setBanco(et.merge(movimento.getBanco()));
 			movimento.getBanco().setSaldo(currente.getSaldo());
 
-			if(movimento.getExpediente() != null) {
-				
+			if (movimento.getExpediente() != null) {
+
 				movimento.setExpediente(et.merge(movimento.getExpediente()));
 				movimento.getExpediente().setCaixa(et.merge(movimento.getExpediente().getCaixa()));
-				
-				
-				
-				if(movimento.getFormaPagamento() != null) {
-					if(movimento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-						
-						//calcular aqui corretamente na alteracao vai acabar somando em duplicidade um credito ou subtraindo um debito em duplicidade
-				
-						movimento.getExpediente().setSaldo_final_atual(movimento.getExpediente().getSaldo_final_atual()+((movimento.getValor()+movimento.getJuros()-movimento.getDescontos()) * (movimento.getOperacao().isCredito() ? 1 : -1)));
-						movimento.getExpediente().getCaixa().setSaldoAtual(movimento.getExpediente().getCaixa().getSaldoAtual()+((movimento.getValor()+movimento.getJuros()-movimento.getDescontos()) * (movimento.getOperacao().isCredito() ? 1 : -1)));
-						
-						
+
+				if (movimento.getFormaPagamento() != null) {
+					if (movimento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+
+						// calcular aqui corretamente na alteracao vai acabar
+						// somando em duplicidade um credito ou subtraindo um
+						// debito em duplicidade
+
+						movimento.getExpediente()
+								.setSaldo_final_atual(movimento.getExpediente().getSaldo_final_atual()
+										+ ((movimento.getValor() + movimento.getJuros() - movimento.getDescontos())
+												* (movimento.getOperacao().isCredito() ? 1 : -1)));
+						movimento.getExpediente().getCaixa()
+								.setSaldoAtual(movimento.getExpediente().getCaixa().getSaldoAtual()
+										+ ((movimento.getValor() + movimento.getJuros() - movimento.getDescontos())
+												* (movimento.getOperacao().isCredito() ? 1 : -1)));
+
 					}
 				}
-				
+
 			}
 
 			Movimento mov = movimento;
-			
+
 			if (movimento.getId() == 0) {
 
 				et.persist(movimento);
-				
-			}else {
+
+			} else {
 
 				mov = et.merge(movimento);
-			
+
 			}
 
-			l.setConclusao(100, "",mov);
+			l.setConclusao(100, "", mov);
 
 		};
-		
 
 		Thread th = new Thread(rn);
 
@@ -245,11 +267,20 @@ public class MovimentoService implements Service<Movimento> {
 	@Override
 	public int getCount(String filtro) {
 
-		Query qr = et.createQuery("SELECT COUNT(*) FROM Movimento n WHERE "
-				+ (this.banco != null ? "n.banco.id = :empresa AND " : "") + " (n.banco.pj.nome LIKE :nome_c)");
+		Query qr = et.createQuery(
+				"SELECT COUNT(*) FROM Movimento n WHERE " + (this.banco != null ? "n.banco.id = :banco AND " : "")
+						+ (this.empresa != null ? "n.banco.pj.empresa = :empresa AND " : "")
+						+ (this.formaPagamento != null ? "n.formaPagamento = :formaPagamento AND " : "")
+						+ " (n.banco.pj.nome LIKE :nome_c)");
 
 		if (this.banco != null)
-			qr.setParameter("empresa", this.banco.getId());
+			qr.setParameter("banco", this.banco.getId());
+
+		if (this.empresa != null)
+			qr.setParameter("empresa", this.empresa);
+
+		if (this.formaPagamento != null)
+			qr.setParameter("formaPagamento", this.formaPagamento);
 
 		qr.setParameter("nome_c", "%" + filtro + "%");
 
@@ -266,12 +297,21 @@ public class MovimentoService implements Service<Movimento> {
 
 		ordem = ordem.replaceAll("\\{\\{et\\}\\}", "n");
 
-		Query qr = et.createQuery("SELECT n FROM Movimento n WHERE "
-				+ (this.banco != null ? "n.banco.id = :empresa AND " : "") + " (n.banco.pj.nome LIKE :nome_c) "
-				+ (ordem != "" ? " ORDER BY " + ordem : "ORDER BY n.data DESC, n.id DESC"));
+		Query qr = et
+				.createQuery("SELECT n FROM Movimento n WHERE " + (this.banco != null ? "n.banco.id = :banco AND " : "")
+						+ (this.empresa != null ? "n.banco.pj.empresa = :empresa AND " : "")
+						+ (this.formaPagamento != null ? "n.formaPagamento = :formaPagamento AND " : "")
+						+ " (n.banco.pj.nome LIKE :nome_c) "
+						+ (ordem != "" ? " ORDER BY " + ordem : "ORDER BY n.data DESC, n.id DESC"));
 
 		if (this.banco != null)
-			qr.setParameter("empresa", this.banco.getId());
+			qr.setParameter("banco", this.banco.getId());
+
+		if (this.empresa != null)
+			qr.setParameter("empresa", this.empresa);
+
+		if (this.formaPagamento != null)
+			qr.setParameter("formaPagamento", this.formaPagamento);
 
 		qr.setParameter("nome_c", "%" + filtro + "%");
 
@@ -304,7 +344,7 @@ public class MovimentoService implements Service<Movimento> {
 
 	public interface Listener {
 
-		public void setConclusao(double porcentagem, String observacao,Movimento merged);
+		public void setConclusao(double porcentagem, String observacao, Movimento merged);
 
 	}
 
@@ -316,9 +356,10 @@ public class MovimentoService implements Service<Movimento> {
 
 	@Override
 	public Movimento merge(Movimento obj) {
-		
-		throw new UnsupportedOperationException("O movimento tem um processo de merge repleto de regras de negocio, pode demorar por isso conta com o metodo mergeMovimento para inserir");
-		
+
+		throw new UnsupportedOperationException(
+				"O movimento tem um processo de merge repleto de regras de negocio, pode demorar por isso conta com o metodo mergeMovimento para inserir");
+
 	}
 
 }

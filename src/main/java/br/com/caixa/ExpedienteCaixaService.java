@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
+import br.com.base.ET;
 import br.com.base.Service;
+import br.com.movimento_financeiro.Movimento;
 import br.com.nota.FormaPagamentoNota;
 
 public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
@@ -39,6 +42,33 @@ public class ExpedienteCaixaService implements Service<ExpedienteCaixa>{
 	@Override
 	public void lixeira(ExpedienteCaixa obj) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public static void main(String[] args) {
+		
+		EntityManager et = ET.nova();
+		
+		ExpedienteCaixaService serv = new ExpedienteCaixaService(et);
+		
+		ExpedienteCaixa exp = et.find(ExpedienteCaixa.class, 1);
+		
+		List<Movimento> movimentos = serv.getMovimentosSemSangriaEReposicao(exp);
+
+		System.out.println(movimentos.size());
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Movimento> getMovimentosSemSangriaEReposicao(ExpedienteCaixa exp){
+		
+		return 
+				(List<Movimento>)
+				(List<?>)
+				et.createQuery("SELECT m FROM Movimento m WHERE m.expediente=:expediente AND m.id NOT IN (SELECT ms.id FROM Sangria s JOIN FETCH s.movimentos ms) AND m.id NOT IN (SELECT mr.id FROM Reposicao r JOIN FETCH r.movimentos mr)")
+				.setParameter("expediente", exp)
+				.getResultList();
 		
 	}
 

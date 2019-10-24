@@ -5,6 +5,7 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -15,7 +16,9 @@ import javax.persistence.EntityManager;
 
 import br.com.banco.Banco;
 import br.com.banco.BancoService;
+import br.com.base.Masks;
 import br.com.caixa.ExpedienteCaixa;
+import br.com.cheque.ChequeService;
 import br.com.emissao.SAT;
 import br.com.emissao.ValidadorDocumento;
 import br.com.historico.Historico;
@@ -39,7 +42,6 @@ import java.awt.Dimension;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 public class SelecaoFormaPagamento extends JDialog {
@@ -47,6 +49,8 @@ public class SelecaoFormaPagamento extends JDialog {
 	/**
 	 * 
 	 */
+
+	private List<Pagamento> pagamentos;
 
 	private static List<KeyEventDispatcher> atalhos = new ArrayList<KeyEventDispatcher>();
 
@@ -71,7 +75,7 @@ public class SelecaoFormaPagamento extends JDialog {
 
 	private ExpedienteCaixa expediente;
 
-	private void setV(boolean v) {
+	private void setD(boolean v) {
 
 		this.lblDinheiro.setVisible(v);
 		this.lblTroco.setVisible(v);
@@ -80,7 +84,32 @@ public class SelecaoFormaPagamento extends JDialog {
 
 	}
 
-	private void atualizar() {
+	private void setC(boolean v) {
+
+		this.lblDinheiro.setVisible(v);
+		this.txtDinheiro.setVisible(v);
+
+	}
+
+	public void atualizar() {
+
+		if (venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum() > 0) {
+
+			try {
+
+				lblDinheiro.setText("Pagamento Restante: R$ "
+						+ Masks.moeda().valueToString(pagamentos.stream().mapToDouble(p -> p.valor).sum()));
+
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		} else {
+
+			finalizarVenda(pagamentos);
+
+		}
 
 		this.lbls.forEach(l -> {
 
@@ -140,13 +169,13 @@ public class SelecaoFormaPagamento extends JDialog {
 
 	private boolean executando = false;
 
-	private void finalizarVenda() {
+	private void finalizarVenda(List<Pagamento> pgtos) {
 
-		if(this.executando)
+		if (this.executando)
 			return;
-		
+
 		this.executando = true;
-		
+
 		Runnable rn = () -> {
 
 			System.out.println("ponto1====================");
@@ -170,15 +199,9 @@ public class SelecaoFormaPagamento extends JDialog {
 				nf.setPrazoPagamento(0);
 				nf.setTransportadora(null);
 
-				if (this.selecionada.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+				if (this.pagamentos.stream().mapToDouble(p -> p.valor).sum() < this.venda.getTotal()) {
 
-					if (this.venda.getTotal() > Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))) {
-
-						return;
-
-					}
-
-					nf.setValorMeioPagamento(Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", ".")));
+					return;
 
 				}
 
@@ -273,9 +296,12 @@ public class SelecaoFormaPagamento extends JDialog {
 				Operacao op = (Operacao) et.createQuery("SELECT o FROM Operacao o WHERE o.credito=true").getResultList()
 						.get(0);
 				System.out.println("ponto4====================");
-				ths.addAll(notas.stream().flatMap(n -> n.getVencimentos().stream()).map(v -> {
+				final List<Nota> fnotas = notas;
+				ths.addAll(pgtos.stream().map(p -> {
 
-					return new Thread(() -> {
+					p.vencimento = fnotas.get(0).getVencimentos().get(0);
+
+					Thread t = new Thread(() -> {
 
 						Movimento m = new Movimento();
 						m.setBanco(bc);
@@ -283,9 +309,9 @@ public class SelecaoFormaPagamento extends JDialog {
 						m.setDescontos(0);
 						m.setHistorico(hi);
 						m.setOperacao(op);
-						m.setValor(v.getValor());
-						m.setVencimento(v);
-						m.setFormaPagamento(v.getNota().getForma_pagamento());
+						m.setValor(p.valor);
+						m.setVencimento(p.vencimento);
+						m.setFormaPagamento(p.formaPagamento);
 						m.setExpediente(expediente);
 
 						mvs.mergeMovimento(m, true, new MovimentoService.Listener() {
@@ -299,13 +325,22 @@ public class SelecaoFormaPagamento extends JDialog {
 
 									expediente.getMovimentos().add(mov);
 
+									if (p.cheque != null) {
+
+										p.cheque.setMovimento(mov);
+										p.cheque = new ChequeService(et).merge(p.cheque);
+
+									}
+
+									p.vencimento.getMovimentos().add(mov);
+
 									et.getTransaction().begin();
 									et.getTransaction().commit();
 
 									if (ths.size() > 0) {
 										ths.getFirst().start();
 									} else {
-										
+
 										executando = false;
 										dispose();
 										fc.novaVenda();
@@ -317,8 +352,9 @@ public class SelecaoFormaPagamento extends JDialog {
 							}
 
 						});
-
 					});
+					return t;
+
 				}).collect(Collectors.toList()));
 
 				ths.getFirst().start();
@@ -333,7 +369,7 @@ public class SelecaoFormaPagamento extends JDialog {
 		};
 
 		Loading.getLoading(rn);
-		
+
 	}
 
 	/**
@@ -358,12 +394,15 @@ public class SelecaoFormaPagamento extends JDialog {
 
 		this.expediente = exp;
 
+		this.pagamentos = new ArrayList<Pagamento>();
+
 		this.cpfNota = cpfNota;
 
 		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
 		atalhos.forEach(d -> keyManager.removeKeyEventDispatcher(d));
 
+		final SelecaoFormaPagamento este = this;
 		KeyEventDispatcher disp = new KeyEventDispatcher() {
 
 			@Override
@@ -400,7 +439,21 @@ public class SelecaoFormaPagamento extends JDialog {
 
 				} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ENTER) {
 
-					if (selecionada.getFormaPagamento() == FormaPagamentoNota.DINHEIRO && !din) {
+					if (selecionada.getFormaPagamento() == FormaPagamentoNota.CHEQUE) {
+
+						setVisible(false);
+						fc.setVisible(false);
+
+						CadastroCheque cc = new CadastroCheque(pagamentos, este, fc, et);
+						cc.init(fc.operador);
+						cc.setVisible(true);
+						MenuPrincipal.menu.jdp.add(cc);
+						return true;
+
+					}
+
+					if ((selecionada.getFormaPagamento() == FormaPagamentoNota.DINHEIRO
+							|| selecionada.getFormaPagamento().toString().startsWith("CARTAO")) && !din) {
 
 						lbls.forEach(l -> {
 
@@ -412,7 +465,11 @@ public class SelecaoFormaPagamento extends JDialog {
 
 						validate();
 
-						setV(true);
+						if (selecionada.getFormaPagamento() == FormaPagamentoNota.DINHEIRO) {
+							setD(true);
+						} else {
+							setC(true);
+						}
 
 						setVisible(false);
 						setVisible(true);
@@ -423,13 +480,14 @@ public class SelecaoFormaPagamento extends JDialog {
 
 						return true;
 
-					} else if (selecionada.getFormaPagamento() == FormaPagamentoNota.DINHEIRO) {
+					} else if ((selecionada.getFormaPagamento() == FormaPagamentoNota.DINHEIRO
+							|| selecionada.getFormaPagamento().toString().startsWith("CARTAO"))) {
 
 						return false;
 
 					}
 
-					finalizarVenda();
+					finalizarVenda(pagamentos);
 
 				}
 
@@ -455,7 +513,7 @@ public class SelecaoFormaPagamento extends JDialog {
 		this.selecionada = this.pg.get(0);
 		getContentPane().setLayout(null);
 
-		lblDinheiro = new JLabel("Dinheiro");
+		lblDinheiro = new JLabel("Pagamento");
 		lblDinheiro.setFont(new Font("Arial", Font.BOLD, 17));
 		lblDinheiro.setBounds(38, 60, 101, 14);
 		getContentPane().add(lblDinheiro);
@@ -481,11 +539,29 @@ public class SelecaoFormaPagamento extends JDialog {
 		txtTroco.setBounds(68, 182, 200, 54);
 		getContentPane().add(txtTroco);
 
-		this.setV(false);
+		this.setD(false);
 
 		this.txtDinheiro.addActionListener(a -> {
 
-			finalizarVenda();
+			double valor = Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."));
+
+			Pagamento pg = new Pagamento();
+
+			pg.data = Calendar.getInstance();
+			pg.formaPagamento = selecionada.getFormaPagamento();
+			pg.valor = Math.min(valor, venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum());
+
+			if (pg.valor > 0) {
+
+				pagamentos.add(pg);
+
+			}
+
+			txtDinheiro.setText("");
+
+			this.atualizar();
+
+			din = false;
 
 		});
 
@@ -500,4 +576,5 @@ public class SelecaoFormaPagamento extends JDialog {
 		this.atualizar();
 
 	}
+
 }

@@ -94,7 +94,7 @@ public class FrenteCaixa extends Modulo {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Usuario operador;
+	public Usuario operador;
 
 	private Empresa empresa;
 	private JTextField txtCliente;
@@ -362,9 +362,8 @@ public class FrenteCaixa extends Modulo {
 	private String cpf;
 
 	protected void setVenda(Venda venda) {
-		
+
 		this.venda = venda;
-		
 
 		this.lstProdutoVenda = new ListModelGenerica<ProdutoVenda>(this.venda.getProdutos(), ProdutoVenda.class,
 				RepresentadorProdutoVenda.class);
@@ -383,10 +382,9 @@ public class FrenteCaixa extends Modulo {
 		this.mostrarVenda();
 
 		this.txtSubTotal.setText("");
-		
-		
+
 	}
-	
+
 	protected void novaVenda() {
 
 		if (this.venda != null) {
@@ -477,7 +475,6 @@ public class FrenteCaixa extends Modulo {
 
 		this.txtTotal.setText((this.venda.getTotal() + "").replaceAll("\\.", ","));
 
-
 		this.lstProdutoVenda.setLista(this.venda.getProdutos());
 		this.lstProdutoVenda.atualizaListaBaseConformeFiltros();
 
@@ -501,7 +498,7 @@ public class FrenteCaixa extends Modulo {
 	private JLabel lblQuantidadeItens;
 
 	public void init(Usuario operador) {
-		
+
 		final FrenteCaixa este = this;
 
 		this.operador = et.merge(operador);
@@ -658,10 +655,10 @@ public class FrenteCaixa extends Modulo {
 
 					this.txtBipe.requestFocus();
 
-				}else if(this.tbpBP.getSelectedIndex() == 2) {
-					
+				} else if (this.tbpBP.getSelectedIndex() == 2) {
+
 					this.txtComanda.requestFocus();
-					
+
 				}
 
 				try {
@@ -687,7 +684,7 @@ public class FrenteCaixa extends Modulo {
 				return;
 			}
 
-			//boolean pf = true;
+			// boolean pf = true;
 
 			if (tbpBP.getSelectedIndex() == 0) {
 
@@ -695,25 +692,21 @@ public class FrenteCaixa extends Modulo {
 				tbpBP.setSelectedIndex(1);
 
 			}
-			SelecaoFormaPagamento sf = new SelecaoFormaPagamento(venda,et,expediente,cpf,este);
+			SelecaoFormaPagamento sf = new SelecaoFormaPagamento(venda, et, expediente, cpf, este);
 			sf.setVisible(true);
 			sf.centralizar();
 			sf.requestFocus();
 			/*
-			if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-				try {
-
-					Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
-
-				} catch (Exception exx) {
-					txtDinheiro.requestFocus();
-					pf = false;
-				}
-			}
-
-			if (pf)
-				finalizarVenda();
-			*/
+			 * if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.
+			 * DINHEIRO)) { try {
+			 * 
+			 * Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
+			 * 
+			 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false;
+			 * } }
+			 * 
+			 * if (pf) finalizarVenda();
+			 */
 		});
 
 		this.btSangria.addActionListener(a -> {
@@ -747,6 +740,20 @@ public class FrenteCaixa extends Modulo {
 				sangria.setMomento(Calendar.getInstance());
 				sangria.setValor(valor);
 				sangria.setGerente(gerente);
+
+				exp.getMovimentos().stream().filter(m -> m.getSangria() == null).forEach(m -> {
+
+					m.setSangria(sangria);
+					sangria.getMovimentos().add(m);
+
+				});
+				
+				exp.getReposicoes().stream().filter(r->r.getSangria() == null).forEach(r->{
+					
+					r.setSangria(sangria);
+					sangria.getReposicoes().add(r);
+					
+				});
 
 				exp.getSangrias().add(sangria);
 
@@ -810,32 +817,30 @@ public class FrenteCaixa extends Modulo {
 			}
 
 		});
-		
-		this.txtComanda.addActionListener(a->{
-			
+
+		this.txtComanda.addActionListener(a -> {
+
 			String codigo = this.txtComanda.getText();
-			
+
 			VendaService vs = new VendaService(et);
-			
-			
+
 			Venda venda = vs.getVendaPorComanda(codigo);
-			
-			if(venda == null) {
-				
+
+			if (venda == null) {
+
 				alerta("Nao existe nada nessa comanda");
 				this.txtComanda.setText("");
 				return;
-				
+
 			}
-			
+
 			this.setVenda(venda);
-			
+
 			this.txtComanda.setText("");
-			
+
 		});
 
 		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-		
 
 		FrenteCaixa.atalhos.forEach(d -> keyManager.removeKeyEventDispatcher(d));
 
@@ -862,7 +867,7 @@ public class FrenteCaixa extends Modulo {
 
 						txtComanda.setText("");
 						tbpBP.setSelectedIndex(2);
-						
+
 						return true;
 
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F3) {
@@ -880,7 +885,7 @@ public class FrenteCaixa extends Modulo {
 
 						}
 
-						//boolean pf = true;
+						// boolean pf = true;
 
 						if (tbpBP.getSelectedIndex() == 0 || tbpBP.getSelectedIndex() == 2) {
 
@@ -888,26 +893,23 @@ public class FrenteCaixa extends Modulo {
 							tbpBP.setSelectedIndex(1);
 
 						}
-						
-						SelecaoFormaPagamento sf = new SelecaoFormaPagamento(venda,et,expediente,cpf,este);
+
+						SelecaoFormaPagamento sf = new SelecaoFormaPagamento(venda, et, expediente, cpf, este);
 						sf.setVisible(true);
 						sf.centralizar();
 						sf.requestFocus();
-						
+
 						/*
-						if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-							try {
-
-								Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
-
-							} catch (Exception exx) {
-								txtDinheiro.requestFocus();
-								pf = false;
-							}
-						}
-
-						if (pf)
-							finalizarVenda();
+						 * if (formaPagamento.getFormaPagamento().equals(
+						 * FormaPagamentoNota.DINHEIRO)) { try {
+						 * 
+						 * Double.parseDouble(txtDinheiro.getText().replaceAll(
+						 * ",", "."));
+						 * 
+						 * } catch (Exception exx) { txtDinheiro.requestFocus();
+						 * pf = false; } }
+						 * 
+						 * if (pf) finalizarVenda();
 						 */
 						return true;
 
@@ -1034,36 +1036,34 @@ public class FrenteCaixa extends Modulo {
 		this.novaVenda();
 
 	}
-	
-	
-	
+
 	private double wrebase = 900;
 	private double hrebase = 650;
 	private JPanel panel_2;
 	private JTextField txtComanda;
-	
+
 	private void rebase() {
-		
+
 		double nw = this.getWidth();
 		double nh = this.getHeight();
-		
-		this.percorrerComponentes(c->{
-			
+
+		this.percorrerComponentes(c -> {
+
 			Rectangle rect = c.getBounds();
-			
-			rect.height *= nh/hrebase;
-			rect.y *= nh/hrebase;
-			
-			rect.width *= nw/wrebase;
-			rect.x *= nw/wrebase;
-			
+
+			rect.height *= nh / hrebase;
+			rect.y *= nh / hrebase;
+
+			rect.width *= nw / wrebase;
+			rect.x *= nw / wrebase;
+
 			c.setBounds(rect);
-			
+
 		});
-		
+
 		this.wrebase = nw;
 		this.hrebase = nh;
-		
+
 	}
 
 	public FrenteCaixa() {
@@ -1073,9 +1073,8 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().setLayout(null);
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		
-		
-		this.setBounds(0, 0, (int)tk.getScreenSize().getWidth(), (int)tk.getScreenSize().getHeight());
+
+		this.setBounds(0, 0, (int) tk.getScreenSize().getWidth(), (int) tk.getScreenSize().getHeight());
 
 		srcProdutos = new JScrollPane();
 		srcProdutos.setBounds(10, 66, 267, 153);
@@ -1202,11 +1201,11 @@ public class FrenteCaixa extends Modulo {
 		txtPesquisa.setColumns(10);
 		txtPesquisa.setBounds(10, 11, 345, 20);
 		panel_1.add(txtPesquisa);
-		
+
 		panel_2 = new JPanel();
 		tbpBP.addTab("Comanda (F5)", null, panel_2, null);
 		panel_2.setLayout(null);
-		
+
 		txtComanda = new JTextField();
 		txtComanda.setBounds(10, 11, 336, 20);
 		panel_2.add(txtComanda);
@@ -1252,7 +1251,7 @@ public class FrenteCaixa extends Modulo {
 		lblQuantidadeItens.setBackground(SystemColor.textHighlight);
 		lblQuantidadeItens.setBounds(287, 470, 173, 68);
 		getContentPane().add(lblQuantidadeItens);
-		
+
 		this.rebase();
 
 	}

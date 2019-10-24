@@ -35,11 +35,26 @@ public class Reposicao {
 	@OneToOne
 	private Usuario gerente;
 	
+	@ManyToOne
+	private Sangria sangria;
+
 	public int getId() {
 		return id;
 	}
 	
 	
+
+	public Sangria getSangria() {
+		return sangria;
+	}
+
+
+
+	public void setSangria(Sangria sangria) {
+		this.sangria = sangria;
+	}
+
+
 
 	public Usuario getGerente() {
 		return gerente;

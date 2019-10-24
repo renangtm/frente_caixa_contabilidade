@@ -69,11 +69,13 @@ public class MenuPrincipal extends TelaFrame {
 	 * 
 	 */
 
+	public static MenuPrincipal menu;
+	
 	private HashMap<Component, Object> objetos = new HashMap<Component, Object>();
 	private HashMap<Component, Integer> leveis = new HashMap<Component, Integer>();
 	private final List<JPanel> pnlMiniBanner = new ArrayList<JPanel>();
 
-	private JDesktopPane jdp;
+	public JDesktopPane jdp;
 
 	private static final long serialVersionUID = 1L;
 
@@ -95,6 +97,8 @@ public class MenuPrincipal extends TelaFrame {
 
 		CFG.lookAndFeel = usuario.getPf().getEmpresa().getLogo().getLook().getLookAndFell();
 
+		menu = this;
+		
 		this.usuario = usuario;
 
 		this.este = this;

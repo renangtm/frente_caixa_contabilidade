@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 
 import br.com.banco.Banco;
 import br.com.caixa.ExpedienteCaixa;
+import br.com.caixa.Sangria;
 import br.com.historico.Historico;
 import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Vencimento;
@@ -56,6 +57,10 @@ public class Movimento {
 	@Column
 	private FormaPagamentoNota formaPagamento;
 	
+	@ManyToOne(fetch=FetchType.EAGER)
+	private Sangria sangria;
+	
+	
 	@Column
 	private double saldo;
 
@@ -72,6 +77,22 @@ public class Movimento {
 	}
 	
 	
+	
+	
+	public Sangria getSangria() {
+		return sangria;
+	}
+
+
+
+
+	public void setSangria(Sangria sangria) {
+		this.sangria = sangria;
+	}
+
+
+
+
 	public FormaPagamentoNota getFormaPagamento() {
 		return formaPagamento;
 	}
