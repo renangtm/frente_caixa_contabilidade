@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import br.com.banco.Banco;
 import br.com.caixa.ExpedienteCaixa;
@@ -37,6 +39,7 @@ public class Movimento {
 	@Column
 	private double valor;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column
 	private Calendar data;
 	

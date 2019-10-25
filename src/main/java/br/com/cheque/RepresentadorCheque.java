@@ -1,7 +1,7 @@
 package br.com.cheque;
 
-import java.util.Calendar;
 
+import br.com.conversores.ConversorCalendar;
 import br.com.utilidades.Campo;
 import br.com.utilidades.Representador;
 
@@ -16,11 +16,11 @@ public class RepresentadorCheque extends Representador<Cheque> {
 	@Campo(nome = "Responsavel", editavel = false, ordem = "{{et}}.pessoa.nome")
 	private String nomePessoa;
 
-	@Campo(nome = "Valor (R$)", editavel = false, ordem = "{{et}}.valor")
+	@Campo(nome = "Valor", editavel = false, ordem = "{{et}}.valor")
 	private double valor;
 
 	@Campo(nome = "Data", editavel = false, ordem = "{{et}}.data")
-	private Calendar data;
+	private String data;
 
 	@Campo(nome = "tipo", editavel = false, ordem = "{{et}}.movimento.operacao.credito")
 	private String tipo;
@@ -35,7 +35,7 @@ public class RepresentadorCheque extends Representador<Cheque> {
 		this.id = c.getId();
 		this.nomePessoa = c.getPessoa().getNome();
 		this.valor = c.getValor();
-		this.data = c.getData();
+		this.data = new ConversorCalendar().paraString(c.getData());
 		this.recebido = c.isRecebido() ? "SIM" : "NAO";
 		this.tipo = c.getMovimento().getOperacao().isCredito() ? "CREDITO" : "DEBITO";
 		this.numero = c.getNumero();

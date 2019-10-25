@@ -75,7 +75,6 @@ public class MovimentoService implements Service<Movimento> {
 				if (!movimento.getVencimento().getMovimentos().contains(movimento)) {
 
 					pago += movimento.getValor();
-					movimento.getVencimento().getMovimentos().add(movimento);
 
 				}
 
@@ -145,6 +144,8 @@ public class MovimentoService implements Service<Movimento> {
 
 				saldo_anterior = anterior.getSaldo();
 
+				System.out.println(saldo_anterior + "##########################");
+
 			}
 
 			int total = 0;
@@ -154,7 +155,7 @@ public class MovimentoService implements Service<Movimento> {
 					"SELECT COUNT(*) FROM Movimento m WHERE m.banco.id = :banco AND(m.data > :data OR (m.data = :data AND m.id > :este)) AND m.id <> :este ORDER BY m.data ASC, m.id ASC");
 			q.setParameter("banco", movimento.getBanco().getId());
 			q.setParameter("data", movimento.getData());
-			q.setParameter("este", movimento.getId());
+			q.setParameter("este", movimento.getId() == 0 ? Integer.MAX_VALUE : movimento.getId());
 
 			total = Integer.parseInt(q.getResultList().get(0) + "");
 
@@ -168,7 +169,7 @@ public class MovimentoService implements Service<Movimento> {
 						"SELECT m FROM Movimento m WHERE m.banco.id = :banco AND (m.data > :data OR (m.data = :data AND m.id > :este)) AND m.id <> :este ORDER BY m.data ASC, m.id ASC");
 				q.setParameter("banco", movimento.getBanco().getId());
 				q.setParameter("data", movimento.getData());
-				q.setParameter("este", movimento.getId());
+				q.setParameter("este", movimento.getId() == 0 ? Integer.MAX_VALUE : movimento.getId());
 				q.setFirstResult(index);
 				q.setMaxResults(Math.min(buffer, total - index));
 
@@ -245,6 +246,12 @@ public class MovimentoService implements Service<Movimento> {
 			} else {
 
 				mov = et.merge(movimento);
+
+			}
+
+			if (!movimento.getVencimento().getMovimentos().contains(movimento)) {
+
+				movimento.getVencimento().getMovimentos().add(movimento);
 
 			}
 

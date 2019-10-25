@@ -82,7 +82,7 @@ public class ListModelGenerica<T> extends AbstractTableModel {
 				
 			} catch (NoSuchMethodException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			} catch (SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -521,9 +521,9 @@ public class ListModelGenerica<T> extends AbstractTableModel {
 					}
 					
 				} catch (IllegalArgumentException e) {
-
+					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-
+					e.printStackTrace();
 				}
 			}
 			
@@ -740,6 +740,7 @@ public class ListModelGenerica<T> extends AbstractTableModel {
 				return campo.get(this.getRepresentador(this.listaBase.get(linha)));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

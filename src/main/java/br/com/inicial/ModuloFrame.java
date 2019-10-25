@@ -17,19 +17,14 @@ import javax.swing.UIManager;
 import br.com.base.ET;
 import br.com.usuario.Usuario;
 
-interface ComponentIteractor{
-	
-	void iteract(Component c);
-	
-}
 
-public class Modulo extends Tela {
+public class ModuloFrame extends TelaFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static List<Modulo> modulos = new ArrayList<Modulo>();
+	public static List<ModuloFrame> modulos = new ArrayList<ModuloFrame>();
 
 	protected String fixedTitle = "";
 	
@@ -168,7 +163,7 @@ public class Modulo extends Tela {
 
 	}
 
-	public Modulo(String titulo, int x, int y, int width, int height, boolean res) {
+	public ModuloFrame(String titulo, int x, int y, int width, int height, boolean res) {
 		super(titulo, x, y, width, height, res);
 
 		this.fixedTitle = titulo;
@@ -189,23 +184,7 @@ public class Modulo extends Tela {
 		this.setVisible(true);
 		this.et = ET.nova();
 		
-		this.addVetoableChangeListener((pce)->{
-			
-			if(pce.getPropertyName().equals(IS_CLOSED_PROPERTY)){
-				
-				boolean estado = ((Boolean)pce.getNewValue()).booleanValue();
-				
-				if(estado){
-					
-					et.close();
-					managers.forEach(e->e.close());
-					
-					
-				}
-				
-			}
-			
-		});
+		
 		
 		/*
 		this.addWindowListener(new WindowListener() {
@@ -273,28 +252,11 @@ public class Modulo extends Tela {
 
 	};
 
-	public Modulo() {
+	public ModuloFrame() {
 		super();
 		this.setVisible(true);
-		this.et = ET.nova();
+		//this.et = ET.nova();
 		
-		this.addVetoableChangeListener((pce)->{
-			
-			if(pce.getPropertyName().equals(IS_CLOSED_PROPERTY)){
-				
-				boolean estado = ((Boolean)pce.getNewValue()).booleanValue();
-				
-				if(estado){
-					
-					et.close();
-					managers.forEach(e->e.close());
-					
-					
-				}
-				
-			}
-			
-		});
 		
 		/*
 		this.addWindowListener(new WindowListener() {
@@ -347,29 +309,13 @@ public class Modulo extends Tela {
 		*/
 	}
 
-	public Modulo(String titulo, int x, int y, int width, int height, boolean res, boolean contrato) {
+	public ModuloFrame(String titulo, int x, int y, int width, int height, boolean res, boolean contrato) {
 		super(titulo, x, y, width, height, res);
 
 		this.setVisible(true);
-		this.et = ET.nova();
+		//this.et = ET.nova();
 		
-		this.addVetoableChangeListener((pce)->{
-			
-			if(pce.getPropertyName().equals(IS_CLOSED_PROPERTY)){
-				
-				boolean estado = ((Boolean)pce.getNewValue()).booleanValue();
-				
-				if(estado){
-					
-					et.close();
-					managers.forEach(e->e.close());
-					
-					
-				}
-				
-			}
-			
-		});
+
 		
 		/*
 		this.addWindowListener(new WindowListener() {

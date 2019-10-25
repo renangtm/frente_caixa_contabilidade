@@ -5,12 +5,15 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import br.com.base.ET;
 import br.com.base.Masks;
+import br.com.base.Resources;
 import br.com.cheque.Cheque;
 import br.com.cheque.ChequeListener;
 import br.com.cheque.ChequeService;
 import br.com.cheque.RepresentadorCheque;
 import br.com.conversores.ConversorCalendar;
+import br.com.conversores.ConversorDate;
 import br.com.empresa.Empresa;
 import br.com.movimento_financeiro.Movimento;
 import br.com.movimento_financeiro.MovimentoService;
@@ -24,6 +27,8 @@ import br.com.utilidades.GerenciadorLista;
 
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.io.IOException;
+
 import javax.swing.JSeparator;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -31,6 +36,7 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JCheckBox;
@@ -59,11 +65,22 @@ public class CadastroCheque extends Modulo {
 	private JFormattedTextField txtDataCheque;
 
 	private JCheckBox chkRecebido;
-	
+
 	private ChequeListener listener;
-	
-	
-	
+
+	public static void main(String[] args) {
+
+		EntityManager et = ET.nova();
+
+		Usuario usu = et.find(Usuario.class, 1);
+
+		CadastroCheque cc = new CadastroCheque();
+		cc.init(usu);
+
+		cc.setVisible(true);
+
+	}
+
 	public ChequeListener getListener() {
 		return listener;
 	}
@@ -73,12 +90,12 @@ public class CadastroCheque extends Modulo {
 	}
 
 	public CadastroCheque(List<Pagamento> pagamentos, SelecaoFormaPagamento este, FrenteCaixa fc, EntityManager et) {
-		
+
 		this();
-		
+
 		this.btMovimento.setEnabled(false);
 		this.btNovoCheque.setEnabled(false);
-		
+
 		this.et.close();
 		this.et = et;
 
@@ -91,13 +108,34 @@ public class CadastroCheque extends Modulo {
 	public CadastroCheque(Movimento movimento) {
 
 		this();
-		
+
 		this.btMovimento.setEnabled(false);
 		this.btNovoCheque.setEnabled(false);
-		
+
 		this.movimento = movimento;
 
 		this.pessoa = movimento.getVencimento().getNota().getDestinatario();
+
+	}
+
+	public static ImageIcon logo() {
+
+		try {
+
+			return Resources.getCotacoes();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
+
+	public static String nome() {
+
+		return "Cheques";
 
 	}
 
@@ -113,7 +151,8 @@ public class CadastroCheque extends Modulo {
 		if (this.cheque != null) {
 
 			this.txtNumero.setText(this.cheque.getNumero());
-			this.txtDataCheque.setText(new ConversorCalendar().paraString(this.cheque.getData()));
+			System.out.println(new ConversorDate().paraString(this.cheque.getData())+"--------------");
+			this.txtDataCheque.setText(new ConversorDate().paraString(this.cheque.getData()));
 			this.chkRecebido.setSelected(this.cheque.isRecebido());
 			this.txtValorCheque.setValue(this.cheque.getValor());
 
@@ -127,7 +166,7 @@ public class CadastroCheque extends Modulo {
 
 		if (this.movimento != null) {
 
-			this.txtMovimento.setText("Doc " + this.movimento.getVencimento().getNota() + " R$ "
+			this.txtMovimento.setText("Doc " + this.movimento.getVencimento().getNota().getNumero() + " R$ "
 					+ this.movimento.getVencimento().getValor());
 
 		}
@@ -159,11 +198,13 @@ public class CadastroCheque extends Modulo {
 		this.serv = new ChequeService(this.et);
 		this.serv.setEmpresa(this.empresa);
 
-		this.lstCheque = new GerenciadorLista<Cheque>(Cheque.class, this.tblCheques, this.serv, null, null,
+		this.lstCheque = new GerenciadorLista<Cheque>(Cheque.class, this.tblCheques, this.serv, null, new Cheque(),
 				RepresentadorCheque.class);
 		this.lstCheque.setLblSlider(this.slPg);
 		this.lstCheque.setLblPagina(this.lblPg);
 		this.lstCheque.atualizar();
+
+		this.lstCheque.setFiltro(this.txtPesquisar);
 
 		this.exibirCheque();
 
@@ -186,142 +227,156 @@ public class CadastroCheque extends Modulo {
 			}
 
 		});
-		
-		this.btNovoCheque.addActionListener(a->{
-			
+
+		this.btNovoCheque.addActionListener(a -> {
+
 			Cheque c = new Cheque();
 			c.setData(Calendar.getInstance());
-			
+
 			this.movimento = null;
 			this.pessoa = null;
 			this.cheque = c;
-			
+
 			this.exibirCheque();
-			
+
 		});
-		
-		if(this.movimento == null && this.cheque == null && this.pessoa == null && this.fc != null)
-		{
-			this.btNovoCheque.doClick();
-		}	
-		
-		this.btMovimento.addActionListener(a->{
+
+		if (this.movimento == null && this.cheque == null && this.pessoa == null && this.fc == null) {
 			
+			this.btNovoCheque.doClick();
+			
+		}else if(this.fc != null) {
+			
+			this.cheque = new Cheque();
+			
+		}
+
+		this.btMovimento.addActionListener(a -> {
+
 			MovimentoService ms = new MovimentoService(this.et);
 			ms.setEmpresa(this.empresa);
 			ms.setFormaPagamentoNota(FormaPagamentoNota.CHEQUE);
-			
-			Seletor<Movimento> sm = new Seletor<Movimento>(Movimento.class,ms,RepresentadorMovimento.class,m->{
-				
+
+			Seletor<Movimento> sm = new Seletor<Movimento>(Movimento.class, ms, RepresentadorMovimento.class, m -> {
+
 				this.movimento = m;
-				
-			},this);
-			
+				this.txtMovimento.setText(m.getId() + " -- " + m.getValor());
+
+			}, this);
+
 			sm.setVisible(true);
-			
+
 		});
-		
-		this.btResponsavel.addActionListener(a->{
-			
+
+		this.btResponsavel.addActionListener(a -> {
+
 			PessoaService ps = new PessoaService(this.et);
 			ps.setEmpresa(this.empresa);
-			
-			Seletor<Pessoa> sp = new Seletor<Pessoa>(Pessoa.class,ps,RepresentadorPessoa.class,p->{
-				
+
+			Seletor<Pessoa> sp = new Seletor<Pessoa>(Pessoa.class, ps, RepresentadorPessoa.class, p -> {
+
 				this.pessoa = p;
-				
-			},this);
-			
+				this.txtResponsavel.setText(p.getNome());
+
+			}, this);
+
 			sp.setVisible(true);
-			
+
 		});
-		
-		this.btConfirmar.addActionListener(a->{
-			
-			if(this.movimento == null && this.fc == null){
-				
+
+		this.btConfirmar.addActionListener(a -> {
+
+			if (this.movimento == null && this.fc == null) {
+
 				erro("Selecione um movimento");
 				return;
-				
+
 			}
-			
-			if(this.pessoa == null){
-				
+
+			if (this.pessoa == null) {
+
 				erro("Selecione uma pessoa");
 				return;
-				
+
 			}
-			
-			if(
-					!vc(this.txtDataCheque) ||
-					!vc(this.txtNumero) ||
-					!vc(this.txtValorCheque)){
-				
+
+			if (!vc(this.txtDataCheque) || !vc(this.txtNumero) || !vc(this.txtValorCheque)) {
+
 				return;
-				
+
 			}
-			
+
 			try {
-				
+
 				this.cheque.setData(new ConversorCalendar().paraObjeto(this.txtDataCheque.getText()));
-				
+
 			} catch (Exception e) {
-				
+
+				e.printStackTrace();
 				erro("Preencha a data corretamente");
 				this.txtDataCheque.requestFocus();
 				return;
-				
+
 			}
-			
+
 			this.cheque.setNumero(this.txtNumero.getText());
-			
-			this.cheque.setValor(((Number)this.txtValorCheque.getValue()).doubleValue());
-			
+
+			this.cheque.setValor(((Number) this.txtValorCheque.getValue()).doubleValue());
+
 			this.cheque.setRecebido(this.chkRecebido.isSelected());
-			
+
 			this.cheque.setPessoa(pessoa);
-			
+
 			this.cheque.setMovimento(movimento);
-			
-			if(this.fc != null){
-				
+
+			if (this.fc != null) {
+
 				Pagamento pg = new Pagamento();
 				pg.cheque = this.cheque;
 				pg.valor = this.cheque.getValor();
 				pg.data = this.cheque.getData();
 				pg.formaPagamento = FormaPagamentoNota.CHEQUE;
-				
+
 				this.pagamentos.add(pg);
-				
+
 				this.selecaoFP.atualizar();
 				this.fc.setVisible(true);
 				this.selecaoFP.setVisible(true);
-				
+
 				dispose();
+				return;
+
+			}
+
+			this.cheque = new ChequeService(this.et).merge(this.cheque);
+
+			this.et.getTransaction().begin();
+			this.et.getTransaction().commit();
+
+			if (this.listener != null) {
+
+				this.listener.onSelect(this.cheque);
+				this.dispose();
 				return;
 				
 			}
 			
-			this.cheque = new ChequeService(this.et).merge(this.cheque);
-			
-			this.et.getTransaction().begin();
-			this.et.getTransaction().commit();
-			
-			if(this.listener != null){
-				
-				this.listener.onSelect(this.cheque);
-				this.dispose();
-				
-			}
-			
+			info("Cadastrado com sucesso");
+			this.lstCheque.atualizar();
 			
 		});
-		
+
+		this.setVisible(true);
+
 	}
 
 	public CadastroCheque() {
+
 		setTitle("Cadastro de Cheques");
 		setResizable(false);
+
+		this.setBounds(0, 0, 652, 505);
+
 		getContentPane().setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Cadastro de Cheque");
@@ -410,7 +465,7 @@ public class CadastroCheque extends Modulo {
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(10, 135, 593, 2);
 		panel.add(separator_1);
-		
+
 		btNovoCheque = new JButton("Novo Cheque");
 		btNovoCheque.setBounds(283, 146, 155, 35);
 		panel.add(btNovoCheque);

@@ -28,14 +28,14 @@ public class ConversorDate implements Conversor<Date> {
 	}
 
 	public String paraString(Calendar calendario) {
-		return (calendario.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + calendario.get(Calendar.DAY_OF_MONTH) + " / "
-				+ ((calendario.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calendario.get(Calendar.MONTH) + 1) + " / "
+		return (calendario.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + calendario.get(Calendar.DAY_OF_MONTH) + "/"
+				+ ((calendario.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calendario.get(Calendar.MONTH) + 1) + "/"
 				+ calendario.get(Calendar.YEAR);
 	}
 
 	public String paraStringComHora(Calendar calendario) {
-		return (calendario.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + calendario.get(Calendar.DAY_OF_MONTH) + " / "
-				+ ((calendario.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calendario.get(Calendar.MONTH) + 1) + " / "
+		return (calendario.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + calendario.get(Calendar.DAY_OF_MONTH) + "/"
+				+ ((calendario.get(Calendar.MONTH) + 1) < 10 ? "0" : "") + (calendario.get(Calendar.MONTH) + 1) + "/"
 				+ calendario.get(Calendar.YEAR)+" "+calendario.get(Calendar.HOUR_OF_DAY)+":"+calendario.get(Calendar.MINUTE);
 	}
 	

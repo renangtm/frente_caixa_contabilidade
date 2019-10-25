@@ -5,6 +5,7 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyVetoException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,15 +91,17 @@ public class SelecaoFormaPagamento extends JDialog {
 		this.txtDinheiro.setVisible(v);
 
 	}
+	
+	public void atualizarPagamento() {
 
-	public void atualizar() {
+		if ((venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum()) > 0) {
 
-		if (venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum() > 0) {
-
+			System.out.println((venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum())+"@@@@###");
+			
 			try {
-
+			
 				lblDinheiro.setText("Pagamento Restante: R$ "
-						+ Masks.moeda().valueToString(pagamentos.stream().mapToDouble(p -> p.valor).sum()));
+						+ Masks.moeda().valueToString(venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum()));
 
 			} catch (ParseException e1) {
 				// TODO Auto-generated catch block
@@ -110,6 +113,12 @@ public class SelecaoFormaPagamento extends JDialog {
 			finalizarVenda(pagamentos);
 
 		}
+		
+	}
+
+	public void atualizar() {
+
+		this.atualizarPagamento();
 
 		this.lbls.forEach(l -> {
 
@@ -205,6 +214,8 @@ public class SelecaoFormaPagamento extends JDialog {
 
 				}
 
+				nf.setValorMeioPagamento(this.pagamentos.stream().mapToDouble(p -> p.valor).sum());
+				
 				nf.setVenda(this.venda);
 				System.out.println("ponto2====================");
 				List<Nota> notas = null;
@@ -297,6 +308,7 @@ public class SelecaoFormaPagamento extends JDialog {
 						.get(0);
 				System.out.println("ponto4====================");
 				final List<Nota> fnotas = notas;
+				
 				ths.addAll(pgtos.stream().map(p -> {
 
 					p.vencimento = fnotas.get(0).getVencimentos().get(0);
@@ -320,7 +332,7 @@ public class SelecaoFormaPagamento extends JDialog {
 							public void setConclusao(double porcentagem, String observacao, Movimento mov) {
 
 								if (porcentagem == 100) {
-
+									
 									ths.removeFirst();
 
 									expediente.getMovimentos().add(mov);
@@ -332,8 +344,6 @@ public class SelecaoFormaPagamento extends JDialog {
 
 									}
 
-									p.vencimento.getMovimentos().add(mov);
-
 									et.getTransaction().begin();
 									et.getTransaction().commit();
 
@@ -343,6 +353,10 @@ public class SelecaoFormaPagamento extends JDialog {
 
 										executando = false;
 										dispose();
+										
+										KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+										atalhos.forEach(a->keyManager.removeKeyEventDispatcher(a));
+										
 										fc.novaVenda();
 
 									}
@@ -447,7 +461,19 @@ public class SelecaoFormaPagamento extends JDialog {
 						CadastroCheque cc = new CadastroCheque(pagamentos, este, fc, et);
 						cc.init(fc.operador);
 						cc.setVisible(true);
+						
+						
 						MenuPrincipal.menu.jdp.add(cc);
+						
+						try {
+							cc.setSelected(true);
+						} catch (PropertyVetoException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						cc.centralizar();
+						
 						return true;
 
 					}
@@ -515,7 +541,7 @@ public class SelecaoFormaPagamento extends JDialog {
 
 		lblDinheiro = new JLabel("Pagamento");
 		lblDinheiro.setFont(new Font("Arial", Font.BOLD, 17));
-		lblDinheiro.setBounds(38, 60, 101, 14);
+		lblDinheiro.setBounds(10, 48, 289, 26);
 		getContentPane().add(lblDinheiro);
 
 		lblTroco = new JLabel("Troco");
@@ -557,17 +583,22 @@ public class SelecaoFormaPagamento extends JDialog {
 
 			}
 
-			txtDinheiro.setText("");
 
-			this.atualizar();
-
+			setD(false);
+			
 			din = false;
+			
+			this.atualizar();
+			
+			txtDinheiro.setText("");
+			
 
 		});
 
 		this.txtDinheiro.addCaretListener(x -> {
 
-			double v = Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."));
+			double v = Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))
+					+ this.pagamentos.stream().mapToDouble(p -> p.valor).sum();
 
 			this.txtTroco.setText(((v - this.venda.getTotal()) + "").replaceAll("\\.", ","));
 

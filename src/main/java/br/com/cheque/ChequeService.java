@@ -49,7 +49,8 @@ public class ChequeService implements Service<Cheque> {
 				.createQuery("SELECT COUNT(*) FROM Cheque c WHERE c.movimento.vencimento.nota.empresa = :empresa AND ("
 						+ "c.numero LIKE :filtro OR c.pessoa.nome LIKE :filtro OR c.valor LIKE :filtro)");
 		q.setParameter("empresa", this.empresa);
-		q.setParameter("filtro", filtro);
+		q.setParameter("filtro", "%"+filtro+"%");
+		System.out.println("OKKKK1");
 
 		return Integer.parseInt(q.getResultList().get(0).toString());
 
@@ -71,10 +72,11 @@ public class ChequeService implements Service<Cheque> {
 				+ "c.numero LIKE :filtro OR c.pessoa.nome LIKE :filtro OR c.valor LIKE :filtro)"
 				+ (!ordem.isEmpty() ? " ORDER BY " + ordem : ""));
 		q.setParameter("empresa", this.empresa);
-		q.setParameter("filtro", filtro);
+		q.setParameter("filtro", "%"+filtro+"%");
 
 		q.setFirstResult(x1);
 		q.setMaxResults(x2 - x1);
+		System.out.println("OKKK2");
 
 		return (List<Cheque>) (List<Cheque>) q.getResultList();
 

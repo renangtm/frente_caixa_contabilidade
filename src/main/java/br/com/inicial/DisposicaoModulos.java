@@ -53,6 +53,8 @@ public class DisposicaoModulos {
 			disposicao.add(CadastroNcm.class);
 
 		}
+		
+		disposicao.add(CadastroCheque.class);
 
 		if (usuario.getPermissao(TipoPermissao.CADASTRO_CODIGO_BARRA).isConsultar()) {
 

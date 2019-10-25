@@ -194,7 +194,7 @@ public class GerenciadorLista<T> {
 	}
 
 	public void atualizar() {
-
+		System.out.println("PONTO11111111111111");
 		this.numeroPaginas = (int) Math.ceil((double) this.service.getCount(this.filtro) / (double) this.porPagina) - 1;
 		this.pagina = Math.max(Math.min(this.pagina, this.numeroPaginas), 0);
 
@@ -219,7 +219,7 @@ public class GerenciadorLista<T> {
 		if (this.model == null) {
 
 			if (this.provedor == null) {
-
+				
 				if (this.rep == null) {
 
 					this.model = new ListModelGenerica<T>(this.service.getElementos(this.pagina * this.porPagina,
@@ -230,6 +230,7 @@ public class GerenciadorLista<T> {
 					this.model = new ListModelGenerica<T>(this.service.getElementos(this.pagina * this.porPagina,
 							(this.pagina + 1) * this.porPagina, filtro, this.ordem), this.classe, this.classe_rep,
 							this.rep);
+
 
 				}
 
@@ -242,14 +243,16 @@ public class GerenciadorLista<T> {
 
 				} else {
 
+					
 					this.model = new ListModelGenerica<T>(this.service.getElementos(this.pagina * this.porPagina,
 							(this.pagina + 1) * this.porPagina, filtro, this.ordem), this.classe, this.provedor,
 							this.classe_rep, this.rep);
-
+					
+					
 				}
 
 			}
-
+			
 			List<Campo> campos = new ArrayList<Campo>();
 
 			for (Field c : ((this.rep == null) ? this.classe.getDeclaredFields()

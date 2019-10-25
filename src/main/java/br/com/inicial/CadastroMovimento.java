@@ -40,6 +40,7 @@ import br.com.impressao.GeradorRelatorioContas;
 import br.com.movimento_financeiro.Movimento;
 import br.com.movimento_financeiro.MovimentoService;
 import br.com.movimento_financeiro.RepresentadorMovimento;
+import br.com.nota.FormaPagamentoNota;
 import br.com.nota.RepresentadorVencimento;
 import br.com.nota.Vencimento;
 import br.com.nota.VencimentoService;
@@ -164,6 +165,7 @@ public class CadastroMovimento extends Modulo {
 	private JFormattedTextField txtInicio;
 	private JComboBox<TipoConta> cboTipo;
 	private JButton btnEmitirRelatorio;
+	private JComboBox<FormaPagamentoNota> cboFormaPagamento;
 
 	private void setMovimento(Movimento m) throws ParseException {
 
@@ -171,6 +173,8 @@ public class CadastroMovimento extends Modulo {
 
 		this.movimento = m;
 
+		this.txtDataMovimento.setEnabled(m.getId()==0);
+		
 		this.lblData.setText("------");
 		this.lblFicha.setText("-----");
 		this.lblValor.setText("-----");
@@ -201,6 +205,12 @@ public class CadastroMovimento extends Modulo {
 			this.cboOperacao.setSelectedIndex(0);
 		}
 
+		if (m.getFormaPagamento() != null) {
+
+			this.cboFormaPagamento.setSelectedItem(m.getFormaPagamento());
+
+		}
+
 		this.btNovoMovimento.setEnabled(m.getId() > 0);
 
 	}
@@ -210,11 +220,10 @@ public class CadastroMovimento extends Modulo {
 
 		this.operador = et.merge(usu);
 		this.empresa = this.operador.getPf().getEmpresa();
-		et.detach(this.operador);
 		this.empresa = et.merge(this.empresa);
 
 		// ====================================
-		
+
 		Query q = et.createQuery("SELECT b FROM Banco b WHERE b.pj.empresa.id = :empresa");
 		q.setParameter("empresa", this.empresa.getId());
 
@@ -223,9 +232,9 @@ public class CadastroMovimento extends Modulo {
 		this.comboBox.setModel(new DefaultComboBoxModel<Banco>(bancos.toArray(new Banco[bancos.size()])));
 
 		this.cboAgrupamento.setModel(new DefaultComboBoxModel<AgrupadoresData>(AgrupadoresData.values()));
-		
+
 		this.cboTipo.setModel(new DefaultComboBoxModel<TipoConta>(TipoConta.values()));
-		
+
 		this.comboBox.addActionListener(a -> {
 
 			this.banco = (Banco) this.comboBox.getSelectedItem();
@@ -268,6 +277,8 @@ public class CadastroMovimento extends Modulo {
 		this.cboOperacao
 				.setModel(new DefaultComboBoxModel<Operacao>(operacoes.toArray(new Operacao[operacoes.size()])));
 
+		this.cboFormaPagamento.setModel(new DefaultComboBoxModel<FormaPagamentoNota>(FormaPagamentoNota.values()));
+
 		this.btNovoMovimento.addActionListener(x -> {
 
 			Movimento m = new Movimento();
@@ -300,12 +311,23 @@ public class CadastroMovimento extends Modulo {
 			}
 
 			this.movimento.setBanco((Banco) this.comboBox.getSelectedItem());
-			this.movimento.setData(Masks.getData(this.txtDataMovimento.getText()));
+
+			Calendar cal = Masks.getData(this.txtDataMovimento.getText());
+
+			if (cal.get(Calendar.DATE) != this.movimento.getData().get(Calendar.DATE)
+					|| cal.get(Calendar.MONTH) != this.movimento.getData().get(Calendar.MONTH)
+					|| cal.get(Calendar.YEAR) != this.movimento.getData().get(Calendar.YEAR)) {
+
+				this.movimento.setData(cal);
+
+			}
+
 			this.movimento.setValor(((Number) this.txtValorMovimento.getValue()).doubleValue());
 			this.movimento.setJuros(((Number) this.txtJuros.getValue()).doubleValue());
 			this.movimento.setDescontos(((Number) this.txtDesc.getValue()).doubleValue());
 			this.movimento.setHistorico((Historico) this.cboHistorico.getSelectedItem());
 			this.movimento.setOperacao((Operacao) this.cboOperacao.getSelectedItem());
+			this.movimento.setFormaPagamento((FormaPagamentoNota) this.cboFormaPagamento.getSelectedItem());
 
 			if (this.venc != null) {
 
@@ -732,11 +754,11 @@ public class CadastroMovimento extends Modulo {
 		panel_2.setLayout(null);
 
 		btNovoMovimento = new JButton("Novo Movimento");
-		btNovoMovimento.setBounds(101, 305, 109, 23);
+		btNovoMovimento.setBounds(101, 322, 109, 23);
 		panel_2.add(btNovoMovimento);
 
 		btnConfirmar = new JButton("Confirmar");
-		btnConfirmar.setBounds(101, 271, 109, 23);
+		btnConfirmar.setBounds(101, 298, 109, 23);
 		panel_2.add(btnConfirmar);
 
 		JLabel lblNewLabel_3 = new JLabel("Ficha:");
@@ -818,7 +840,7 @@ public class CadastroMovimento extends Modulo {
 		lblProgresso.setForeground(Color.BLUE);
 		lblProgresso.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblProgresso.setHorizontalAlignment(SwingConstants.CENTER);
-		lblProgresso.setBounds(10, 271, 85, 29);
+		lblProgresso.setBounds(6, 322, 85, 23);
 		panel_2.add(lblProgresso);
 
 		lblDesc = new JLabel("Desc:");
@@ -842,8 +864,16 @@ public class CadastroMovimento extends Modulo {
 		txtDesc.setFormatterFactory(new DefaultFormatterFactory(Masks.moeda()));
 
 		btnExcluirMovimento = new JButton("Excluir Movimento");
-		btnExcluirMovimento.setBounds(10, 271, 80, 23);
+		btnExcluirMovimento.setBounds(11, 298, 80, 23);
 		panel_2.add(btnExcluirMovimento);
+
+		JLabel lblPgto = new JLabel("Pgto:");
+		lblPgto.setBounds(10, 268, 46, 14);
+		panel_2.add(lblPgto);
+
+		cboFormaPagamento = new JComboBox<FormaPagamentoNota>();
+		cboFormaPagamento.setBounds(61, 265, 149, 20);
+		panel_2.add(cboFormaPagamento);
 
 		this.txtSaldo.setEnabled(false);
 

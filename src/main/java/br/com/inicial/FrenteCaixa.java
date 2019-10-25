@@ -27,6 +27,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import br.com.arquivos.ImageLoader;
+import br.com.arquivos.ImageLoaderListener;
 import br.com.banco.Banco;
 import br.com.banco.BancoService;
 import br.com.base.AberturaCaixaException;
@@ -471,6 +473,23 @@ public class FrenteCaixa extends Modulo {
 					.setText(((this.produtoSelecionado.getValor() * this.produtoSelecionado.getQuantidade()) + "")
 							.replaceAll("\\.", ","));
 
+			new Thread(new ImageLoader(this.produtoSelecionado.getProduto().getImagem(), new ImageLoaderListener() {
+
+				@Override
+				public void onLoad(ImageIcon imagem) {
+
+					lblImagem.setIcon(imagem);
+
+				}
+
+				@Override
+				public void onFail() {
+					// TODO Auto-generated method stub
+
+				}
+
+			}, this.lblImagem.getWidth(), this.lblImagem.getHeight())).start();
+
 		}
 
 		this.txtTotal.setText((this.venda.getTotal() + "").replaceAll("\\.", ","));
@@ -697,13 +716,12 @@ public class FrenteCaixa extends Modulo {
 			sf.centralizar();
 			sf.requestFocus();
 			/*
-			 * if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.
-			 * DINHEIRO)) { try {
+			 * if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota. DINHEIRO))
+			 * { try {
 			 * 
 			 * Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
 			 * 
-			 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false;
-			 * } }
+			 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false; } }
 			 * 
 			 * if (pf) finalizarVenda();
 			 */
@@ -747,12 +765,12 @@ public class FrenteCaixa extends Modulo {
 					sangria.getMovimentos().add(m);
 
 				});
-				
-				exp.getReposicoes().stream().filter(r->r.getSangria() == null).forEach(r->{
-					
+
+				exp.getReposicoes().stream().filter(r -> r.getSangria() == null).forEach(r -> {
+
 					r.setSangria(sangria);
 					sangria.getReposicoes().add(r);
-					
+
 				});
 
 				exp.getSangrias().add(sangria);
@@ -900,14 +918,12 @@ public class FrenteCaixa extends Modulo {
 						sf.requestFocus();
 
 						/*
-						 * if (formaPagamento.getFormaPagamento().equals(
-						 * FormaPagamentoNota.DINHEIRO)) { try {
+						 * if (formaPagamento.getFormaPagamento().equals( FormaPagamentoNota.DINHEIRO))
+						 * { try {
 						 * 
-						 * Double.parseDouble(txtDinheiro.getText().replaceAll(
-						 * ",", "."));
+						 * Double.parseDouble(txtDinheiro.getText().replaceAll( ",", "."));
 						 * 
-						 * } catch (Exception exx) { txtDinheiro.requestFocus();
-						 * pf = false; } }
+						 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false; } }
 						 * 
 						 * if (pf) finalizarVenda();
 						 */
@@ -1041,6 +1057,7 @@ public class FrenteCaixa extends Modulo {
 	private double hrebase = 650;
 	private JPanel panel_2;
 	private JTextField txtComanda;
+	private JLabel lblImagem;
 
 	private void rebase() {
 
@@ -1163,7 +1180,7 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(label);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(287, 229, 597, 230);
+		scrollPane_1.setBounds(455, 229, 429, 230);
 		getContentPane().add(scrollPane_1);
 
 		tblVenda = new JTable();
@@ -1212,35 +1229,35 @@ public class FrenteCaixa extends Modulo {
 		txtComanda.setColumns(10);
 
 		lblPg = new JLabel("New label");
-		lblPg.setBounds(231, 230, 46, 14);
+		lblPg.setBounds(184, 230, 46, 14);
 		getContentPane().add(lblPg);
 
 		slider = new JSlider();
-		slider.setBounds(10, 230, 190, 23);
+		slider.setBounds(10, 230, 153, 23);
 		getContentPane().add(slider);
 
 		btFinalizarPedido = new JButton("F4 - Finalizar pedido");
 		btFinalizarPedido.setForeground(new Color(30, 144, 255));
 		btFinalizarPedido.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btFinalizarPedido.setBounds(10, 261, 267, 54);
+		btFinalizarPedido.setBounds(10, 261, 220, 54);
 		getContentPane().add(btFinalizarPedido);
 
 		btNovaVenda = new JButton("F3 Nova Venda");
 		btNovaVenda.setForeground(Color.BLACK);
 		btNovaVenda.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btNovaVenda.setBounds(10, 321, 267, 54);
+		btNovaVenda.setBounds(10, 321, 220, 54);
 		getContentPane().add(btNovaVenda);
 
 		btSangria = new JButton("F7 - Sangria");
 		btSangria.setForeground(Color.RED);
 		btSangria.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btSangria.setBounds(10, 381, 267, 54);
+		btSangria.setBounds(10, 381, 220, 54);
 		getContentPane().add(btSangria);
 
 		btReposicao = new JButton("F8 - Reposicao");
 		btReposicao.setForeground(Color.BLUE);
 		btReposicao.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btReposicao.setBounds(10, 446, 267, 54);
+		btReposicao.setBounds(10, 446, 220, 54);
 		getContentPane().add(btReposicao);
 
 		lblQuantidadeItens = new JLabel("1 Item");
@@ -1249,8 +1266,18 @@ public class FrenteCaixa extends Modulo {
 		lblQuantidadeItens.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblQuantidadeItens.setOpaque(true);
 		lblQuantidadeItens.setBackground(SystemColor.textHighlight);
-		lblQuantidadeItens.setBounds(287, 470, 173, 68);
+		lblQuantidadeItens.setBounds(240, 470, 173, 68);
 		getContentPane().add(lblQuantidadeItens);
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "Imagem", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_3.setBounds(240, 230, 205, 230);
+		getContentPane().add(panel_3);
+		panel_3.setLayout(null);
+
+		lblImagem = new JLabel("");
+		lblImagem.setBounds(10, 21, 185, 198);
+		panel_3.add(lblImagem);
 
 		this.rebase();
 
