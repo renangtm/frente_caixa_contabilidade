@@ -51,6 +51,7 @@ import br.com.impressao.GeradorCupomSATModelo1;
 import br.com.impressao.GeradorCupomSangria;
 import br.com.movimento_financeiro.Movimento;
 import br.com.movimento_financeiro.MovimentoService;
+import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Nota;
 import br.com.nota.NotaFactory;
 import br.com.nota.NotaService;
@@ -397,7 +398,11 @@ public class FrenteCaixa extends Modulo {
 
 		new Thread(() -> {
 
-			this.cpf = console("CPF da nota ?");
+			do {
+
+				this.cpf = console("CPF da nota ?");
+
+			} while (!this.cpf.isEmpty() && this.cpf.length() != 11);
 
 		}).start();
 
@@ -716,12 +721,13 @@ public class FrenteCaixa extends Modulo {
 			sf.centralizar();
 			sf.requestFocus();
 			/*
-			 * if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota. DINHEIRO))
-			 * { try {
+			 * if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.
+			 * DINHEIRO)) { try {
 			 * 
 			 * Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
 			 * 
-			 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false; } }
+			 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false;
+			 * } }
 			 * 
 			 * if (pf) finalizarVenda();
 			 */
@@ -772,6 +778,26 @@ public class FrenteCaixa extends Modulo {
 					sangria.getReposicoes().add(r);
 
 				});
+
+				double saldo_inicial = exp.getCaixa().getSaldoAtual();
+				System.out.println(saldo_inicial + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+				for (Movimento m : sangria.getMovimentos()) {
+
+					if (m.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+
+						saldo_inicial -= m.getValor() * (m.getOperacao().isCredito() ? 1 : -1);
+
+					}
+
+				}
+
+				for (Reposicao r : sangria.getReposicoes()) {
+
+					saldo_inicial -= r.getValor();
+
+				}
+				System.out.println(saldo_inicial + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				sangria.setSaldo_inicial(saldo_inicial);
 
 				exp.getSangrias().add(sangria);
 
@@ -918,12 +944,14 @@ public class FrenteCaixa extends Modulo {
 						sf.requestFocus();
 
 						/*
-						 * if (formaPagamento.getFormaPagamento().equals( FormaPagamentoNota.DINHEIRO))
-						 * { try {
+						 * if (formaPagamento.getFormaPagamento().equals(
+						 * FormaPagamentoNota.DINHEIRO)) { try {
 						 * 
-						 * Double.parseDouble(txtDinheiro.getText().replaceAll( ",", "."));
+						 * Double.parseDouble(txtDinheiro.getText().replaceAll(
+						 * ",", "."));
 						 * 
-						 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false; } }
+						 * } catch (Exception exx) { txtDinheiro.requestFocus();
+						 * pf = false; } }
 						 * 
 						 * if (pf) finalizarVenda();
 						 */
@@ -939,7 +967,7 @@ public class FrenteCaixa extends Modulo {
 						if (gerente == null) {
 
 							erro("Senha invalida");
-							return false;
+							return true;
 
 						}
 
@@ -952,7 +980,7 @@ public class FrenteCaixa extends Modulo {
 							if (valor > exp.getSaldo_final_atual()) {
 
 								erro("O Valor e maior que o saldo desse caixa");
-								return false;
+								return true;
 
 							}
 
@@ -961,6 +989,40 @@ public class FrenteCaixa extends Modulo {
 							sangria.setMomento(Calendar.getInstance());
 							sangria.setValor(valor);
 							sangria.setGerente(gerente);
+
+							exp.getMovimentos().stream().filter(m -> m.getSangria() == null).forEach(m -> {
+
+								m.setSangria(sangria);
+								sangria.getMovimentos().add(m);
+
+							});
+
+							exp.getReposicoes().stream().filter(r -> r.getSangria() == null).forEach(r -> {
+
+								r.setSangria(sangria);
+								sangria.getReposicoes().add(r);
+
+							});
+
+							double saldo_inicial = exp.getCaixa().getSaldoAtual();
+							System.out.println(saldo_inicial + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+							for (Movimento m : sangria.getMovimentos()) {
+
+								if (m.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+
+									saldo_inicial -= m.getValor() * (m.getOperacao().isCredito() ? 1 : -1);
+
+								}
+
+							}
+
+							for (Reposicao r : sangria.getReposicoes()) {
+
+								saldo_inicial -= r.getValor();
+
+							}
+							System.out.println(saldo_inicial + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							sangria.setSaldo_inicial(saldo_inicial);
 
 							exp.getSangrias().add(sangria);
 
@@ -976,7 +1038,6 @@ public class FrenteCaixa extends Modulo {
 							e1.printStackTrace();
 
 							alerta("Nao existe expediente aberto");
-							return false;
 
 						}
 

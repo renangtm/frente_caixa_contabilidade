@@ -10,10 +10,7 @@ import java.security.cert.CertificateException;
 import javax.persistence.EntityManager;
 
 import br.com.base.ET;
-import br.com.impressao.GeradorCupomSATModelo1;
 import br.com.nota.Nota;
-import br.com.nota.NotaService;
-import br.com.webServices.TabelaImpostoAproximado;
 
 public class Testes {
 	
@@ -27,9 +24,7 @@ public class Testes {
 		
 		sat.iniciar();
 		
-		ValidadorDocumento vd = new ValidadorDocumento(new NotaService(et),sat,new GeradorCupomSATModelo1(), new TabelaImpostoAproximado());
-		
-		vd.validarFiscalmente(nota);
+		System.out.println(sat.isOperavel()?"OPERAVEL":"NAO OPERAVEL");
 		
 		
 	}

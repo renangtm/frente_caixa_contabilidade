@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
 	<property name="ireport.zoom" value="1.6105100000000254"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="354"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="nomeEmpresa" class="java.lang.String"/>
@@ -13,6 +13,7 @@
 	<parameter name="dataInicial" class="java.util.Date"/>
 	<parameter name="dataFinal" class="java.util.Date"/>
 	<parameter name="subReport" class="java.lang.Object" isForPrompting="false"/>
+	<parameter name="lucroTotal" class="java.lang.Double"/>
 	<field name="movimentos" class="java.util.List"/>
 	<field name="unidade" class="java.lang.Object"/>
 	<field name="quantidade" class="java.lang.Double"/>
@@ -20,6 +21,7 @@
 	<field name="codigo" class="java.lang.String"/>
 	<field name="id" class="java.lang.Integer"/>
 	<field name="valor" class="java.lang.Double"/>
+	<field name="lucro" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -99,6 +101,20 @@
 				</textElement>
 				<textFieldExpression><![CDATA["De: "+new SimpleDateFormat("dd/MM/yyyy").format($P{dataInicial})+"  Até: "+new SimpleDateFormat("dd/MM/yyyy").format($P{dataFinal})]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="200" y="60" width="60" height="17" uuid="ae05a404-2574-4cde-937d-56cc16e4e64d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Lucro Total:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="260" y="60" width="107" height="17" uuid="39f6b8be-e57c-4267-82a7-9fcba7514000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{lucroTotal})]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -121,21 +137,21 @@
 				<text><![CDATA[Produto:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="154" y="1" width="164" height="17" uuid="f348c3e6-0079-4fce-ac5e-64e4a5a39600"/>
+				<reportElement x="154" y="1" width="130" height="17" uuid="f348c3e6-0079-4fce-ac5e-64e4a5a39600"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="318" y="1" width="51" height="17" uuid="d63501de-bbb2-44e9-ae1b-61f56de0a906"/>
+				<reportElement x="283" y="1" width="51" height="17" uuid="d63501de-bbb2-44e9-ae1b-61f56de0a906"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Estoque:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="369" y="1" width="101" height="17" uuid="f6abcc48-775c-4e71-81c8-8c310a8eee6d"/>
+				<reportElement x="334" y="1" width="101" height="17" uuid="f6abcc48-775c-4e71-81c8-8c310a8eee6d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -153,14 +169,14 @@
 				<subreportExpression><![CDATA[$P{subReport}]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="470" y="1" width="51" height="17" uuid="7b378271-05f9-4eaf-91f1-68fda4f80bef"/>
+				<reportElement x="434" y="1" width="31" height="17" uuid="7b378271-05f9-4eaf-91f1-68fda4f80bef"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Valor:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="521" y="1" width="54" height="17" uuid="d447ab29-5d7a-428b-b638-caab9d45095f"/>
+				<reportElement x="465" y="1" width="39" height="17" uuid="d447ab29-5d7a-428b-b638-caab9d45095f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -179,6 +195,20 @@
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="505" y="0" width="31" height="17" uuid="6ac3fb0f-1835-4ec9-85ab-8ee9170e6011"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Lucro:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="536" y="0" width="39" height="17" uuid="ff298011-50ff-4921-8b22-f5db5b1e7d60"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{lucro})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -41,9 +41,12 @@ public class Sangria {
 	
 	@OneToMany(mappedBy="sangria")
 	private List<Movimento> movimentos;
-	
+
 	@OneToMany(mappedBy="sangria")
 	private List<Reposicao> reposicoes;
+	
+	@Column
+	private double saldo_inicial;
 	
 	public Sangria(){
 		
@@ -54,6 +57,21 @@ public class Sangria {
 	
 	
 	
+	
+	public double getSaldo_inicial() {
+		return saldo_inicial;
+	}
+
+
+
+
+	public void setSaldo_inicial(double saldo_inicial) {
+		this.saldo_inicial = saldo_inicial;
+	}
+
+
+
+
 	public List<Reposicao> getReposicoes() {
 		return reposicoes;
 	}

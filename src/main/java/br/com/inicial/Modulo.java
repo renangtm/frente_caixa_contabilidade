@@ -271,6 +271,7 @@ public class Modulo extends Tela {
 
 	public void init(Usuario usuario) {
 
+		
 	};
 
 	public Modulo() {
@@ -287,8 +288,7 @@ public class Modulo extends Tela {
 				if(estado){
 					
 					et.close();
-					managers.forEach(e->e.close());
-					
+					managers.stream().forEach(e->e.close());
 					
 				}
 				

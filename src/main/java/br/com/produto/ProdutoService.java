@@ -58,7 +58,6 @@ public class ProdutoService implements Service<Produto>{
 			
 			Produto produto = (Produto)linha[0];
 			
-			
 			ProdutoRelatorio pr = new ProdutoRelatorio();
 			pr.setCodigo(produto.getCodigo_barra());
 			pr.setValor(produto.getValor());
@@ -92,6 +91,8 @@ public class ProdutoService implements Service<Produto>{
 				
 				if(destinatario != null)
 					mp.setDestinatario(destinatario.getNome());
+				
+				mp.setLucro(((valor/produto.getCusto())-1)*100);
 				
 				mp.setNumeroNota(numero);
 				

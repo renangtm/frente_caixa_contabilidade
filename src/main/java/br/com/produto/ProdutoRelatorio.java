@@ -20,8 +20,18 @@ public class ProdutoRelatorio {
 
 	private double valor;
 	
+	private double lucro;
 	
 	
+	
+	public double getLucro() {
+		return lucro;
+	}
+
+	public void setLucro(double lucro) {
+		this.lucro = lucro;
+	}
+
 	public double getValor() {
 		return valor;
 	}

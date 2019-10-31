@@ -418,6 +418,7 @@ public class Produtos extends Modulo {
 					
 					} catch (Exception e1) {
 						
+						e1.printStackTrace();
 						erro("Ocorreu um problema ao gerar");
 						
 					}

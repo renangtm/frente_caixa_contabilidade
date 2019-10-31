@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="200" pageHeight="300" whenNoDataType="AllSectionsNoDetail" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
+	<property name="ireport.zoom" value="2.357947691000037"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="data" class="java.util.Date"/>
+	<field name="pessoa" class="java.lang.String"/>
+	<field name="valor" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="3" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="3" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="54" height="21" uuid="aa5f11f2-6824-471c-a5e8-0298d5f6908c"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="54" y="0" width="91" height="21" uuid="13142463-280c-4d0a-90b9-5a6677d367c6"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="0" width="54" height="21" uuid="28337c04-6315-4238-9bd9-c73a3236b822"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="54" y="0" width="91" height="21" uuid="3f466fd8-c249-4189-b49b-7c3888934ef8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Pessoa]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="145" y="0" width="35" height="21" uuid="10e78bcf-f892-4d9c-9344-83aae181c126"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="145" y="0" width="35" height="21" uuid="dff4ae94-7ea5-4371-a540-61c94a196bb5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Prevent">
+			<rectangle>
+				<reportElement x="0" y="0" width="54" height="18" uuid="ac9a6da7-4c59-4c8d-ab62-6b0d462d90c8"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="54" y="0" width="91" height="18" uuid="88eef4fe-0de4-4ca6-b08d-39254d754699"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="145" y="0" width="35" height="18" uuid="beb9e123-4d3e-44a9-acf1-73ba1e30dae0"/>
+			</rectangle>
+			<textField>
+				<reportElement x="145" y="0" width="35" height="18" uuid="2418fd0b-3e1c-437d-ba76-73bcc9f06b4c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{valor})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="54" y="0" width="91" height="18" uuid="98c7e0c2-197e-46b6-83f1-2926284c4c15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pessoa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="0" y="0" width="54" height="18" uuid="7f966fd7-b614-4e9f-9672-ded827820f0a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="3" splitType="Immediate"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="3" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="2" splitType="Immediate"/>
+	</summary>
+</jasperReport>

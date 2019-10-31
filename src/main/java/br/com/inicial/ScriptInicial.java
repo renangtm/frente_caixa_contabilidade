@@ -10,7 +10,7 @@ public class ScriptInicial {
 		new Login();
 		
 		/*
-		 * sped inve
+		 * 
 		EntityManager et = ET.nova();
 		
 		Query q = et.createQuery("SELECT p FROM Produto p WHERE p.id>=8");

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="200" pageHeight="300" whenNoDataType="AllSectionsNoDetail" columnWidth="180" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
-	<property name="ireport.zoom" value="2.5937424601000383"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="200" pageHeight="600" whenNoDataType="AllSectionsNoDetail" columnWidth="180" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isTitleNewPage="true" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" isIgnorePagination="true" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
+	<property name="ireport.zoom" value="2.357947691000035"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="23"/>
+	<property name="ireport.y" value="368"/>
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="nomeEmpresa" class="java.lang.String"/>
 	<parameter name="cnpjEmpresa" class="java.lang.String"/>
@@ -13,6 +13,13 @@
 	<parameter name="cepEmpresa" class="java.lang.String"/>
 	<parameter name="caixa" class="java.lang.String"/>
 	<parameter name="gerente" class="java.lang.String"/>
+	<parameter name="saldoInicial" class="java.lang.Double"/>
+	<parameter name="subReport" class="java.lang.Object"/>
+	<parameter name="totalMovimentado" class="java.lang.Double"/>
+	<parameter name="saldoFinal" class="java.lang.Double"/>
+	<field name="movimentos" class="java.util.Collection"/>
+	<field name="total" class="java.lang.Double"/>
+	<field name="tipo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -81,7 +88,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="85" splitType="Stretch">
+		<band height="105" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="180" height="1" uuid="adab19e1-54f4-4398-9f1e-0741fd06a859"/>
 			</line>
@@ -141,16 +148,119 @@
 				</textElement>
 				<text><![CDATA[Sangria]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="0" y="85" width="42" height="17" uuid="9480a1aa-fb7c-43dd-8368-1043c876c901"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Saldo Inicial:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="44" y="85" width="136" height="17" uuid="d471e63f-5092-4fd9-aae9-a7e8149dc278"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{saldoInicial})]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="7" splitType="Stretch"/>
+		<band height="6" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="6" splitType="Prevent"/>
+		<band height="59" splitType="Prevent">
+			<subreport>
+				<reportElement x="0" y="14" width="180" height="45" uuid="7fc66e9f-e286-450f-8f03-b3fd8ec41fdf"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{movimentos})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{subReport}]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="110" y="0" width="18" height="14" uuid="8e4faf26-3e38-4e34-9046-ba889612db9f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="128" y="0" width="52" height="14" uuid="a04d263b-6bf9-4127-9d1b-2ce832ca42fa"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($F{total})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="18" height="14" uuid="a4869922-812a-4614-8d4d-e464f0ed81ee"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Tipo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="18" y="0" width="92" height="14" uuid="001b7709-7e18-4543-83a8-b944ae4a5d7e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
-		<band height="6" splitType="Immediate"/>
+		<band height="124" splitType="Immediate">
+			<staticText>
+				<reportElement x="2" y="0" width="85" height="17" uuid="739f632b-e52c-406a-a283-50c3f9e8327e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Total Movimentado:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="87" y="0" width="93" height="17" uuid="a4af21d3-98cb-4731-8af0-95a903c5ad80"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{totalMovimentado})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="17" width="85" height="17" uuid="b1d12546-d606-491a-8de5-0e7385afcb0a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Final Caixa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="87" y="17" width="93" height="17" uuid="723dfb06-a139-4f89-80c7-e584076111f9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{saldoFinal})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="18" y="56" width="136" height="17" uuid="6f596352-26a3-43ce-907d-2ad99daf0987"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{gerente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="18" y="94" width="136" height="17" uuid="bd2c7ad9-6460-4c86-8907-99b17df04b42"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{caixa}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="56" width="144" height="1" uuid="44198c67-b854-4100-bc36-7bbfd838c3fc"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="10" y="93" width="144" height="1" uuid="998c544e-8ec4-4578-9190-08d50997313b"/>
+				<graphicElement>
+					<pen lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="6" splitType="Stretch"/>

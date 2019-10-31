@@ -19,6 +19,8 @@ public class MovimentoProduto {
 	
 	private SaidaEntrada operacao;
 	
+	private double lucro;
+	
 	private double valor;
 	
 	private String destinatario;
@@ -29,6 +31,18 @@ public class MovimentoProduto {
 
 	
 	
+	public double getLucro() {
+		return lucro;
+	}
+
+
+
+	public void setLucro(double lucro) {
+		this.lucro = lucro;
+	}
+
+
+
 	public double getValor() {
 		return valor;
 	}

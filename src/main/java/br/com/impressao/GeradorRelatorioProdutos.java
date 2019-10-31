@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 
 import br.com.base.ET;
 import br.com.empresa.Empresa;
+import br.com.produto.MovimentoProduto;
 import br.com.produto.ProdutoRelatorio;
 import br.com.produto.ProdutoService;
 import br.com.usuario.Usuario;
@@ -65,6 +66,32 @@ public class GeradorRelatorioProdutos {
 		String ruaEmpresa = empresa.getPj().getEndereco().getRua() + ", " + empresa.getPj().getEndereco().getNumero();
 		String cnpjEmpresa = empresa.getPj().getCnpj();
 		String ieEmpresa = empresa.getPj().getInscricao_estadual();
+		
+		
+		double lucroTotal = 0;
+		double qtdT = 0;
+		
+		for(ProdutoRelatorio pr:produtos){
+			
+			double lucroParcial = 0;
+			double qtd = 0;
+			
+			for(MovimentoProduto mp:pr.getMovimentos()){
+				
+				lucroParcial += mp.getLucro()*mp.getQuantidade();
+				qtd += mp.getQuantidade();
+				
+				lucroTotal += mp.getLucro()*mp.getQuantidade();
+				qtdT += mp.getQuantidade();
+				
+			}
+			
+			pr.setLucro(lucroParcial/qtd);
+			
+			
+		}
+		
+		lucroTotal /= qtdT;
 
 		Map<String, Object> parametros = new HashMap<String, Object>();
 
@@ -78,7 +105,8 @@ public class GeradorRelatorioProdutos {
 		parametros.put("dataInicial", inicio.getTime());
 		parametros.put("dataFinal", fim.getTime());
 		parametros.put("subReport", subRelatorio);
-
+		parametros.put("lucroTotal", lucroTotal);
+		
 		JRDataSource jrd = new JRBeanCollectionDataSource(produtos);
 
 		JasperPrint jp = JasperFillManager.fillReport(relatorio, parametros, jrd);
