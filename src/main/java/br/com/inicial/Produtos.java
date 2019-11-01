@@ -32,6 +32,7 @@ import br.com.produto.Produto;
 import br.com.produto.ProdutoRelatorio;
 import br.com.produto.ProdutoService;
 import br.com.produto.RepresentadorProdutoCompleto;
+import br.com.produto.ValePresente;
 import br.com.quantificacao.TipoQuantidade;
 import br.com.quantificacao.UnidadePeso;
 import br.com.quantificacao.UnidadeVolume;
@@ -74,6 +75,18 @@ public class Produtos extends Modulo {
 
 	private void setProduto(Produto produto) {
 
+		if(produto.getClass().equals(ValePresente.class)) {
+			
+			this.btConfirmar.setEnabled(false);
+			this.btDadosContabeis.setEnabled(false);
+			
+		}else {
+			
+			this.btConfirmar.setEnabled(true);
+			this.btDadosContabeis.setEnabled(true);
+			
+		}
+		
 		if (this.produto != null) {
 
 			try {

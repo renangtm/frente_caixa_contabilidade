@@ -31,6 +31,9 @@ import br.com.nota.Nota;
 import br.com.nota.NotaFactory;
 import br.com.nota.NotaService;
 import br.com.operacao.Operacao;
+import br.com.produto.RetiradaValePresente;
+import br.com.produto.ValePresente;
+import br.com.produto.ValePresenteService;
 import br.com.venda.FormaPagamentoVendaService;
 import br.com.venda.StatusVenda;
 import br.com.venda.Venda;
@@ -91,17 +94,17 @@ public class SelecaoFormaPagamento extends JDialog {
 		this.txtDinheiro.setVisible(v);
 
 	}
-	
+
 	public void atualizarPagamento() {
 
 		if ((venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum()) > 0) {
 
-			System.out.println((venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum())+"@@@@###");
-			
+			System.out.println((venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum()) + "@@@@###");
+
 			try {
-			
-				lblDinheiro.setText("Pagamento Restante: R$ "
-						+ Masks.moeda().valueToString(venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum()));
+
+				lblDinheiro.setText("Pagamento Restante: R$ " + Masks.moeda()
+						.valueToString(venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum()));
 
 			} catch (ParseException e1) {
 				// TODO Auto-generated catch block
@@ -113,7 +116,7 @@ public class SelecaoFormaPagamento extends JDialog {
 			finalizarVenda(pagamentos);
 
 		}
-		
+
 	}
 
 	public void atualizar() {
@@ -208,14 +211,19 @@ public class SelecaoFormaPagamento extends JDialog {
 				nf.setPrazoPagamento(0);
 				nf.setTransportadora(null);
 
+				System.out.println("TESTE2131231");
+				
+				System.out.println(this.pagamentos.stream().mapToDouble(p -> p.valor).sum() +"-----------------"+ this.venda.getTotal());
 				if (this.pagamentos.stream().mapToDouble(p -> p.valor).sum() < this.venda.getTotal()) {
 
 					return;
 
 				}
+				
+				System.out.println("TESTE!!!!!!!!!!!!!");
 
 				nf.setValorMeioPagamento(this.pagamentos.stream().mapToDouble(p -> p.valor).sum());
-				
+
 				nf.setVenda(this.venda);
 				System.out.println("ponto2====================");
 				List<Nota> notas = null;
@@ -254,6 +262,8 @@ public class SelecaoFormaPagamento extends JDialog {
 					notas.forEach(n -> n.setCpfNotaSemDestinatario(this.cpfNota));
 
 				}
+				
+				System.out.println("================================================================");
 
 				notas.forEach(n -> {
 
@@ -308,10 +318,39 @@ public class SelecaoFormaPagamento extends JDialog {
 						.get(0);
 				System.out.println("ponto4====================");
 				final List<Nota> fnotas = notas;
-				
+
 				ths.addAll(pgtos.stream().map(p -> {
 
 					p.vencimento = fnotas.get(0).getVencimentos().get(0);
+
+					if (p.formaPagamento == FormaPagamentoNota.VALE_PRESENTE) {
+
+						et.persist(p.retirada);
+
+						return new Thread(() -> {
+							
+							ths.removeFirst();
+							
+							et.getTransaction().begin();
+							et.getTransaction().commit();
+
+							if (ths.size() > 0) {
+								ths.getFirst().start();
+							} else {
+
+								executando = false;
+								dispose();
+
+								KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+								atalhos.forEach(a -> keyManager.removeKeyEventDispatcher(a));
+
+								fc.novaVenda();
+
+							}
+
+						});
+
+					}
 
 					Thread t = new Thread(() -> {
 
@@ -332,7 +371,7 @@ public class SelecaoFormaPagamento extends JDialog {
 							public void setConclusao(double porcentagem, String observacao, Movimento mov) {
 
 								if (porcentagem == 100) {
-									
+
 									ths.removeFirst();
 
 									expediente.getMovimentos().add(mov);
@@ -353,10 +392,11 @@ public class SelecaoFormaPagamento extends JDialog {
 
 										executando = false;
 										dispose();
-										
-										KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-										atalhos.forEach(a->keyManager.removeKeyEventDispatcher(a));
-										
+
+										KeyboardFocusManager keyManager = KeyboardFocusManager
+												.getCurrentKeyboardFocusManager();
+										atalhos.forEach(a -> keyManager.removeKeyEventDispatcher(a));
+
 										fc.novaVenda();
 
 									}
@@ -461,25 +501,25 @@ public class SelecaoFormaPagamento extends JDialog {
 						CadastroCheque cc = new CadastroCheque(pagamentos, este, fc, et);
 						cc.init(fc.operador);
 						cc.setVisible(true);
-						
-						
+
 						MenuPrincipal.menu.jdp.add(cc);
-						
+
 						try {
 							cc.setSelected(true);
 						} catch (PropertyVetoException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						
+
 						cc.centralizar();
-						
+
 						return true;
 
 					}
 
 					if ((selecionada.getFormaPagamento() == FormaPagamentoNota.DINHEIRO
-							|| selecionada.getFormaPagamento().toString().startsWith("CARTAO")) && !din) {
+							|| selecionada.getFormaPagamento().toString().startsWith("CARTAO")
+							|| selecionada.getFormaPagamento() == FormaPagamentoNota.VALE_PRESENTE) && !din) {
 
 						lbls.forEach(l -> {
 
@@ -507,7 +547,8 @@ public class SelecaoFormaPagamento extends JDialog {
 						return true;
 
 					} else if ((selecionada.getFormaPagamento() == FormaPagamentoNota.DINHEIRO
-							|| selecionada.getFormaPagamento().toString().startsWith("CARTAO"))) {
+							|| selecionada.getFormaPagamento().toString().startsWith("CARTAO")
+							|| selecionada.getFormaPagamento() == FormaPagamentoNota.VALE_PRESENTE)) {
 
 						return false;
 
@@ -569,6 +610,68 @@ public class SelecaoFormaPagamento extends JDialog {
 
 		this.txtDinheiro.addActionListener(a -> {
 
+			if (this.selecionada.getFormaPagamento() == FormaPagamentoNota.VALE_PRESENTE) {
+
+				int id = -1;
+
+				try {
+
+					id = ValePresente.getIdVale(this.txtDinheiro.getText());
+
+				} catch (Exception exx) {
+					exx.printStackTrace();
+					fc.erro("Codigo invalido");
+					return;
+
+				}
+
+				ValePresenteService vps = new ValePresenteService(et);
+
+				ValePresente vp = vps.getPeloCodigo(id + "");
+
+				if (vp == null) {
+
+					fc.erro("Codigo invalido");
+					System.out.println("11111111111");
+					return;
+
+				}
+
+				vp.getRetiradas().removeIf(r -> r.getId() == 0);
+				et.refresh(vp);
+
+				String codigo = this.txtDinheiro.getText();
+
+				if (vp.getSaldo(codigo) == 0) {
+
+					fc.alerta("Saldo zerado");
+					return;
+
+				}
+
+				Pagamento pg = new Pagamento();
+
+				pg.data = Calendar.getInstance();
+				pg.formaPagamento = selecionada.getFormaPagamento();
+				pg.valor = Math.min(vp.getSaldo(codigo),
+						venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum());
+				RetiradaValePresente rvp = vp.descontarValor(pg.valor, codigo);
+				pg.retirada = rvp;
+
+				pagamentos.add(pg);
+
+				setD(false);
+
+				din = false;
+
+				this.atualizar();
+
+				txtDinheiro.setText("");
+
+				return;
+
+			}
+
 			double valor = Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."));
 
 			Pagamento pg = new Pagamento();
@@ -578,29 +681,34 @@ public class SelecaoFormaPagamento extends JDialog {
 			pg.valor = Math.min(valor, venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum());
 
 			if (pg.valor > 0) {
-
+				System.out.println("%%%%%%%%%%%%%%%%%%%%%%%");
 				pagamentos.add(pg);
 
 			}
 
-
 			setD(false);
-			
+
 			din = false;
-			
+
 			this.atualizar();
-			
+
 			txtDinheiro.setText("");
-			
 
 		});
 
 		this.txtDinheiro.addCaretListener(x -> {
 
-			double v = Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))
-					+ this.pagamentos.stream().mapToDouble(p -> p.valor).sum();
+			if (this.selecionada.getFormaPagamento() != FormaPagamentoNota.VALE_PRESENTE) {
 
-			this.txtTroco.setText(((v - this.venda.getTotal()) + "").replaceAll("\\.", ","));
+				if (this.txtDinheiro.getText().isEmpty())
+					return;
+
+				double v = Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))
+						+ this.pagamentos.stream().mapToDouble(p -> p.valor).sum();
+
+				this.txtTroco.setText(((v - this.venda.getTotal()) + "").replaceAll("\\.", ","));
+
+			}
 
 		});
 

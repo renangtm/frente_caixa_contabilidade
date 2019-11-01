@@ -255,7 +255,7 @@ public class ModuloFrame extends TelaFrame {
 	public ModuloFrame() {
 		super();
 		this.setVisible(true);
-		//this.et = ET.nova();
+		this.et = ET.nova();
 		
 		
 		/*

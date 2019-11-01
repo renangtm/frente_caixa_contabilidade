@@ -207,6 +207,39 @@ public class FormaPagamentoVendaService {
 			
 		};
 		
+		FormaPagamento valePresente = new FormaPagamento() {
+			
+			public String toString(){
+				
+				return "Vale Presente";
+				
+			}
+
+			public String getNome() {
+				// TODO Auto-generated method stub
+				return "Vale Presente";
+			}
+			
+			@Override
+			public int codigoCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
+				// TODO Auto-generated method stub
+				return br.com.nota.FormaPagamentoNota.VALE_PRESENTE;
+			}
+
+			@Override
+			public String cnpjCredenciadoraCartao() {
+				// TODO Auto-generated method stub
+				return "";
+			}
+			
+		};
+		
 		ArrayList<FormaPagamento> fp = new ArrayList<FormaPagamento>();
 		fp.add(dinheiro);
 		fp.add(debitoVisa);
@@ -214,6 +247,7 @@ public class FormaPagamentoVendaService {
 		fp.add(debitoMastercard);
 		fp.add(creditoMastercard);
 		fp.add(cheque);
+		fp.add(valePresente);
 		
 		return fp;
 		

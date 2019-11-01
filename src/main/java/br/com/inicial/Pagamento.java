@@ -5,6 +5,7 @@ import java.util.Calendar;
 import br.com.cheque.Cheque;
 import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Vencimento;
+import br.com.produto.RetiradaValePresente;
 
 //Classe auxiliar
 public class Pagamento {
@@ -14,5 +15,6 @@ public class Pagamento {
 	public FormaPagamentoNota formaPagamento;
 	public Vencimento vencimento;
 	public Cheque cheque;
+	public RetiradaValePresente retirada;
 
 }

@@ -26,6 +26,8 @@ public class DisposicaoModulos {
 		if (usuario.getPermissao(TipoPermissao.CADASTRO_PRODUTO).isConsultar()) {
 
 			disposicao.add(Produtos.class);
+			
+			disposicao.add(CadastroValePresente.class);
 
 		}
 		
