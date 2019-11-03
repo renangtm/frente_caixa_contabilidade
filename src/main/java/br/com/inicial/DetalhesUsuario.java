@@ -350,7 +350,7 @@ public class DetalhesUsuario extends Tela {
 	public DetalhesUsuario() {
 		setTitle("Detalhes do Usuario");
 		setResizable(false);
-		setBounds(100, 100, 561, 680);
+		setBounds(100, 100, 561, 806);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -368,7 +368,7 @@ public class DetalhesUsuario extends Tela {
 		panel = new JPanel();
 		panel.setBorder(
 				new TitledBorder(null, "Atribuicao de permissoes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 138, 535, 502);
+		panel.setBounds(10, 138, 535, 524);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -423,7 +423,7 @@ public class DetalhesUsuario extends Tela {
 		panel.add(separator_3);
 
 		btConfirmar = new JButton("Confirmar");
-		btConfirmar.setBounds(402, 468, 123, 23);
+		btConfirmar.setBounds(402, 490, 123, 23);
 		panel.add(btConfirmar);
 
 		panel_1 = new JPanel();

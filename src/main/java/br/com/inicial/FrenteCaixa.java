@@ -18,9 +18,7 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.swing.ImageIcon;
@@ -29,8 +27,6 @@ import javax.swing.JTextField;
 
 import br.com.arquivos.ImageLoader;
 import br.com.arquivos.ImageLoaderListener;
-import br.com.banco.Banco;
-import br.com.banco.BancoService;
 import br.com.base.AberturaCaixaException;
 import br.com.base.CFG;
 import br.com.base.ConfiguracaoExpediente;
@@ -43,19 +39,11 @@ import br.com.caixa.Reposicao;
 import br.com.caixa.Sangria;
 import br.com.codigo_barra.CodigoBarra;
 import br.com.emissao.SAT;
-import br.com.emissao.ValidadorDocumento;
 import br.com.empresa.Empresa;
-import br.com.historico.Historico;
 import br.com.impressao.GeradorCupomReposicao;
-import br.com.impressao.GeradorCupomSATModelo1;
 import br.com.impressao.GeradorCupomSangria;
 import br.com.movimento_financeiro.Movimento;
-import br.com.movimento_financeiro.MovimentoService;
 import br.com.nota.FormaPagamentoNota;
-import br.com.nota.Nota;
-import br.com.nota.NotaFactory;
-import br.com.nota.NotaService;
-import br.com.operacao.Operacao;
 import br.com.pessoa.Pessoa;
 import br.com.pessoa.PessoaService;
 import br.com.pessoa.RepresentadorPessoa;
@@ -71,10 +59,8 @@ import br.com.utilidades.PercentageColumnSetter;
 import br.com.venda.FormaPagamento;
 import br.com.venda.ProdutoVenda;
 import br.com.venda.RepresentadorProdutoVenda;
-import br.com.venda.StatusVenda;
 import br.com.venda.Venda;
 import br.com.venda.VendaService;
-import br.com.webServices.TabelaImpostoAproximado;
 
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -89,6 +75,8 @@ import javax.swing.JSlider;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 import javax.swing.border.TitledBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class FrenteCaixa extends Modulo {
 
@@ -128,6 +116,7 @@ public class FrenteCaixa extends Modulo {
 
 	private JButton btCliente;
 
+	@SuppressWarnings("unused")
 	private FormaPagamento formaPagamento;
 
 	private JLabel txtDescricaoProduto;
@@ -184,6 +173,7 @@ public class FrenteCaixa extends Modulo {
 		});
 	}
 
+	/*
 	protected void finalizarVenda() {
 
 		this.venda.setStatus(StatusVenda.FECHADA);
@@ -355,7 +345,8 @@ public class FrenteCaixa extends Modulo {
 		}
 
 	}
-
+	*/
+	
 	protected void setFormaPagamento(FormaPagamento fp) {
 
 		this.formaPagamento = fp;
@@ -402,7 +393,7 @@ public class FrenteCaixa extends Modulo {
 
 				this.cpf = console("CPF da nota ?");
 
-			} while (!this.cpf.isEmpty() && this.cpf.length() != 11);
+			} while (!this.cpf.isEmpty() && !CFG.cpfValido(this.cpf));
 
 		}).start();
 
@@ -413,6 +404,24 @@ public class FrenteCaixa extends Modulo {
 		this.venda.setEmpresa(this.empresa);
 
 		this.setVenda(this.venda);
+
+		try {
+
+			keyManager.removeKeyEventDispatcher(dispClose);
+
+		} catch (Exception exx) {
+
+		}
+
+		try {
+
+			keyManager.removeKeyEventDispatcher(disp);
+
+		} catch (Exception exx) {
+
+		}
+
+		keyManager.addKeyEventDispatcher(disp);
 
 	}
 
@@ -447,7 +456,11 @@ public class FrenteCaixa extends Modulo {
 
 	protected void removerProduto(ProdutoVenda pv) {
 
-		pv.setQuantidade(0);
+		if (pv.getId() > 0) {
+			pv.setQuantidade(0);
+		} else {
+			this.venda.getProdutos().removeIf(p -> p == pv);
+		}
 
 		this.mostrarVenda();
 
@@ -460,8 +473,10 @@ public class FrenteCaixa extends Modulo {
 			this.txtCliente.setText(this.venda.getCliente().getNome());
 		}
 
-		this.lblQuantidadeItens.setText(
-				this.venda.getProdutos().size() + " " + (this.venda.getProdutos().size() > 1 ? "Itens" : "Item"));
+		this.lblQuantidadeItens
+				.setText(this.venda.getProdutos().parallelStream().filter(p -> p.getQuantidade() > 0).count() + " "
+						+ (this.venda.getProdutos().parallelStream().filter(p -> p.getQuantidade() > 0).count() > 1
+								? "Itens" : "Item"));
 
 		this.txtDescricaoProduto.setText("");
 		this.txtQuantidade.setText("0 UN");
@@ -521,13 +536,20 @@ public class FrenteCaixa extends Modulo {
 
 	private JLabel lblQuantidadeItens;
 
+	private KeyEventDispatcher disp;
+
+	private KeyEventDispatcher dispClose;
+
+	private SelecaoFormaPagamento sfp;
+
+	private KeyboardFocusManager keyManager;
+
 	public void init(Usuario operador) {
 
 		final FrenteCaixa este = this;
 
 		this.operador = et.merge(operador);
-		this.empresa = this.operador.getPf().getEmpresa();
-		this.empresa = et.merge(this.empresa);
+		this.empresa = CFG.empresa;
 
 		try {
 
@@ -547,6 +569,42 @@ public class FrenteCaixa extends Modulo {
 		ProdutoService ps = new ProdutoService(et);
 		ps.setEmpresa(this.empresa);
 		ps.setComEstoque(true);
+
+		this.txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+			public void keyPressed(java.awt.event.KeyEvent evt) {
+				if (evt.getKeyCode() == KeyEvent.VK_KP_DOWN || evt.getKeyCode() == KeyEvent.VK_DOWN) {
+
+					tblProdutos.requestFocus();
+					tblProdutos.getSelectionModel().setSelectionInterval(0, 0);
+					tblProdutos.requestFocus();
+
+				}
+			}
+
+		});
+
+		this.tblProdutos.addKeyListener(new java.awt.event.KeyAdapter() {
+			public void keyPressed(java.awt.event.KeyEvent evt) {
+				if (evt.getKeyCode() == KeyEvent.VK_KP_UP || evt.getKeyCode() == KeyEvent.VK_UP) {
+
+					if (tblProdutos.getSelectedRow() == 0) {
+
+						txtPesquisa.requestFocus();
+
+					}
+
+				} else if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+					Produto produto = grProdutos.getModel().getListaBase().get(tblProdutos.getSelectedRow());
+
+					addProduto(produto);
+
+					tblProdutos.requestFocus();
+
+				}
+			}
+
+		});
 
 		this.grProdutos = new GerenciadorLista<Produto>(Produto.class, this.tblProdutos, ps, 30, null, null, null);
 		this.grProdutos.setLblPagina(this.lblPg);
@@ -884,11 +942,32 @@ public class FrenteCaixa extends Modulo {
 
 		});
 
-		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
 		FrenteCaixa.atalhos.forEach(d -> keyManager.removeKeyEventDispatcher(d));
 
-		KeyEventDispatcher disp = new KeyEventDispatcher() {
+		sfp = null;
+
+		dispClose = new KeyEventDispatcher() {
+
+			@Override
+			public boolean dispatchKeyEvent(KeyEvent e) {
+
+				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
+
+					sfp.dispensar();
+
+					keyManager.removeKeyEventDispatcher(dispClose);
+					keyManager.addKeyEventDispatcher(disp);
+
+				}
+
+				return false;
+			}
+
+		};
+
+		disp = new KeyEventDispatcher() {
 
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {
@@ -938,10 +1017,10 @@ public class FrenteCaixa extends Modulo {
 
 						}
 
-						SelecaoFormaPagamento sf = new SelecaoFormaPagamento(venda, et, expediente, cpf, este);
-						sf.setVisible(true);
-						sf.centralizar();
-						sf.requestFocus();
+						sfp = new SelecaoFormaPagamento(venda, et, expediente, cpf, este);
+						sfp.setVisible(true);
+						sfp.centralizar();
+						sfp.requestFocus();
 
 						/*
 						 * if (formaPagamento.getFormaPagamento().equals(
@@ -955,6 +1034,10 @@ public class FrenteCaixa extends Modulo {
 						 * 
 						 * if (pf) finalizarVenda();
 						 */
+
+						keyManager.removeKeyEventDispatcher(disp);
+						keyManager.addKeyEventDispatcher(dispClose);
+
 						return true;
 
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F7) {
@@ -1085,6 +1168,10 @@ public class FrenteCaixa extends Modulo {
 
 						}
 
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F9) {
+
+						btRemoveProduto.doClick();
+
 					}
 
 				}
@@ -1112,6 +1199,46 @@ public class FrenteCaixa extends Modulo {
 
 		this.novaVenda();
 
+		this.btRemoveProduto.addActionListener(a -> {
+
+			if (this.venda.getProdutos().size() == 0) {
+				alerta("Sem produtos na veda");
+				return;
+			}
+
+			String senha = console("Senha de Administrador");
+
+			Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha, TipoPermissao.GERENCIA_CAIXAS,
+					operador.getPf().getEmpresa());
+
+			if (gerente == null) {
+
+				erro("Senha invalida");
+				return;
+
+			}
+
+			ProdutoVenda produto = null;
+
+			do {
+
+				String codigoProduto = console("Codigo do produto");
+
+				if (codigoProduto.equals("")) {
+
+					return;
+
+				}
+
+				produto = this.venda.getProdutos().parallelStream()
+						.filter(p -> p.getProduto().getCodigo_barra().equals(codigoProduto)).findFirst().orElse(null);
+
+			} while (produto == null);
+
+			this.removerProduto(produto);
+
+		});
+
 	}
 
 	private double wrebase = 900;
@@ -1119,6 +1246,7 @@ public class FrenteCaixa extends Modulo {
 	private JPanel panel_2;
 	private JTextField txtComanda;
 	private JLabel lblImagem;
+	private JButton btRemoveProduto;
 
 	private void rebase() {
 
@@ -1155,7 +1283,7 @@ public class FrenteCaixa extends Modulo {
 		this.setBounds(0, 0, (int) tk.getScreenSize().getWidth(), (int) tk.getScreenSize().getHeight());
 
 		srcProdutos = new JScrollPane();
-		srcProdutos.setBounds(10, 66, 267, 153);
+		srcProdutos.setBounds(10, 66, 267, 315);
 		getContentPane().add(srcProdutos);
 
 		tblProdutos = new JTable();
@@ -1241,7 +1369,7 @@ public class FrenteCaixa extends Modulo {
 		getContentPane().add(label);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(455, 229, 429, 230);
+		scrollPane_1.setBounds(484, 229, 400, 230);
 		getContentPane().add(scrollPane_1);
 
 		tblVenda = new JTable();
@@ -1253,7 +1381,7 @@ public class FrenteCaixa extends Modulo {
 		txtTotal.setForeground(new Color(124, 252, 0));
 		txtTotal.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTotal.setColumns(10);
-		txtTotal.setBounds(652, 470, 232, 68);
+		txtTotal.setBounds(670, 470, 214, 68);
 		getContentPane().add(txtTotal);
 
 		tbpBP = new JTabbedPane(JTabbedPane.LEFT);
@@ -1290,35 +1418,39 @@ public class FrenteCaixa extends Modulo {
 		txtComanda.setColumns(10);
 
 		lblPg = new JLabel("New label");
-		lblPg.setBounds(184, 230, 46, 14);
+		lblPg.setBounds(180, 392, 46, 14);
 		getContentPane().add(lblPg);
 
 		slider = new JSlider();
-		slider.setBounds(10, 230, 153, 23);
+		slider.setBounds(10, 392, 153, 23);
 		getContentPane().add(slider);
 
-		btFinalizarPedido = new JButton("F4 - Finalizar pedido");
+		btFinalizarPedido = new JButton("F4 - Finalizar compra");
 		btFinalizarPedido.setForeground(new Color(30, 144, 255));
 		btFinalizarPedido.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btFinalizarPedido.setBounds(10, 261, 220, 54);
+		btFinalizarPedido.setBounds(10, 497, 153, 32);
 		getContentPane().add(btFinalizarPedido);
 
 		btNovaVenda = new JButton("F3 Nova Venda");
 		btNovaVenda.setForeground(Color.BLACK);
 		btNovaVenda.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btNovaVenda.setBounds(10, 321, 220, 54);
+		btNovaVenda.setBounds(10, 454, 202, 32);
 		getContentPane().add(btNovaVenda);
 
 		btSangria = new JButton("F7 - Sangria");
 		btSangria.setForeground(Color.RED);
 		btSangria.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btSangria.setBounds(10, 381, 220, 54);
+		btSangria.setBounds(173, 497, 153, 32);
 		getContentPane().add(btSangria);
 
 		btReposicao = new JButton("F8 - Reposicao");
+		btReposicao.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btReposicao.setForeground(Color.BLUE);
 		btReposicao.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btReposicao.setBounds(10, 446, 220, 54);
+		btReposicao.setBounds(336, 497, 135, 32);
 		getContentPane().add(btReposicao);
 
 		lblQuantidadeItens = new JLabel("1 Item");
@@ -1327,18 +1459,24 @@ public class FrenteCaixa extends Modulo {
 		lblQuantidadeItens.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblQuantidadeItens.setOpaque(true);
 		lblQuantidadeItens.setBackground(SystemColor.textHighlight);
-		lblQuantidadeItens.setBounds(240, 470, 173, 68);
+		lblQuantidadeItens.setBounds(494, 470, 102, 68);
 		getContentPane().add(lblQuantidadeItens);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(null, "Imagem", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_3.setBounds(240, 230, 205, 230);
+		panel_3.setBounds(287, 230, 187, 190);
 		getContentPane().add(panel_3);
 		panel_3.setLayout(null);
 
 		lblImagem = new JLabel("");
-		lblImagem.setBounds(10, 21, 185, 198);
+		lblImagem.setBounds(10, 21, 167, 158);
 		panel_3.add(lblImagem);
+
+		btRemoveProduto = new JButton("F9 Remover Produto");
+		btRemoveProduto.setForeground(Color.MAGENTA);
+		btRemoveProduto.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btRemoveProduto.setBounds(222, 454, 246, 32);
+		getContentPane().add(btRemoveProduto);
 
 		this.rebase();
 

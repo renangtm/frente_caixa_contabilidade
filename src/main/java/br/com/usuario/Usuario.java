@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -18,6 +20,7 @@ import javax.persistence.OneToOne;
 import br.com.pessoa.PessoaFisica;
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Usuario{ 
  
 	@Id

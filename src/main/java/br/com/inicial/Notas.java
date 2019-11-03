@@ -8,6 +8,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
@@ -171,6 +172,7 @@ public class Notas extends Modulo {
 		});
 	}
 
+	@SuppressWarnings("unused")
 	private Usuario operador;
 
 	private Nota nota;
@@ -444,9 +446,7 @@ public class Notas extends Modulo {
 	public void init(Usuario usu) {
 
 		this.operador = et.merge(usu);
-		this.empresa = this.operador.getPf().getEmpresa();
-		et.detach(this.operador);
-		this.empresa = et.merge(this.empresa);
+		this.empresa = CFG.empresa;
 
 		// ===================
 

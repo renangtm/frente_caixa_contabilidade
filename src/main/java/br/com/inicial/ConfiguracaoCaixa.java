@@ -19,6 +19,7 @@ import br.com.caixa.Reposicao;
 import br.com.caixa.RepresentadorExpedienteCaixa;
 import br.com.caixa.Sangria;
 import br.com.conversores.ConversorDate;
+import br.com.empresa.Empresa;
 import br.com.movimento_financeiro.Movimento;
 import br.com.movimento_financeiro.RepresentadorMovimentoCaixa;
 import br.com.usuario.Usuario;
@@ -98,6 +99,7 @@ public class ConfiguracaoCaixa extends Modulo {
 	}
 
 	private Usuario usu;
+	private Empresa empresa;
 	
 	private ConfiguracaoLocalCaixa clc;
 	private JButton btConfirmar;
@@ -196,8 +198,9 @@ public class ConfiguracaoCaixa extends Modulo {
 	public void init(Usuario op) {
 		
 		this.usu = op;
+		this.empresa = et.merge(CFG.empresa);
 		
-		clc = ConfiguracaoLocalCaixa.getConfiguracaoLocalCaixa(this.usu.getPf().getEmpresa());
+		clc = ConfiguracaoLocalCaixa.getConfiguracaoLocalCaixa(this.empresa);
 	
 		if(clc == null) {
 			
@@ -252,14 +255,14 @@ public class ConfiguracaoCaixa extends Modulo {
 			
 			if(this.clc == null) {
 				
-				this.clc = new ConfiguracaoLocalCaixa(this.usu.getPf().getEmpresa());
+				this.clc = new ConfiguracaoLocalCaixa(this.empresa);
 				
 			}
 			
 			int numero = Integer.parseInt(this.textField.getText());
 			
 			CaixaService cs = new CaixaService(et);
-			cs.setEmpresa(this.usu.getPf().getEmpresa());
+			cs.setEmpresa(this.empresa);
 			
 			Caixa caixa = cs.getPeloNumero(numero);
 			
@@ -268,7 +271,7 @@ public class ConfiguracaoCaixa extends Modulo {
 				caixa = new Caixa();
 				caixa.setNumero(numero);
 				caixa.setSaldoAtual(0);
-				caixa.setEmpresa(et.merge(this.usu.getPf().getEmpresa()));
+				caixa.setEmpresa(this.empresa);
 				
 				new CaixaService(et).merge(caixa);
 				

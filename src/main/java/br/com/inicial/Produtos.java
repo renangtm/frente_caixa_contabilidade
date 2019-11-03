@@ -19,6 +19,7 @@ import br.com.arquivos.ArquivoUtils;
 import br.com.arquivos.ImageLoader;
 import br.com.arquivos.ImageLoaderListener;
 import br.com.arquivos.UploaderArquivo;
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
@@ -195,13 +196,12 @@ public class Produtos extends Modulo {
 				+ " - Produtos");
 
 		this.operador = et.merge(operador);
-		this.empresa = this.operador.getPf().getEmpresa();
-		this.empresa = et.merge(empresa);
+		this.empresa = CFG.empresa;
 
 		// ============
 
 		ProdutoService ps = new ProdutoService(et);
-		ps.setEmpresa(operador.getPf().getEmpresa());
+		ps.setEmpresa(this.empresa);
 
 		this.grProdutos = new GerenciadorLista<Produto>(Produto.class, this.tblProdutos, ps,
 				new ProvedorDeEventos<Produto>() {

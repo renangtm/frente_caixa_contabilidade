@@ -7,6 +7,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -26,6 +27,7 @@ import br.com.impostos.icms.ICMS50;
 import br.com.impostos.icms.ICMS60;
 import br.com.impostos.icms.ICMS70;
 import br.com.impostos.icms.ICMS90;
+import br.com.inicial.Pagamento;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Dest;
@@ -472,7 +474,7 @@ public class ValidadorDocumento {
 	}
 
 	@SuppressWarnings("unused")
-	public boolean validarFiscalmente(Nota nota) {
+	public boolean validarFiscalmente(Nota nota, List<Pagamento> pagamentos) {
 
 		if (!this.service.verificarIntegridadeNota(nota)) {
 
@@ -539,7 +541,7 @@ public class ValidadorDocumento {
 						}
 
 						this.gc.gerarCupomFiscal(nota, Double.parseDouble(cfe.getInfCFe().getTotal().getVCFeLei12741()),
-								b64);
+								pagamentos, b64);
 
 					} else {
 
@@ -551,7 +553,7 @@ public class ValidadorDocumento {
 
 						}).sum();
 
-						this.gc.gerarCupomFiscal(nota, impostosApriximados, "123456789");
+						this.gc.gerarCupomFiscal(nota, impostosApriximados, pagamentos, "123456789");
 
 					}
 

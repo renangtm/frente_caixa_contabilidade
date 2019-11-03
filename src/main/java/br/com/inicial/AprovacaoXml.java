@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JSeparator;
 
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Resources;
 import br.com.capturaXML.RepresentadorXML;
@@ -86,6 +87,7 @@ public class AprovacaoXml extends Modulo {
 		});
 	}
 
+	@SuppressWarnings("unused")
 	private Usuario operador;
 
 	private Empresa empresa;
@@ -98,8 +100,7 @@ public class AprovacaoXml extends Modulo {
 	public void init(Usuario u) {
 
 		this.operador = et.merge(u);
-		this.empresa = this.operador.getPf().getEmpresa();
-		this.empresa = et.merge(this.empresa);
+		this.empresa = et.merge(CFG.empresa);
 
 		this.btManifestar.setEnabled(false);
 		

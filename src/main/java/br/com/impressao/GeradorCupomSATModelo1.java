@@ -21,11 +21,12 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
+import br.com.inicial.Pagamento;
 
 public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 	@Override
-	public void gerarCupomFiscal(Nota nota, double impostosAproximados, String base64) {
+	public void gerarCupomFiscal(Nota nota, double impostosAproximados, List<Pagamento> pagamentos, String base64) {
 
 		try {
 
@@ -126,6 +127,10 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 			JasperReport jr = JasperCompileManager.compileReport(
 					GeradorCupomSATModelo1.class.getClassLoader().getResourceAsStream("icones/cupom_modelo_1.jrxml"));
 
+			JasperReport subPagamentos = JasperCompileManager.compileReport(
+					GeradorCupomSATModelo1.class.getClassLoader().getResourceAsStream("icones/subPagamentos.jrxml"));
+
+			
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(nota.getEmpresa().getLogo().getArquivo()));
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
@@ -148,6 +153,8 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 			parametros.put("formaPagamento", formaPagamento);
 			parametros.put("valorPagamento", valorPagamento);
 			parametros.put("valorImpostos", impostosAproximados);
+			parametros.put("subReportPagamentos", subPagamentos);
+			parametros.put("pagamentos", pagamentos);
 
 			JRDataSource jrd = new JRBeanCollectionDataSource(produtos);
 

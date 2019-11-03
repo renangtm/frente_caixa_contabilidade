@@ -5,54 +5,59 @@ import java.util.List;
 
 public enum PresetPermissao {
 
-	CAIXA(new Object[][] { new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true } }),
-	OPERADOR_COMANDA(new Object[][] { new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true } }),
-	GERENTE(new Object[][] { new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true },
-			new Object[] { TipoPermissao.NOTAS, true, true, true, true },
-			new Object[] { TipoPermissao.GERENCIA_CAIXAS, true, true, true, true },
-			new Object[] { TipoPermissao.FINANCEIRO, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_PESSOA, true, true, true, true },
-			new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_PRODUTO, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_OPERACAO, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_HISTORICO, true, true, true, true },
-			new Object[] { TipoPermissao.CONFIGURACAO_EMPRESA, true, true, true, true },
-			new Object[] { TipoPermissao.APROVACAO_XML, true, true, true, true },
-			new Object[] { TipoPermissao.DADOS_CONTABEIS_PRODUTO, true, true, true, true } }),
-	CONTADOR(new Object[][] { new Object[] { TipoPermissao.APROVACAO_XML, true, true, true, true },
-			new Object[] { TipoPermissao.FINANCEIRO, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_OPERACAO, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_HISTORICO, true, true, true, true },
-			new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_PRODUTO, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_CFOP, true, true, true, true },
-			new Object[] { TipoPermissao.CADASTRO_NCM, true, true, true, true },
-			new Object[] { TipoPermissao.DADOS_CONTABEIS_PRODUTO, true, true, true, true } });
+	CAIXA(new Object[][] { new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true } }), OPERADOR_COMANDA(
+			new Object[][] { new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true } }), GERENTE(
+					new Object[][] { new Object[] { TipoPermissao.FRENTE_CAIXA, true, true, true, true },
+							new Object[] { TipoPermissao.NOTAS, true, true, true, true },
+							new Object[] { TipoPermissao.GERENCIA_CAIXAS, true, true, true, true },
+							new Object[] { TipoPermissao.FINANCEIRO, true, true, true, true },
+							new Object[] { TipoPermissao.CADASTRO_PESSOA, true, true, true, true },
+							new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true },
+							new Object[] { TipoPermissao.CADASTRO_PRODUTO, true, true, true, true },
+							new Object[] { TipoPermissao.CADASTRO_OPERACAO, true, true, true, true },
+							new Object[] { TipoPermissao.CADASTRO_HISTORICO, true, true, true, true },
+							new Object[] { TipoPermissao.CONFIGURACAO_EMPRESA, true, true, true, true },
+							new Object[] { TipoPermissao.CONTRATAR_CONTABILIDADE, true, true, true, true },
+							new Object[] { TipoPermissao.APROVACAO_XML, true, true, true, true },
+							new Object[] { TipoPermissao.DADOS_CONTABEIS_PRODUTO, true, true, true, true } }), CONTADOR(
+									new Object[][] {
+											new Object[] { TipoPermissao.APROVACAO_XML, true, true, true, true },
+											new Object[] { TipoPermissao.FINANCEIRO, true, true, true, true },
+											new Object[] { TipoPermissao.CADASTRO_OPERACAO, true, true, true, true },
+											new Object[] { TipoPermissao.CADASTRO_HISTORICO, true, true, true, true },
+											new Object[] { TipoPermissao.ASSOCIACAO_COMANDA, true, true, true, true },
+											new Object[] { TipoPermissao.CADASTRO_PRODUTO, true, true, true, true },
+											new Object[] { TipoPermissao.CADASTRO_CFOP, true, true, true, true },
+											new Object[] { TipoPermissao.CADASTRO_NCM, true, true, true, true },
+											new Object[] { TipoPermissao.DADOS_CONTABEIS_PRODUTO, true, true, true,
+													true },
+											new Object[] { TipoPermissao.CONFIGURACAO_EMPRESA, true, true, true, true },
+											new Object[] { TipoPermissao.CADASTRO_PESSOA, true, true, true, true } });
 
 	private List<Permissao> preset;
 
-	public static PresetPermissao getMaisProximo(List<Permissao> perms){
-		
+	public static PresetPermissao getMaisProximo(List<Permissao> perms) {
+
 		PresetPermissao ps = null;
 		double px = 0;
-		
-		for(PresetPermissao p:PresetPermissao.values()){
-			
+
+		for (PresetPermissao p : PresetPermissao.values()) {
+
 			double pp = p.encaixe(perms);
-			
-			if(pp>px || ps == null){
-				
+
+			if (pp > px || ps == null) {
+
 				ps = p;
 				px = pp;
-				
+
 			}
-			
+
 		}
-	
+
 		return ps;
-		
+
 	}
-	
+
 	private PresetPermissao(Object[][] obj) {
 
 		this.preset = new ArrayList<Permissao>();

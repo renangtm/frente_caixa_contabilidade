@@ -1,11 +1,13 @@
 package br.com.impressao;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 
 import br.com.base.ET;
 import br.com.emissao.GeradorCupomSAT;
+import br.com.inicial.Pagamento;
 import br.com.nota.Nota;
 import net.sf.jasperreports.engine.JRException;
 
@@ -43,7 +45,7 @@ public class Testes {
 		
 		
 		System.out.println(b64);
-		g.gerarCupomFiscal(nota,10, b64);
+		g.gerarCupomFiscal(nota,10, new ArrayList<Pagamento>(), b64);
 		
 		
 	}

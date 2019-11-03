@@ -215,7 +215,8 @@ public class SelecaoFormaPagamento extends JDialog {
 				
 				System.out.println(this.pagamentos.stream().mapToDouble(p -> p.valor).sum() +"-----------------"+ this.venda.getTotal());
 				if (this.pagamentos.stream().mapToDouble(p -> p.valor).sum() < this.venda.getTotal()) {
-
+					
+					this.executando = false;
 					return;
 
 				}
@@ -235,7 +236,11 @@ public class SelecaoFormaPagamento extends JDialog {
 				} catch (Exception exx) {
 
 					exx.printStackTrace();
-
+					
+					this.executando = false;
+					
+					fc.erro(exx.getMessage());
+					
 					return;
 
 				}
@@ -269,7 +274,7 @@ public class SelecaoFormaPagamento extends JDialog {
 
 					try {
 
-						vd.validarFiscalmente(n);
+						vd.validarFiscalmente(n,pagamentos);
 
 					} catch (Exception ex) {
 
@@ -339,7 +344,7 @@ public class SelecaoFormaPagamento extends JDialog {
 							} else {
 
 								executando = false;
-								dispose();
+								dispensar();
 
 								KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 								atalhos.forEach(a -> keyManager.removeKeyEventDispatcher(a));
@@ -391,7 +396,7 @@ public class SelecaoFormaPagamento extends JDialog {
 									} else {
 
 										executando = false;
-										dispose();
+										dispensar();
 
 										KeyboardFocusManager keyManager = KeyboardFocusManager
 												.getCurrentKeyboardFocusManager();
@@ -433,10 +438,21 @@ public class SelecaoFormaPagamento extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
+	
+	public void dispensar(){
+		
+		this.keyManager.removeKeyEventDispatcher(this.disp);
+		this.dispose();
+		
+	}
 
 	private String cpfNota;
 
 	private boolean din = false;
+
+	private KeyEventDispatcher disp;
+
+	private KeyboardFocusManager keyManager;
 
 	public SelecaoFormaPagamento(Venda venda, EntityManager et, ExpedienteCaixa exp, String cpfNota, FrenteCaixa fc) {
 
@@ -452,12 +468,12 @@ public class SelecaoFormaPagamento extends JDialog {
 
 		this.cpfNota = cpfNota;
 
-		KeyboardFocusManager keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+		keyManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
 		atalhos.forEach(d -> keyManager.removeKeyEventDispatcher(d));
 
 		final SelecaoFormaPagamento este = this;
-		KeyEventDispatcher disp = new KeyEventDispatcher() {
+		disp = new KeyEventDispatcher() {
 
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent e) {

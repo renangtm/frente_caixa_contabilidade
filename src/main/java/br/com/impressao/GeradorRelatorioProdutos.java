@@ -43,7 +43,7 @@ public class GeradorRelatorioProdutos {
 		List<ProdutoRelatorio> produtos = ps.getProdutoRelatorio("", antes, Calendar.getInstance());
 
 		System.out.println(produtos.size());
-		
+
 		new GeradorRelatorioProdutos().gerarReltorio(produtos, usuario.getPf().getEmpresa(), antes,
 				Calendar.getInstance());
 
@@ -66,31 +66,40 @@ public class GeradorRelatorioProdutos {
 		String ruaEmpresa = empresa.getPj().getEndereco().getRua() + ", " + empresa.getPj().getEndereco().getNumero();
 		String cnpjEmpresa = empresa.getPj().getCnpj();
 		String ieEmpresa = empresa.getPj().getInscricao_estadual();
-		
-		
+
 		double lucroTotal = 0;
 		double qtdT = 0;
+		double icmsTotal = 0;
 		
-		for(ProdutoRelatorio pr:produtos){
-			
+		double valorTotal = 0;
+		
+		double valorTotalLiquido = 0;
+
+		for (ProdutoRelatorio pr : produtos) {
+
 			double lucroParcial = 0;
 			double qtd = 0;
+
+			icmsTotal += pr.getIcms();
 			
-			for(MovimentoProduto mp:pr.getMovimentos()){
-				
-				lucroParcial += mp.getLucro()*mp.getQuantidade();
-				qtd += mp.getQuantidade();
-				
-				lucroTotal += mp.getLucro()*mp.getQuantidade();
-				qtdT += mp.getQuantidade();
-				
+			valorTotal += pr.getQuantidade()*pr.getValor();
+
+			valorTotalLiquido += pr.getQuantidade()*pr.getValor() - pr.getIcms();
+			
+			for (MovimentoProduto mp : pr.getMovimentos()) {
+
+				lucroParcial += mp.getLucro() * mp.getQuantidade() * mp.getValor();
+				qtd += mp.getQuantidade() * mp.getValor();
+
+				lucroTotal += mp.getLucro() * mp.getQuantidade() * mp.getValor();
+				qtdT += mp.getQuantidade() * mp.getValor();
+
 			}
-			
-			pr.setLucro(lucroParcial/qtd);
-			
-			
+
+			pr.setLucro(lucroParcial / qtd);
+
 		}
-		
+
 		lucroTotal /= qtdT;
 
 		Map<String, Object> parametros = new HashMap<String, Object>();
@@ -106,6 +115,11 @@ public class GeradorRelatorioProdutos {
 		parametros.put("dataFinal", fim.getTime());
 		parametros.put("subReport", subRelatorio);
 		parametros.put("lucroTotal", lucroTotal);
+		parametros.put("icmsTotal", icmsTotal);
+		parametros.put("valorTotal", valorTotal);
+		parametros.put("valorTotalLiquido", valorTotalLiquido);
+
+		System.out.println(valorTotal+"------------------"+valorTotalLiquido);
 		
 		JRDataSource jrd = new JRBeanCollectionDataSource(produtos);
 

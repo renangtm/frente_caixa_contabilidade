@@ -2,6 +2,7 @@ package br.com.inicial;
 
 import java.awt.EventQueue;
 
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Resources;
 import br.com.config.CertificadoPFX;
@@ -49,8 +50,12 @@ public class ConfiguracoesEmpresa extends Modulo {
 	private static final long serialVersionUID = 1L;
 	private JTextField txtNumeroSAT;
 	private JTextField txtCodigoAtivacaoSAT;
+	
+	@SuppressWarnings("unused")
 	private Usuario operador;
+	
 	private Empresa empresa;
+	
 	private JLabel lblLbllogo;
 
 	public static ImageIcon logo() {
@@ -144,8 +149,7 @@ public class ConfiguracoesEmpresa extends Modulo {
 	public void init(Usuario u) {
 
 		this.operador = et.merge(u);
-		this.empresa = this.operador.getPf().getEmpresa();
-		this.empresa = et.merge(empresa);
+		this.empresa = CFG.empresa;
 
 		this.txtCodigoAtivacaoSAT.setText(this.empresa.getParametrosEmissao().getSenha_sat());
 		this.txtNumeroSAT.setText(this.empresa.getParametrosEmissao().getNumeroSat());

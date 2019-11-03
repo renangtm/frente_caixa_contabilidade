@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
@@ -173,7 +174,9 @@ public class CadastroCheque extends Modulo {
 
 	}
 
+	@SuppressWarnings("unused")
 	private Usuario operador;
+	
 	private Empresa empresa;
 
 	private ChequeService serv;
@@ -193,7 +196,7 @@ public class CadastroCheque extends Modulo {
 	public void init(Usuario usu) {
 
 		this.operador = this.et.merge(usu);
-		this.empresa = this.et.merge(this.operador.getPf().getEmpresa());
+		this.empresa = et.merge(CFG.empresa);
 
 		this.serv = new ChequeService(this.et);
 		this.serv.setEmpresa(this.empresa);

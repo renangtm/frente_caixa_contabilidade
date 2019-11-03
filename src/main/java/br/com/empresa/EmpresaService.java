@@ -65,6 +65,8 @@ public class EmpresaService implements Service<Empresa>{
 		if(obj.getParametrosEmissao() != null)
 			obj.setParametrosEmissao(et.merge(obj.getParametrosEmissao()));
 		
+		if(obj.getContabilidade() != null)
+			obj.setContabilidade(et.merge(obj.getContabilidade()));
 		
 		if(obj.getId() == 0) {
 			

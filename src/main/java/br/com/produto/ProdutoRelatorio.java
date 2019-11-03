@@ -22,8 +22,16 @@ public class ProdutoRelatorio {
 	
 	private double lucro;
 	
+	private double icms;
 	
-	
+	public double getIcms() {
+		return icms;
+	}
+
+	public void setIcms(double icms) {
+		this.icms = icms;
+	}
+
 	public double getLucro() {
 		return lucro;
 	}

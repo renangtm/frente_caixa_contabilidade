@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
-	<property name="ireport.zoom" value="1.6105100000000254"/>
-	<property name="ireport.x" value="354"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.9487171000000312"/>
+	<property name="ireport.x" value="291"/>
+	<property name="ireport.y" value="7"/>
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="nomeEmpresa" class="java.lang.String"/>
 	<parameter name="cnpjEmpresa" class="java.lang.String"/>
@@ -14,6 +14,9 @@
 	<parameter name="dataFinal" class="java.util.Date"/>
 	<parameter name="subReport" class="java.lang.Object" isForPrompting="false"/>
 	<parameter name="lucroTotal" class="java.lang.Double"/>
+	<parameter name="icmsTotal" class="java.lang.Double"/>
+	<parameter name="valorTotal" class="java.lang.Double"/>
+	<parameter name="valorTotalLiquido" class="java.lang.Double"/>
 	<field name="movimentos" class="java.util.List"/>
 	<field name="unidade" class="java.lang.Object"/>
 	<field name="quantidade" class="java.lang.Double"/>
@@ -22,6 +25,7 @@
 	<field name="id" class="java.lang.Integer"/>
 	<field name="valor" class="java.lang.Double"/>
 	<field name="lucro" class="java.lang.Double"/>
+	<field name="icms" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -102,18 +106,60 @@
 				<textFieldExpression><![CDATA["De: "+new SimpleDateFormat("dd/MM/yyyy").format($P{dataInicial})+"  Até: "+new SimpleDateFormat("dd/MM/yyyy").format($P{dataFinal})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="200" y="60" width="60" height="17" uuid="ae05a404-2574-4cde-937d-56cc16e4e64d"/>
+				<reportElement x="167" y="60" width="47" height="17" uuid="ae05a404-2574-4cde-937d-56cc16e4e64d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Lucro Total:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="260" y="60" width="107" height="17" uuid="39f6b8be-e57c-4267-82a7-9fcba7514000"/>
+				<reportElement x="214" y="61" width="38" height="17" uuid="39f6b8be-e57c-4267-82a7-9fcba7514000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{lucroTotal})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{lucroTotal})+"%"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="252" y="60" width="60" height="17" uuid="eaf05e49-65ce-4950-9c91-78a1a0ffe105"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Icms Total:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="312" y="60" width="50" height="17" uuid="9f1c9c0e-830b-47eb-b714-9f1814553899"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{icmsTotal})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="362" y="60" width="48" height="17" uuid="691d8fd8-0f23-42dd-9889-0351d62b4a6e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Valor Estoque:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="410" y="61" width="60" height="17" uuid="20d0b2fb-a5ac-4fec-bf9d-8b0d4dcc1339"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{valorTotal})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="470" y="61" width="49" height="17" uuid="4d83da77-df3e-4e8a-87f1-5bf48506c3bb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Valor Estoque:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="519" y="61" width="56" height="15" uuid="85e5bb3f-1e22-402e-94b2-652230285ec1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{valorTotalLiquido})]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -137,21 +183,21 @@
 				<text><![CDATA[Produto:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="154" y="1" width="130" height="17" uuid="f348c3e6-0079-4fce-ac5e-64e4a5a39600"/>
+				<reportElement x="154" y="1" width="111" height="17" uuid="f348c3e6-0079-4fce-ac5e-64e4a5a39600"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="283" y="1" width="51" height="17" uuid="d63501de-bbb2-44e9-ae1b-61f56de0a906"/>
+				<reportElement x="265" y="1" width="51" height="17" uuid="d63501de-bbb2-44e9-ae1b-61f56de0a906"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Estoque:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="334" y="1" width="101" height="17" uuid="f6abcc48-775c-4e71-81c8-8c310a8eee6d"/>
+				<reportElement x="316" y="1" width="42" height="17" uuid="f6abcc48-775c-4e71-81c8-8c310a8eee6d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -169,14 +215,14 @@
 				<subreportExpression><![CDATA[$P{subReport}]]></subreportExpression>
 			</subreport>
 			<staticText>
-				<reportElement x="434" y="1" width="31" height="17" uuid="7b378271-05f9-4eaf-91f1-68fda4f80bef"/>
+				<reportElement x="358" y="1" width="31" height="17" uuid="7b378271-05f9-4eaf-91f1-68fda4f80bef"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Valor:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="465" y="1" width="39" height="17" uuid="d447ab29-5d7a-428b-b638-caab9d45095f"/>
+				<reportElement x="389" y="1" width="39" height="17" uuid="d447ab29-5d7a-428b-b638-caab9d45095f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -197,18 +243,32 @@
 				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="505" y="0" width="31" height="17" uuid="6ac3fb0f-1835-4ec9-85ab-8ee9170e6011"/>
+				<reportElement x="428" y="0" width="31" height="17" uuid="6ac3fb0f-1835-4ec9-85ab-8ee9170e6011"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<text><![CDATA[Lucro:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="536" y="0" width="39" height="17" uuid="ff298011-50ff-4921-8b22-f5db5b1e7d60"/>
+				<reportElement x="459" y="1" width="39" height="17" uuid="ff298011-50ff-4921-8b22-f5db5b1e7d60"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{lucro})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{lucro})+"%"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="498" y="1" width="31" height="17" uuid="30313eca-41a8-404d-ba79-6a16539b5635"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Icms:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="529" y="1" width="46" height="17" uuid="0040576c-4538-4f42-b5a6-6c747cc4e8fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{icms})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

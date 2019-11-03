@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.base.CFG;
+import br.com.empresa.Contabilidade;
 import br.com.usuario.TipoPermissao;
 import br.com.usuario.Usuario;
 
@@ -23,6 +24,12 @@ public class DisposicaoModulos {
 
 		}
 
+		if(usuario.getPf().getEmpresa().getClass().equals(Contabilidade.class)){
+			
+			disposicao.add(ControleEmpresa.class);
+			
+		}
+		
 		if (usuario.getPermissao(TipoPermissao.CADASTRO_PRODUTO).isConsultar()) {
 
 			disposicao.add(Produtos.class);
@@ -55,6 +62,13 @@ public class DisposicaoModulos {
 			disposicao.add(CadastroNcm.class);
 
 		}
+		
+		if (usuario.getPermissao(TipoPermissao.CONTRATAR_CONTABILIDADE).isConsultar()) {
+
+			disposicao.add(SelecaoContabilidade.class);
+
+		}
+		
 		
 		disposicao.add(CadastroCheque.class);
 

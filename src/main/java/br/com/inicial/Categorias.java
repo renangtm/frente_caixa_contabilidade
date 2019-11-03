@@ -24,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultFormatterFactory;
 
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
@@ -531,9 +532,7 @@ public class Categorias extends Modulo {
 	public void init(Usuario operador) {
 
 		operador = etReq.merge(operador);
-		empresa = operador.getPf().getEmpresa();
-		etReq.detach(operador);
-		empresa = etReq.merge(empresa);
+		this.empresa = et.merge(CFG.empresa);
 
 		// =================
 		

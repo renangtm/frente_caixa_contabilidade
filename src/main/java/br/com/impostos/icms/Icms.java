@@ -31,7 +31,7 @@ public abstract class Icms {
 
 	@Column
 	private String cst;
-
+	
 	public void calcularSobre(double valor) {
 
 	}

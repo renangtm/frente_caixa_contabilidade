@@ -23,6 +23,7 @@ import br.com.banco.Banco;
 import br.com.banco.Fechamento;
 import br.com.banco.FechamentoService;
 import br.com.banco.RepresentadorFechamento;
+import br.com.base.CFG;
 import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
 import br.com.base.Masks;
@@ -219,8 +220,7 @@ public class CadastroMovimento extends Modulo {
 	public void init(Usuario usu) {
 
 		this.operador = et.merge(usu);
-		this.empresa = this.operador.getPf().getEmpresa();
-		this.empresa = et.merge(this.empresa);
+		this.empresa = et.merge(CFG.empresa);
 
 		// ====================================
 
@@ -621,7 +621,7 @@ public class CadastroMovimento extends Modulo {
 				AgrupadoresData agrupador = (AgrupadoresData) this.cboAgrupamento.getSelectedItem();
 
 				ContaService cs = new ContaService(et);
-				cs.setEmpresa(this.operador.getPf().getEmpresa());
+				cs.setEmpresa(this.empresa);
 				cs.setTipo(tipo);
 
 				List<Conta> contas = cs.getContas(inicio, fim);

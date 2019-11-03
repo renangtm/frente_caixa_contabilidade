@@ -9,6 +9,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import br.com.banco.Banco;
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
@@ -106,6 +107,7 @@ public class CadastroPessoa extends Modulo {
 		});
 	}
 
+	@SuppressWarnings("unused")
 	private Usuario operador;
 
 	private Pessoa p;
@@ -515,8 +517,7 @@ public class CadastroPessoa extends Modulo {
 
 		
 		this.operador = et.merge(usu);
-		this.empresa = this.operador.getPf().getEmpresa();
-		this.empresa = et.merge(this.empresa);
+		this.empresa = et.merge(CFG.empresa);
 		
 		//====================================
 		

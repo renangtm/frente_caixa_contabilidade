@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Resources;
 import br.com.codigo_barra.CodigoBarra;
@@ -104,8 +105,7 @@ public class AssociacaoComanda extends Modulo {
 	public void init(Usuario u) {
 
 		this.operador = et.merge(u);
-		this.empresa = this.operador.getPf().getEmpresa();
-		this.empresa = et.merge(this.empresa);
+		this.empresa = et.merge(CFG.empresa);
 
 		this.tabbedPane.setEnabledAt(0, false);
 		this.tabbedPane.setEnabledAt(1, false);

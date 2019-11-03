@@ -37,8 +37,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import br.com.base.CFG;
 import br.com.base.ConfiguracaoExpediente;
 import br.com.base.ET;
+import br.com.base.Masks;
 import br.com.base.Resources;
 import br.com.caixa.ExpedienteCaixa;
+import br.com.empresa.Empresa;
+import br.com.empresa.Look;
 import br.com.usuario.PresetPermissao;
 import br.com.usuario.Usuario;
 import br.com.utilidades.LayoutRelativo;
@@ -70,7 +73,7 @@ public class MenuPrincipal extends TelaFrame {
 	 */
 
 	public static MenuPrincipal menu;
-	
+
 	private HashMap<Component, Object> objetos = new HashMap<Component, Object>();
 	private HashMap<Component, Integer> leveis = new HashMap<Component, Integer>();
 	private final List<JPanel> pnlMiniBanner = new ArrayList<JPanel>();
@@ -90,15 +93,30 @@ public class MenuPrincipal extends TelaFrame {
 	private JLabel lblStatus;
 	private JLabel lblCaixa;
 
+	public void setControleEmpresa(Empresa empresa) {
+
+		this.setTitle("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: "
+				+ usuario.getPf().getEmpresa().getPj().getCnpj() + ", Controlando Empresa: " + empresa.getPj().getNome()
+				+ ", CNPJ: " + empresa.getPj().getCnpj());
+
+	}
+
 	public MenuPrincipal(Usuario usuario) throws IOException {
 
 		super("RTC - Empresa: " + usuario.getPf().getEmpresa().getPj().getNome() + ", CNPJ: "
 				+ usuario.getPf().getEmpresa().getPj().getCnpj(), 0, 0, 100, 100, false);
 
-		CFG.lookAndFeel = usuario.getPf().getEmpresa().getLogo().getLook().getLookAndFell();
+		try {
 
+			CFG.lookAndFeel = usuario.getPf().getEmpresa().getLogo().getLook().getLookAndFell();
+
+		} catch (Exception ex) {
+
+			CFG.lookAndFeel = Look.ACRYL.getLookAndFell();
+
+		}
 		menu = this;
-		
+
 		this.usuario = usuario;
 
 		this.este = this;
@@ -156,7 +174,7 @@ public class MenuPrincipal extends TelaFrame {
 			return;
 
 		}
-		
+
 		this.lblTopo = new JPanel();
 
 		this.lblTopo.setOpaque(true);
@@ -198,13 +216,14 @@ public class MenuPrincipal extends TelaFrame {
 		/*
 		 * try {
 		 * 
-		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage bi =
-		 * ImageIO.read(imagem); JLabel lblFundo = new JLabel(); lblFundo.setIcon(new
-		 * ImageIcon(bi));
+		 * URL imagem = new URL(Rt.getEmpresa().getImagemFundo()); BufferedImage
+		 * bi = ImageIO.read(imagem); JLabel lblFundo = new JLabel();
+		 * lblFundo.setIcon(new ImageIcon(bi));
 		 * 
-		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } catch (IOException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); }
+		 * this.setContentPane(lblFundo); } catch (MalformedURLException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); } catch
+		 * (IOException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
 		 */
 
 		this.lblTopo.setLayout(null);
@@ -272,13 +291,13 @@ public class MenuPrincipal extends TelaFrame {
 				protected Void doInBackground() throws Exception {
 
 					while (true) {
-
 						try {
 
 							EntityManager et = ET.nova();
 
 							ExpedienteCaixa exc = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(usuario));
-							lblCaixa.setText("CAIXA: R$ " + exc.getCaixa().getSaldoAtual());
+							lblCaixa.setText(
+									"CAIXA: R$ " + Masks.moeda().valueToString(exc.getCaixa().getSaldoAtual()));
 
 							et.close();
 
@@ -378,7 +397,7 @@ public class MenuPrincipal extends TelaFrame {
 			@Override
 			protected Void doInBackground() throws Exception {
 
-				double perc = 6;
+				double perc = 5;
 
 				if ((getHeight() * (perc / 100)) % 1 > 0) {
 

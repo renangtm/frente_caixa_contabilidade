@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import br.com.base.CFG;
 import br.com.base.Resources;
 import br.com.codigo_barra.PadraoCodigo;
 import br.com.codigo_barra.PadraoCodigoService;
@@ -93,6 +94,7 @@ public class CodigosExternos extends Modulo{
 		
 	}
 	
+	@SuppressWarnings("unused")
 	private Empresa empresa;
 	
 	public void init(Usuario operador){
@@ -100,9 +102,7 @@ public class CodigosExternos extends Modulo{
 		this.setTitle("Codigos Externos");
 		
 		this.operador = et.merge(operador);
-		this.empresa = this.operador.getPf().getEmpresa();
-		et.detach(this.operador);
-		this.empresa = et.merge(this.empresa);
+		this.empresa = et.merge(CFG.empresa);
 		
 		this.atualizarLista();
 			

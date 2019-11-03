@@ -159,6 +159,8 @@ public class Login extends TelaFrame {
 						
 						ConfiguracaoLocalCaixa clc = ConfiguracaoLocalCaixa.getConfiguracaoLocalCaixa(usuario.getPf().getEmpresa());
 						
+						CFG.empresa = usuario.getPf().getEmpresa();
+						
 						if(clc != null) {
 							
 							if(!clc.verificarAssinatura()) {

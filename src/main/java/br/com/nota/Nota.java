@@ -64,15 +64,15 @@ public class Nota {
 
 	@Column
 	private String chave_referenciada;
-	
+
 	@Column
 	private String cpfNotaSemDestinatario;
 
-	@ManyToOne(optional = true,cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_xml")
 	private Arquivo xml;
 
-	@ManyToOne(optional = true,cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_danfe")
 	private Arquivo danfe;
 
@@ -80,8 +80,8 @@ public class Nota {
 	@Column
 	private SaidaEntrada operacao;
 
-	//mappedBy='nota' por conta do join column nao precisa
-	@OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+	// mappedBy='nota' por conta do join column nao precisa
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<ProdutoNota> produtos;
 
@@ -110,8 +110,8 @@ public class Nota {
 	@Column
 	private FormaPagamentoNota forma_pagamento;
 
-	//mappedBy='nota'
-	@OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL)
+	// mappedBy='nota'
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
 	private List<Vencimento> vencimentos;
 
@@ -166,20 +166,14 @@ public class Nota {
 		return OperacaoLogistica.VENDA_DENTRO_ESTADO;
 
 	}
-	
-	
 
 	public String getCpfNotaSemDestinatario() {
 		return cpfNotaSemDestinatario;
 	}
 
-
-
 	public void setCpfNotaSemDestinatario(String cpfNotaSemDestinatario) {
 		this.cpfNotaSemDestinatario = cpfNotaSemDestinatario;
 	}
-
-
 
 	public double getTotalIpi() {
 
@@ -191,7 +185,7 @@ public class Nota {
 
 	public void atualizarRegrasFiscais() {
 
-		this.produtos.stream().forEach(p -> {
+		for (ProdutoNota p : this.produtos) {
 
 			ImpostoFactory impf = new ImpostoFactory(p.getProduto().getCategoria().getTabelaAlicota(), this.tipo)
 					.setDestinatario(this.getDestinatario()).setEmitente(this.getEmitente()).setProduto(p.getProduto());
@@ -203,8 +197,9 @@ public class Nota {
 			imp.calcularSobre(p.getValor() * p.getQuantidade() + p.getFrete() + p.getOutro());
 
 			p.setCfop(p.getProduto().getCategoria().getTabelaCfop().getCFOP(this.getOperacaoLogistica()));
-			
-		});
+
+		}
+		
 
 	}
 
@@ -217,9 +212,9 @@ public class Nota {
 		this.vencimentos = new ArrayList<Vencimento>();
 
 		this.forma_pagamento = FormaPagamentoNota.DINHEIRO;
-		
+
 		this.modelo = ModeloNota.NFCE;
-		
+
 		this.emitente = new PessoaJuridica();
 
 		this.data_emissao = Calendar.getInstance();
@@ -499,8 +494,9 @@ public class Nota {
 
 	public double getValorTotalNota() {
 
-		return this.produtos.stream()
-				.mapToDouble(p -> p.getValor() * p.getQuantidade() - p.getDesconto() + p.getOutro() + p.getSeguro() + p.getFrete()).sum();
+		return this.produtos.stream().mapToDouble(
+				p -> p.getValor() * p.getQuantidade() - p.getDesconto() + p.getOutro() + p.getSeguro() + p.getFrete())
+				.sum();
 
 	}
 

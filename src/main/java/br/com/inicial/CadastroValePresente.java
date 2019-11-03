@@ -10,6 +10,7 @@ import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultFormatterFactory;
 
+import br.com.base.CFG;
 import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
@@ -208,7 +209,7 @@ public class CadastroValePresente extends Modulo{
 	public void init(Usuario u) {
 
 		this.operador = et.merge(u);
-		this.empresa = et.merge(u.getPf().getEmpresa());
+		this.empresa = et.merge(CFG.empresa);
 
 		ValePresenteService vs = new ValePresenteService(this.et);
 		vs.setEmpresa(this.empresa);
