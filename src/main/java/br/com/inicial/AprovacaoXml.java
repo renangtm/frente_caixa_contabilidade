@@ -95,6 +95,8 @@ public class AprovacaoXml extends Modulo {
 	private JButton btManifestar;
 
 	private ListModelGenerica<XML> model;
+	private JButton btnOperacaoNaoRealizada;
+	private JButton btnDesconhecimentoDaOperacao;
 
 	@Override
 	public void init(Usuario u) {
@@ -103,6 +105,8 @@ public class AprovacaoXml extends Modulo {
 		this.empresa = et.merge(CFG.empresa);
 
 		this.btManifestar.setEnabled(false);
+		this.btnDesconhecimentoDaOperacao.setEnabled(false);
+		this.btnOperacaoNaoRealizada.setEnabled(false);
 		
 		this.tblNcm.getSelectionModel().addListSelectionListener(a->{
 			
@@ -111,6 +115,8 @@ public class AprovacaoXml extends Modulo {
 				if(this.tblNcm.getSelectedRow() >= 0) {
 					
 					this.btManifestar.setEnabled(true);
+					this.btnDesconhecimentoDaOperacao.setEnabled(true);
+					this.btnOperacaoNaoRealizada.setEnabled(true);
 					
 				}
 				
@@ -119,6 +125,40 @@ public class AprovacaoXml extends Modulo {
 		});
 		
 		this.btManifestar.addActionListener(a->{
+			
+			alerta("Erro esse documento ja foi manifestado");
+			
+			XML xml = this.model.getListaBase().get(this.tblNcm.getSelectedRow());
+			
+			xml.setVisto(true);
+			
+			new XMLService(et).merge(xml);
+			
+			et.getTransaction().begin();
+			et.getTransaction().commit();
+			
+			this.model.remover(this.model.getListaBase().indexOf(xml));
+			
+		});
+		
+		this.btnOperacaoNaoRealizada.addActionListener(a->{
+			
+			alerta("Erro esse documento ja foi manifestado");
+			
+			XML xml = this.model.getListaBase().get(this.tblNcm.getSelectedRow());
+			
+			xml.setVisto(true);
+			
+			new XMLService(et).merge(xml);
+			
+			et.getTransaction().begin();
+			et.getTransaction().commit();
+			
+			this.model.remover(this.model.getListaBase().indexOf(xml));
+			
+		});
+		
+		this.btnDesconhecimentoDaOperacao.addActionListener(a->{
 			
 			alerta("Erro esse documento ja foi manifestado");
 			
@@ -193,9 +233,17 @@ public class AprovacaoXml extends Modulo {
 		tblNcm = new JTable();
 		scrollPane.setViewportView(tblNcm);
 
-		btManifestar = new JButton("Aprovar Documento");
-		btManifestar.setBounds(497, 359, 148, 23);
+		btManifestar = new JButton("Confirmacao da Operacao");
+		btManifestar.setBounds(468, 359, 177, 23);
 		contentPane.add(btManifestar);
+		
+		btnOperacaoNaoRealizada = new JButton("Operacao nao Realizada");
+		btnOperacaoNaoRealizada.setBounds(281, 359, 177, 23);
+		contentPane.add(btnOperacaoNaoRealizada);
+		
+		btnDesconhecimentoDaOperacao = new JButton("Desconhecimento da Operacao");
+		btnDesconhecimentoDaOperacao.setBounds(47, 359, 224, 23);
+		contentPane.add(btnDesconhecimentoDaOperacao);
 
 	}
 }

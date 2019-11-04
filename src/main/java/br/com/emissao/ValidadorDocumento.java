@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -46,12 +47,14 @@ import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.COFINS.COFINSAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Det.Imposto.PIS.PISAliq;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Pgto.MP;
 import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe.InfCFe.Total.DescAcrEntr;
+import br.com.nota.FormaPagamentoNota;
 import br.com.nota.ModeloNota;
 import br.com.nota.Nota;
 import br.com.nota.NotaService;
 import br.com.nota.ProdutoNota;
 import br.com.pessoa.PessoaFisica;
 import br.com.pessoa.PessoaJuridica;
+import br.com.venda.FormaPagamento;
 import br.com.webServices.TabelaImpostoAproximado;
 
 public class ValidadorDocumento {
@@ -61,8 +64,55 @@ public class ValidadorDocumento {
 	private NotaService service;
 	private SAT moduloSat;
 
-	public CFe notaParaCFe(Nota nota) throws InvalidKeyException, NoSuchAlgorithmException, KeyStoreException,
-			CertificateException, SignatureException, IOException {
+	public CFe notaParaCFe(Nota nota, List<Pagamento> pagamentos) throws InvalidKeyException, NoSuchAlgorithmException,
+			KeyStoreException, CertificateException, SignatureException, IOException {
+		
+		if (pagamentos == null) {
+
+			pagamentos = nota.getVencimentos().parallelStream().flatMap(v -> v.getMovimentos().parallelStream())
+					.map(m -> {
+
+						Pagamento p = new Pagamento();
+						p.setData(m.getData());
+						p.setFormaPagamento(new FormaPagamento() {
+
+							@Override
+							public String cnpjCredenciadoraCartao() {
+								// TODO Auto-generated method stub
+								return "";
+							}
+
+							@Override
+							public int codigoCredenciadoraCartao() {
+								// TODO Auto-generated method stub
+								return 0;
+							}
+
+							@Override
+							public FormaPagamentoNota getFormaPagamento() {
+								// TODO Auto-generated method stub
+								
+								if(m.getFormaPagamento() == null)
+									return FormaPagamentoNota.DINHEIRO;
+								
+								return m.getFormaPagamento();
+							}
+
+							@Override
+							public String getNome() {
+								// TODO Auto-generated method stub
+								return m.getFormaPagamento().toString();
+							}
+
+						});
+						p.setVencimento(m.getVencimento());
+						p.setValor(m.getValor());
+
+						return p;
+
+					}).collect(Collectors.toList());
+
+		}
 
 		FormataNumero f2 = new FormataNumero(2);
 
@@ -433,18 +483,21 @@ public class ValidadorDocumento {
 
 		Pgto pg = new Pgto();
 
-		MP mp = new MP();
+		for (Pagamento pagamento : pagamentos) {
 
-		if (nota.getForma_pagamento().toString().startsWith("CARTAO")) {
+			MP mp = new MP();
+			
+			if (pagamento.getFormaPagamento().getFormaPagamento().toString().startsWith("CARTAO")) {
 
-			mp.setCAdmC(i3.formatar(nota.getCredenciadoraCartao()));
+				mp.setCAdmC(i3.formatar(pagamento.getFormaPagamento().codigoCredenciadoraCartao()));
 
+			}
+
+			mp.setVMP(f2.formatar(pagamento.getValor()));
+			mp.setCMP(i2.formatar(pagamento.getFormaPagamento().getFormaPagamento().getId()));
+
+			pg.getMP().add(mp);
 		}
-
-		mp.setVMP(f2.formatar(nota.getValorMeioDePagamento()));
-		mp.setCMP(i2.formatar(nota.getForma_pagamento().getId()));
-
-		pg.getMP().add(mp);
 
 		inf.setPgto(pg);
 
@@ -498,7 +551,7 @@ public class ValidadorDocumento {
 
 						this.moduloSat.iniciar();
 
-						CFe cfe = this.notaParaCFe(nota);
+						CFe cfe = this.notaParaCFe(nota, pagamentos);
 
 						JAXBContext context = JAXBContext.newInstance(CFe.class);
 						Marshaller m = context.createMarshaller();
@@ -533,6 +586,8 @@ public class ValidadorDocumento {
 						nota.setNumero(numero);
 
 						String b64 = retorno[8].replaceAll("CFe", "") + "|" + retorno[7];
+						
+						nota.setBase64(b64);
 
 						for (int i = 9; i < retorno.length; i++) {
 

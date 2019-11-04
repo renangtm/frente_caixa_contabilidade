@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="200" pageHeight="300" whenNoDataType="AllSectionsNoDetail" columnWidth="180" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
 	<property name="ireport.zoom" value="2.5937424601000383"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="26"/>
+	<property name="ireport.y" value="37"/>
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="nomeEmpresa" class="java.lang.String"/>
 	<parameter name="cnpjEmpresa" class="java.lang.String"/>
@@ -13,6 +13,8 @@
 	<parameter name="cepEmpresa" class="java.lang.String"/>
 	<parameter name="caixa" class="java.lang.String"/>
 	<parameter name="gerente" class="java.lang.String"/>
+	<parameter name="operacao" class="java.lang.String"/>
+	<parameter name="saldo" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -81,7 +83,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="85" splitType="Stretch">
+		<band height="103" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="180" height="1" uuid="adab19e1-54f4-4398-9f1e-0741fd06a859"/>
 			</line>
@@ -134,12 +136,26 @@
 				</textElement>
 				<text><![CDATA[Valor:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="1" width="178" height="16" uuid="1f375e43-a9e3-4c80-8551-f61f5c0d9ceb"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+			<textField>
+				<reportElement x="0" y="1" width="178" height="16" uuid="18047003-4f96-47b2-a774-d0efe48cbdfa"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Reposicao]]></text>
+				<textFieldExpression><![CDATA[$P{operacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="42" y="85" width="136" height="17" uuid="cd941ac4-e6da-4d12-a269-114bc41c7ea4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{saldo})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="85" width="42" height="17" uuid="cf4f1a23-ebc1-4901-b614-258ee7cc0daf"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Sado:]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

@@ -25,6 +25,7 @@ import br.com.pessoa.PessoaService;
 import br.com.pessoa.RepresentadorPessoa;
 import br.com.usuario.Usuario;
 import br.com.utilidades.GerenciadorLista;
+import br.com.venda.FormaPagamento;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -338,7 +339,40 @@ public class CadastroCheque extends Modulo {
 				pg.cheque = this.cheque;
 				pg.valor = this.cheque.getValor();
 				pg.data = this.cheque.getData();
-				pg.formaPagamento = FormaPagamentoNota.CHEQUE;
+				
+				
+				pg.formaPagamento = new FormaPagamento() {
+
+					public String toString(){
+						
+						return "Cheque";
+						
+					}
+					
+					public String getNome() {
+						// TODO Auto-generated method stub
+						return "Cheque";
+					}
+
+					@Override
+					public int codigoCredenciadoraCartao() {
+						// TODO Auto-generated method stub
+						return -1;
+					}
+
+					@Override
+					public br.com.nota.FormaPagamentoNota getFormaPagamento() {
+						// TODO Auto-generated method stub
+						return br.com.nota.FormaPagamentoNota.CHEQUE;
+					}
+
+					@Override
+					public String cnpjCredenciadoraCartao() {
+						// TODO Auto-generated method stub
+						return "";
+					}
+					
+				};
 
 				this.pagamentos.add(pg);
 

@@ -53,6 +53,9 @@ public class ExpedienteCaixa {
 	private List<Reposicao> reposicoes;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="expediente")
+	private List<Reducao> reducoes;
+	
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="expediente")
 	private List<AjusteDivergencia> ajustes;
 
 	public ExpedienteCaixa() {
@@ -70,6 +73,18 @@ public class ExpedienteCaixa {
 	
 	
 	
+	public List<Reducao> getReducoes() {
+		return reducoes;
+	}
+
+
+
+	public void setReducoes(List<Reducao> reducoes) {
+		this.reducoes = reducoes;
+	}
+
+
+
 	public List<AjusteDivergencia> getAjustes() {
 		return ajustes;
 	}

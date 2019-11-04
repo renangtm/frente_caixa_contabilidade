@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
 	<property name="ireport.zoom" value="1.9487171000000312"/>
-	<property name="ireport.x" value="291"/>
-	<property name="ireport.y" value="7"/>
+	<property name="ireport.x" value="157"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="nomeEmpresa" class="java.lang.String"/>
 	<parameter name="cnpjEmpresa" class="java.lang.String"/>
@@ -115,7 +115,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="214" y="61" width="38" height="17" uuid="39f6b8be-e57c-4267-82a7-9fcba7514000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($P{lucroTotal})+"%"]]></textFieldExpression>
 			</textField>
@@ -129,7 +129,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="312" y="60" width="50" height="17" uuid="9f1c9c0e-830b-47eb-b714-9f1814553899"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{icmsTotal})]]></textFieldExpression>
 			</textField>
@@ -143,7 +143,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="410" y="61" width="60" height="17" uuid="20d0b2fb-a5ac-4fec-bf9d-8b0d4dcc1339"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{valorTotal})]]></textFieldExpression>
 			</textField>
@@ -157,7 +157,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="519" y="61" width="56" height="15" uuid="85e5bb3f-1e22-402e-94b2-652230285ec1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{valorTotalLiquido})]]></textFieldExpression>
 			</textField>
@@ -199,7 +199,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="316" y="1" width="42" height="17" uuid="f6abcc48-775c-4e71-81c8-8c310a8eee6d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{quantidade}+" - "+$F{unidade}.toString()]]></textFieldExpression>
 			</textField>
@@ -224,7 +224,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="389" y="1" width="39" height="17" uuid="d447ab29-5d7a-428b-b638-caab9d45095f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{valor})]]></textFieldExpression>
 			</textField>
@@ -252,7 +252,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="459" y="1" width="39" height="17" uuid="ff298011-50ff-4921-8b22-f5db5b1e7d60"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{lucro})+"%"]]></textFieldExpression>
 			</textField>
@@ -266,7 +266,7 @@
 			<textField pattern="dd/MM/yyyy HH:mm:ss">
 				<reportElement x="529" y="1" width="46" height="17" uuid="0040576c-4538-4f42-b5a6-6c747cc4e8fc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{icms})]]></textFieldExpression>
 			</textField>

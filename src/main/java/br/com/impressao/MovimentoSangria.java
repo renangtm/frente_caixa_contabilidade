@@ -3,6 +3,7 @@ package br.com.impressao;
 import java.util.Date;
 
 import br.com.caixa.Reposicao;
+import br.com.caixa.Sangria;
 import br.com.movimento_financeiro.Movimento;
 
 public class MovimentoSangria {
@@ -12,6 +13,14 @@ public class MovimentoSangria {
 		this.data = r.getMomento().getTime();
 		this.pessoa = "------";
 		this.valor = r.getValor();
+		
+	}
+	
+	public MovimentoSangria(Sangria s){
+		
+		this.data = s.getMomento().getTime();
+		this.pessoa = "------";
+		this.valor = s.getValor();
 		
 	}
 	

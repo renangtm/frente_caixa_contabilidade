@@ -31,12 +31,15 @@ public class Reposicao {
 	@Column
 	@Campo(nome="data")
 	private Calendar momento;
+	
+	@Column
+	private double saldo_caixa;
 
 	@OneToOne
 	private Usuario gerente;
 	
 	@ManyToOne
-	private Sangria sangria;
+	private Reducao reducao;
 
 	public int getId() {
 		return id;
@@ -44,14 +47,26 @@ public class Reposicao {
 	
 	
 
-	public Sangria getSangria() {
-		return sangria;
+	public double getSaldo_caixa() {
+		return saldo_caixa;
 	}
 
 
 
-	public void setSangria(Sangria sangria) {
-		this.sangria = sangria;
+	public void setSaldo_caixa(double saldo_caixa) {
+		this.saldo_caixa = saldo_caixa;
+	}
+
+
+
+	public Reducao getReducao() {
+		return reducao;
+	}
+
+
+
+	public void setReducao(Reducao sangria) {
+		this.reducao = sangria;
 	}
 
 

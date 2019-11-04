@@ -51,6 +51,9 @@ public class Nota {
 	private Calendar data_emissao;
 
 	@Column
+	private String base64;
+	
+	@Column
 	private Calendar data_saida_entrada;
 
 	@Column
@@ -106,10 +109,6 @@ public class Nota {
 	@Column
 	private TipoNota tipo;
 
-	@Enumerated(EnumType.ORDINAL)
-	@Column
-	private FormaPagamentoNota forma_pagamento;
-
 	// mappedBy='nota'
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_nota")
@@ -121,18 +120,19 @@ public class Nota {
 	@Column
 	private double valorMeioDePagamento;
 
-	@Column
-	private int credenciadoraCartao;
-
-	@Column
-	private String numeroAutorizacaoOperacaoCartaoCreditoDebito;
-
-	@Column
-	private String cnpjCredenciadoraCartao;
-
 	@ManyToOne
 	@JoinColumn(name = "id_empresa")
 	private Empresa empresa;
+	
+	
+
+	public String getBase64() {
+		return base64;
+	}
+
+	public void setBase64(String base64) {
+		this.base64 = base64;
+	}
 
 	public OperacaoLogistica getOperacaoLogistica() {
 
@@ -211,8 +211,6 @@ public class Nota {
 		this.produtos = new ArrayList<ProdutoNota>();
 		this.vencimentos = new ArrayList<Vencimento>();
 
-		this.forma_pagamento = FormaPagamentoNota.DINHEIRO;
-
 		this.modelo = ModeloNota.NFCE;
 
 		this.emitente = new PessoaJuridica();
@@ -236,22 +234,6 @@ public class Nota {
 
 	public void setFicha(int ficha) {
 		this.ficha = ficha;
-	}
-
-	public String getNumeroAutorizacaoOperacaoCartaoCreditoDebito() {
-		return numeroAutorizacaoOperacaoCartaoCreditoDebito;
-	}
-
-	public void setNumeroAutorizacaoOperacaoCartaoCreditoDebito(String numeroAutorizacaoOperacaoCartaoCreditoDebito) {
-		this.numeroAutorizacaoOperacaoCartaoCreditoDebito = numeroAutorizacaoOperacaoCartaoCreditoDebito;
-	}
-
-	public String getCnpjCredenciadoraCartao() {
-		return cnpjCredenciadoraCartao;
-	}
-
-	public void setCnpjCredenciadoraCartao(String cnpjCredenciadoraCartao) {
-		this.cnpjCredenciadoraCartao = cnpjCredenciadoraCartao;
 	}
 
 	public String getChave_referenciada() {
@@ -284,14 +266,6 @@ public class Nota {
 
 	public void setModelo(ModeloNota modelo) {
 		this.modelo = modelo;
-	}
-
-	public FormaPagamentoNota getForma_pagamento() {
-		return forma_pagamento;
-	}
-
-	public void setForma_pagamento(FormaPagamentoNota forma_pagamento) {
-		this.forma_pagamento = forma_pagamento;
 	}
 
 	public Pessoa getDestinatario() {
@@ -446,14 +420,6 @@ public class Nota {
 
 	public void setValorMeioDePagamento(double valorMeioDePagamento) {
 		this.valorMeioDePagamento = valorMeioDePagamento;
-	}
-
-	public int getCredenciadoraCartao() {
-		return credenciadoraCartao;
-	}
-
-	public void setCredenciadoraCartao(int credenciadoraCartao) {
-		this.credenciadoraCartao = credenciadoraCartao;
 	}
 
 	public double getIcmsTotal() {

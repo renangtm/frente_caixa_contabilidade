@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -37,11 +39,12 @@ import br.com.caixa.ExpedienteCaixa;
 import br.com.caixa.ExpedienteCaixaService;
 import br.com.caixa.Reposicao;
 import br.com.caixa.Sangria;
+import br.com.caixa.Reducao;
 import br.com.codigo_barra.CodigoBarra;
 import br.com.emissao.SAT;
 import br.com.empresa.Empresa;
-import br.com.impressao.GeradorCupomReposicao;
-import br.com.impressao.GeradorCupomSangria;
+import br.com.impressao.GeradorCupomOperacaoCaixa;
+import br.com.impressao.GeradorCupomReducao;
 import br.com.movimento_financeiro.Movimento;
 import br.com.nota.FormaPagamentoNota;
 import br.com.pessoa.Pessoa;
@@ -174,179 +177,165 @@ public class FrenteCaixa extends Modulo {
 	}
 
 	/*
-	protected void finalizarVenda() {
+	 * protected void finalizarVenda() {
+	 * 
+	 * this.venda.setStatus(StatusVenda.FECHADA);
+	 * this.venda.setData(Calendar.getInstance());
+	 * 
+	 * if (this.venda.getCliente() != null) {
+	 * 
+	 * this.venda.setCliente(et.merge(this.venda.getCliente()));
+	 * 
+	 * }
+	 * 
+	 * this.venda.getProdutos().stream().forEach(p ->
+	 * p.setProduto(et.merge(p.getProduto())));
+	 * 
+	 * try {
+	 * 
+	 * NotaFactory nf = new NotaFactory();
+	 * 
+	 * nf.setFp(this.formaPagamento); nf.setParcelas(1); nf.setPrazoPagamento(0);
+	 * nf.setTransportadora(null);
+	 * 
+	 * nf.setVenda(this.venda);
+	 * 
+	 * List<Nota> notas = null;
+	 * 
+	 * try {
+	 * 
+	 * notas = nf.getNotas();
+	 * 
+	 * } catch (Exception exx) {
+	 * 
+	 * erro(exx.getMessage()); return;
+	 * 
+	 * }
+	 * 
+	 * NotaService ns = new NotaService(et); ns.setEmpresa(this.empresa);
+	 * 
+	 * VendaService vs = new VendaService(et);
+	 * 
+	 * if (!vs.verificacaoPersistencia(venda) ||
+	 * notas.stream().map(ns::verificacaoPersistencia).anyMatch(b -> !b)) {
+	 * 
+	 * throw new RuntimeException("Nao é possivel criar a venda nem a nota");
+	 * 
+	 * }
+	 * 
+	 * SAT sat = new SAT(venda.getEmpresa());// teste
+	 * 
+	 * ValidadorDocumento vd = new ValidadorDocumento(ns, sat, new
+	 * GeradorCupomSATModelo1(), new TabelaImpostoAproximado());
+	 * 
+	 * if (this.cpf != "") {
+	 * 
+	 * notas.forEach(n -> n.setCpfNotaSemDestinatario(this.cpf));
+	 * 
+	 * }
+	 * 
+	 * notas.forEach(n -> {
+	 * 
+	 * try {
+	 * 
+	 * vd.validarFiscalmente(n);
+	 * 
+	 * } catch (Exception ex) {
+	 * 
+	 * erro("Nao foi possivel emitir o cupom devido a inconsistencias fiscais, contate o seu contador."
+	 * );
+	 * 
+	 * ex.printStackTrace();
+	 * 
+	 * return;
+	 * 
+	 * }
+	 * 
+	 * });
+	 * 
+	 * this.venda = new VendaService(et).merge(venda);
+	 * 
+	 * et.getTransaction().begin(); et.getTransaction().commit();
+	 * 
+	 * notas = notas.stream().map(n -> new
+	 * NotaService(et).merge(n)).collect(Collectors.toList());
+	 * 
+	 * this.venda.setNotas(notas);
+	 * 
+	 * et.getTransaction().begin(); et.getTransaction().commit();
+	 * 
+	 * LinkedList<Thread> ths = new LinkedList<Thread>();
+	 * 
+	 * Banco banco = this.empresa.getPj().getBanco();
+	 * 
+	 * if (banco == null) {
+	 * 
+	 * banco = new Banco(); banco.setPj(this.empresa.getPj()); banco.setSaldo(0);
+	 * 
+	 * banco = new BancoService(et).merge(banco);
+	 * 
+	 * }
+	 * 
+	 * final Banco bc = banco;
+	 * 
+	 * final MovimentoService mvs = new MovimentoService(et); mvs.setBanco(banco);
+	 * 
+	 * Historico hi = (Historico)
+	 * et.createQuery("SELECT h FROM Historico h").getResultList().get(0);
+	 * 
+	 * Operacao op = (Operacao)
+	 * et.createQuery("SELECT o FROM Operacao o WHERE o.credito=true").getResultList
+	 * () .get(0);
+	 * 
+	 * ths.addAll(notas.stream().flatMap(n -> n.getVencimentos().stream()).map(v ->
+	 * {
+	 * 
+	 * return new Thread(() -> {
+	 * 
+	 * Movimento m = new Movimento(); m.setBanco(bc);
+	 * m.setData(Calendar.getInstance()); m.setDescontos(0); m.setHistorico(hi);
+	 * m.setOperacao(op); m.setValor(v.getValor()); m.setVencimento(v);
+	 * m.setFormaPagamento(v.getNota().getForma_pagamento());
+	 * m.setExpediente(expediente);
+	 * 
+	 * mvs.mergeMovimento(m, true, new MovimentoService.Listener() {
+	 * 
+	 * @Override public void setConclusao(double porcentagem, String observacao,
+	 * Movimento mov) {
+	 * 
+	 * if (porcentagem == 100) {
+	 * 
+	 * ths.removeFirst();
+	 * 
+	 * expediente.getMovimentos().add(mov);
+	 * 
+	 * et.getTransaction().begin(); et.getTransaction().commit();
+	 * 
+	 * if (ths.size() > 0) { ths.getFirst().start(); } else { novaVenda(); }
+	 * 
+	 * }
+	 * 
+	 * }
+	 * 
+	 * });
+	 * 
+	 * }); }).collect(Collectors.toList()));
+	 * 
+	 * ths.getFirst().start();
+	 * 
+	 * } catch (Exception e) {
+	 * 
+	 * e.printStackTrace();
+	 * 
+	 * erro("Ocorreu um problema");
+	 * 
+	 * return;
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 
-		this.venda.setStatus(StatusVenda.FECHADA);
-		this.venda.setData(Calendar.getInstance());
-
-		if (this.venda.getCliente() != null) {
-
-			this.venda.setCliente(et.merge(this.venda.getCliente()));
-
-		}
-
-		this.venda.getProdutos().stream().forEach(p -> p.setProduto(et.merge(p.getProduto())));
-
-		try {
-
-			NotaFactory nf = new NotaFactory();
-
-			nf.setFp(this.formaPagamento);
-			nf.setParcelas(1);
-			nf.setPrazoPagamento(0);
-			nf.setTransportadora(null);
-
-			nf.setVenda(this.venda);
-
-			List<Nota> notas = null;
-
-			try {
-
-				notas = nf.getNotas();
-
-			} catch (Exception exx) {
-
-				erro(exx.getMessage());
-				return;
-
-			}
-
-			NotaService ns = new NotaService(et);
-			ns.setEmpresa(this.empresa);
-
-			VendaService vs = new VendaService(et);
-
-			if (!vs.verificacaoPersistencia(venda)
-					|| notas.stream().map(ns::verificacaoPersistencia).anyMatch(b -> !b)) {
-
-				throw new RuntimeException("Nao é possivel criar a venda nem a nota");
-
-			}
-
-			SAT sat = new SAT(venda.getEmpresa());// teste
-
-			ValidadorDocumento vd = new ValidadorDocumento(ns, sat, new GeradorCupomSATModelo1(),
-					new TabelaImpostoAproximado());
-
-			if (this.cpf != "") {
-
-				notas.forEach(n -> n.setCpfNotaSemDestinatario(this.cpf));
-
-			}
-
-			notas.forEach(n -> {
-
-				try {
-
-					vd.validarFiscalmente(n);
-
-				} catch (Exception ex) {
-
-					erro("Nao foi possivel emitir o cupom devido a inconsistencias fiscais, contate o seu contador.");
-
-					ex.printStackTrace();
-
-					return;
-
-				}
-
-			});
-
-			this.venda = new VendaService(et).merge(venda);
-
-			et.getTransaction().begin();
-			et.getTransaction().commit();
-
-			notas = notas.stream().map(n -> new NotaService(et).merge(n)).collect(Collectors.toList());
-
-			this.venda.setNotas(notas);
-
-			et.getTransaction().begin();
-			et.getTransaction().commit();
-
-			LinkedList<Thread> ths = new LinkedList<Thread>();
-
-			Banco banco = this.empresa.getPj().getBanco();
-
-			if (banco == null) {
-
-				banco = new Banco();
-				banco.setPj(this.empresa.getPj());
-				banco.setSaldo(0);
-
-				banco = new BancoService(et).merge(banco);
-
-			}
-
-			final Banco bc = banco;
-
-			final MovimentoService mvs = new MovimentoService(et);
-			mvs.setBanco(banco);
-
-			Historico hi = (Historico) et.createQuery("SELECT h FROM Historico h").getResultList().get(0);
-
-			Operacao op = (Operacao) et.createQuery("SELECT o FROM Operacao o WHERE o.credito=true").getResultList()
-					.get(0);
-
-			ths.addAll(notas.stream().flatMap(n -> n.getVencimentos().stream()).map(v -> {
-
-				return new Thread(() -> {
-
-					Movimento m = new Movimento();
-					m.setBanco(bc);
-					m.setData(Calendar.getInstance());
-					m.setDescontos(0);
-					m.setHistorico(hi);
-					m.setOperacao(op);
-					m.setValor(v.getValor());
-					m.setVencimento(v);
-					m.setFormaPagamento(v.getNota().getForma_pagamento());
-					m.setExpediente(expediente);
-
-					mvs.mergeMovimento(m, true, new MovimentoService.Listener() {
-
-						@Override
-						public void setConclusao(double porcentagem, String observacao, Movimento mov) {
-
-							if (porcentagem == 100) {
-
-								ths.removeFirst();
-
-								expediente.getMovimentos().add(mov);
-
-								et.getTransaction().begin();
-								et.getTransaction().commit();
-
-								if (ths.size() > 0) {
-									ths.getFirst().start();
-								} else {
-									novaVenda();
-								}
-
-							}
-
-						}
-
-					});
-
-				});
-			}).collect(Collectors.toList()));
-
-			ths.getFirst().start();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-			erro("Ocorreu um problema");
-
-			return;
-
-		}
-
-	}
-	*/
-	
 	protected void setFormaPagamento(FormaPagamento fp) {
 
 		this.formaPagamento = fp;
@@ -454,6 +443,15 @@ public class FrenteCaixa extends Modulo {
 
 	}
 
+	public void problemaFinalizar() {
+
+		sfp.dispensar();
+
+		keyManager.removeKeyEventDispatcher(dispClose);
+		keyManager.addKeyEventDispatcher(disp);
+
+	}
+
 	protected void removerProduto(ProdutoVenda pv) {
 
 		if (pv.getId() > 0) {
@@ -476,7 +474,8 @@ public class FrenteCaixa extends Modulo {
 		this.lblQuantidadeItens
 				.setText(this.venda.getProdutos().parallelStream().filter(p -> p.getQuantidade() > 0).count() + " "
 						+ (this.venda.getProdutos().parallelStream().filter(p -> p.getQuantidade() > 0).count() > 1
-								? "Itens" : "Item"));
+								? "Itens"
+								: "Item"));
 
 		this.txtDescricaoProduto.setText("");
 		this.txtQuantidade.setText("0 UN");
@@ -489,9 +488,9 @@ public class FrenteCaixa extends Modulo {
 					+ this.produtoSelecionado.getTipoQuantidade().toString());
 			this.txtValorUnitario.setText((this.produtoSelecionado.getValor() + "").replaceAll("\\.", ","));
 
-			this.txtSubTotal
-					.setText(((this.produtoSelecionado.getValor() * this.produtoSelecionado.getQuantidade()) + "")
-							.replaceAll("\\.", ","));
+			this.txtSubTotal.setText(
+					(new BigDecimal(this.produtoSelecionado.getValor() * this.produtoSelecionado.getQuantidade())
+							.setScale(2, RoundingMode.HALF_UP).toString() + "").replaceAll("\\.", ","));
 
 			new Thread(new ImageLoader(this.produtoSelecionado.getProduto().getImagem(), new ImageLoaderListener() {
 
@@ -512,7 +511,8 @@ public class FrenteCaixa extends Modulo {
 
 		}
 
-		this.txtTotal.setText((this.venda.getTotal() + "").replaceAll("\\.", ","));
+		this.txtTotal.setText((new BigDecimal(this.venda.getTotal()).setScale(2, RoundingMode.HALF_UP).toString() + "")
+				.replaceAll("\\.", ","));
 
 		this.lstProdutoVenda.setLista(this.venda.getProdutos());
 		this.lstProdutoVenda.atualizaListaBaseConformeFiltros();
@@ -530,7 +530,7 @@ public class FrenteCaixa extends Modulo {
 
 	private JButton btNovaVenda;
 
-	private JButton btSangria;
+	private JButton btReducao;
 
 	private JButton btReposicao;
 
@@ -779,19 +779,107 @@ public class FrenteCaixa extends Modulo {
 			sf.centralizar();
 			sf.requestFocus();
 			/*
-			 * if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota.
-			 * DINHEIRO)) { try {
+			 * if (formaPagamento.getFormaPagamento().equals(FormaPagamentoNota. DINHEIRO))
+			 * { try {
 			 * 
 			 * Double.parseDouble(txtDinheiro.getText().replaceAll(",", "."));
 			 * 
-			 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false;
-			 * } }
+			 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false; } }
 			 * 
 			 * if (pf) finalizarVenda();
 			 */
 		});
 
+		this.btReducao.addActionListener(a -> {
+			String senha = console("Senha de Administrador");
+
+			Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha, TipoPermissao.GERENCIA_CAIXAS,
+					operador.getPf().getEmpresa());
+
+			if (gerente == null) {
+
+				erro("Senha invalida");
+				return;
+
+			}
+
+			try {
+
+				ExpedienteCaixa exp = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
+
+				Reducao red = new Reducao();
+				red.setExpediente(exp);
+				red.setMomento(Calendar.getInstance());
+				red.setGerente(gerente);
+
+				exp.getMovimentos().stream().filter(m -> m.getReducao() == null).forEach(m -> {
+
+					m.setReducao(red);
+					red.getMovimentos().add(m);
+
+				});
+
+				exp.getReposicoes().stream().filter(r -> r.getReducao() == null).forEach(r -> {
+
+					r.setReducao(red);
+					red.getReposicoes().add(r);
+
+				});
+
+				exp.getSangrias().stream().filter(s -> s.getReducao() == null).forEach(s -> {
+
+					s.setReducao(red);
+					red.getSangrias().add(s);
+
+				});
+
+				double saldo_inicial = exp.getCaixa().getSaldoAtual();
+				System.out.println(saldo_inicial + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+				for (Movimento m : red.getMovimentos()) {
+
+					if (m.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+
+						saldo_inicial -= m.getValor() * (m.getOperacao().isCredito() ? 1 : -1);
+
+					}
+
+				}
+
+				for (Reposicao r : red.getReposicoes()) {
+
+					saldo_inicial -= r.getValor();
+
+				}
+
+				for (Sangria s : red.getSangrias()) {
+
+					saldo_inicial += s.getValor();
+
+				}
+
+				System.out.println(saldo_inicial + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				red.setSaldo_inicial(saldo_inicial);
+
+				exp.getReducoes().add(red);
+
+				new ExpedienteCaixaService(et).merge(exp);
+
+				et.getTransaction().begin();
+				et.getTransaction().commit();
+
+				new GeradorCupomReducao().gerarCupom(red);
+
+			} catch (Exception e1) {
+
+				e1.printStackTrace();
+
+				alerta("Nao existe expediente aberto");
+
+			}
+		});
+
 		this.btSangria.addActionListener(a -> {
+
 			String senha = console("Senha de Administrador");
 
 			Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha, TipoPermissao.GERENCIA_CAIXAS,
@@ -810,52 +898,12 @@ public class FrenteCaixa extends Modulo {
 
 				ExpedienteCaixa exp = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
 
-				if (valor > exp.getSaldo_final_atual()) {
-
-					erro("O Valor e maior que o saldo desse caixa");
-					return;
-
-				}
-
 				Sangria sangria = new Sangria();
 				sangria.setExpediente(exp);
 				sangria.setMomento(Calendar.getInstance());
+				sangria.setSaldo_caixa(exp.getSaldo_final_atual());
 				sangria.setValor(valor);
 				sangria.setGerente(gerente);
-
-				exp.getMovimentos().stream().filter(m -> m.getSangria() == null).forEach(m -> {
-
-					m.setSangria(sangria);
-					sangria.getMovimentos().add(m);
-
-				});
-
-				exp.getReposicoes().stream().filter(r -> r.getSangria() == null).forEach(r -> {
-
-					r.setSangria(sangria);
-					sangria.getReposicoes().add(r);
-
-				});
-
-				double saldo_inicial = exp.getCaixa().getSaldoAtual();
-				System.out.println(saldo_inicial + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-				for (Movimento m : sangria.getMovimentos()) {
-
-					if (m.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-
-						saldo_inicial -= m.getValor() * (m.getOperacao().isCredito() ? 1 : -1);
-
-					}
-
-				}
-
-				for (Reposicao r : sangria.getReposicoes()) {
-
-					saldo_inicial -= r.getValor();
-
-				}
-				System.out.println(saldo_inicial + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				sangria.setSaldo_inicial(saldo_inicial);
 
 				exp.getSangrias().add(sangria);
 
@@ -864,15 +912,17 @@ public class FrenteCaixa extends Modulo {
 				et.getTransaction().begin();
 				et.getTransaction().commit();
 
-				new GeradorCupomSangria().gerarCupom(sangria);
+				new GeradorCupomOperacaoCaixa().gerarCupom(sangria);
 
 			} catch (Exception e1) {
 
 				e1.printStackTrace();
 
 				alerta("Nao existe expediente aberto");
+				return;
 
 			}
+
 		});
 
 		this.btReposicao.addActionListener(a -> {
@@ -896,6 +946,7 @@ public class FrenteCaixa extends Modulo {
 
 				Reposicao reposicao = new Reposicao();
 				reposicao.setExpediente(exp);
+				reposicao.setSaldo_caixa(exp.getSaldo_final_atual());
 				reposicao.setMomento(Calendar.getInstance());
 				reposicao.setValor(valor);
 				reposicao.setGerente(gerente);
@@ -907,7 +958,7 @@ public class FrenteCaixa extends Modulo {
 				et.getTransaction().begin();
 				et.getTransaction().commit();
 
-				new GeradorCupomReposicao().gerarCupom(reposicao);
+				new GeradorCupomOperacaoCaixa().gerarCupom(reposicao);
 
 			} catch (Exception e1) {
 
@@ -995,11 +1046,43 @@ public class FrenteCaixa extends Modulo {
 
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F3) {
 
-						novaVenda();
+						if (sfp != null) {
+
+							sfp.dispensar();
+
+						}
+
+						if (venda.getProdutos().stream().filter(p -> p.getQuantidade() > 0).count() == 0) {
+
+							novaVenda();
+
+						} else {
+
+							String senha = console("Senha de Administrador");
+
+							Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha,
+									TipoPermissao.GERENCIA_CAIXAS, operador.getPf().getEmpresa());
+
+							if (gerente == null) {
+
+								erro("Senha invalida");
+								return true;
+
+							}
+
+							novaVenda();
+
+						}
 
 						return true;
 
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F4) {
+
+						if (sfp != null) {
+
+							sfp.dispensar();
+
+						}
 
 						if (venda.getProdutos().size() == 0) {
 
@@ -1023,14 +1106,12 @@ public class FrenteCaixa extends Modulo {
 						sfp.requestFocus();
 
 						/*
-						 * if (formaPagamento.getFormaPagamento().equals(
-						 * FormaPagamentoNota.DINHEIRO)) { try {
+						 * if (formaPagamento.getFormaPagamento().equals( FormaPagamentoNota.DINHEIRO))
+						 * { try {
 						 * 
-						 * Double.parseDouble(txtDinheiro.getText().replaceAll(
-						 * ",", "."));
+						 * Double.parseDouble(txtDinheiro.getText().replaceAll( ",", "."));
 						 * 
-						 * } catch (Exception exx) { txtDinheiro.requestFocus();
-						 * pf = false; } }
+						 * } catch (Exception exx) { txtDinheiro.requestFocus(); pf = false; } }
 						 * 
 						 * if (pf) finalizarVenda();
 						 */
@@ -1042,87 +1123,11 @@ public class FrenteCaixa extends Modulo {
 
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F7) {
 
-						String senha = console("Senha de Administrador");
+						btReducao.doClick();
 
-						Usuario gerente = new UsuarioService(et).getPorSenhaPermissao(senha,
-								TipoPermissao.GERENCIA_CAIXAS, operador.getPf().getEmpresa());
+					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F10) {
 
-						if (gerente == null) {
-
-							erro("Senha invalida");
-							return true;
-
-						}
-
-						double valor = Double.parseDouble(console("Digite o valor").replaceAll(",", "."));
-
-						try {
-
-							ExpedienteCaixa exp = et.merge(ConfiguracaoExpediente.getExpedienteCaixa(operador));
-
-							if (valor > exp.getSaldo_final_atual()) {
-
-								erro("O Valor e maior que o saldo desse caixa");
-								return true;
-
-							}
-
-							Sangria sangria = new Sangria();
-							sangria.setExpediente(exp);
-							sangria.setMomento(Calendar.getInstance());
-							sangria.setValor(valor);
-							sangria.setGerente(gerente);
-
-							exp.getMovimentos().stream().filter(m -> m.getSangria() == null).forEach(m -> {
-
-								m.setSangria(sangria);
-								sangria.getMovimentos().add(m);
-
-							});
-
-							exp.getReposicoes().stream().filter(r -> r.getSangria() == null).forEach(r -> {
-
-								r.setSangria(sangria);
-								sangria.getReposicoes().add(r);
-
-							});
-
-							double saldo_inicial = exp.getCaixa().getSaldoAtual();
-							System.out.println(saldo_inicial + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-							for (Movimento m : sangria.getMovimentos()) {
-
-								if (m.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
-
-									saldo_inicial -= m.getValor() * (m.getOperacao().isCredito() ? 1 : -1);
-
-								}
-
-							}
-
-							for (Reposicao r : sangria.getReposicoes()) {
-
-								saldo_inicial -= r.getValor();
-
-							}
-							System.out.println(saldo_inicial + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-							sangria.setSaldo_inicial(saldo_inicial);
-
-							exp.getSangrias().add(sangria);
-
-							new ExpedienteCaixaService(et).merge(exp);
-
-							et.getTransaction().begin();
-							et.getTransaction().commit();
-
-							new GeradorCupomSangria().gerarCupom(sangria);
-
-						} catch (Exception e1) {
-
-							e1.printStackTrace();
-
-							alerta("Nao existe expediente aberto");
-
-						}
+						btSangria.doClick();
 
 					} else if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F8) {
 
@@ -1157,7 +1162,7 @@ public class FrenteCaixa extends Modulo {
 							et.getTransaction().begin();
 							et.getTransaction().commit();
 
-							new GeradorCupomReposicao().gerarCupom(reposicao);
+							new GeradorCupomOperacaoCaixa().gerarCupom(reposicao);
 
 						} catch (Exception e1) {
 
@@ -1247,6 +1252,8 @@ public class FrenteCaixa extends Modulo {
 	private JTextField txtComanda;
 	private JLabel lblImagem;
 	private JButton btRemoveProduto;
+
+	private JButton btSangria;
 
 	private void rebase() {
 
@@ -1434,14 +1441,14 @@ public class FrenteCaixa extends Modulo {
 		btNovaVenda = new JButton("F3 Nova Venda");
 		btNovaVenda.setForeground(Color.BLACK);
 		btNovaVenda.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btNovaVenda.setBounds(10, 454, 202, 32);
+		btNovaVenda.setBounds(360, 454, 114, 32);
 		getContentPane().add(btNovaVenda);
 
-		btSangria = new JButton("F7 - Sangria");
-		btSangria.setForeground(Color.RED);
-		btSangria.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btSangria.setBounds(173, 497, 153, 32);
-		getContentPane().add(btSangria);
+		btReducao = new JButton("F7 - Relatorio de Reducao");
+		btReducao.setForeground(new Color(0, 100, 0));
+		btReducao.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btReducao.setBounds(173, 454, 177, 32);
+		getContentPane().add(btReducao);
 
 		btReposicao = new JButton("F8 - Reposicao");
 		btReposicao.addActionListener(new ActionListener() {
@@ -1450,7 +1457,7 @@ public class FrenteCaixa extends Modulo {
 		});
 		btReposicao.setForeground(Color.BLUE);
 		btReposicao.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btReposicao.setBounds(336, 497, 135, 32);
+		btReposicao.setBounds(334, 497, 137, 32);
 		getContentPane().add(btReposicao);
 
 		lblQuantidadeItens = new JLabel("1 Item");
@@ -1475,8 +1482,14 @@ public class FrenteCaixa extends Modulo {
 		btRemoveProduto = new JButton("F9 Remover Produto");
 		btRemoveProduto.setForeground(Color.MAGENTA);
 		btRemoveProduto.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btRemoveProduto.setBounds(222, 454, 246, 32);
+		btRemoveProduto.setBounds(10, 454, 153, 32);
 		getContentPane().add(btRemoveProduto);
+
+		btSangria = new JButton("F10 - Sangria");
+		btSangria.setForeground(new Color(255, 0, 0));
+		btSangria.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btSangria.setBounds(173, 497, 151, 32);
+		getContentPane().add(btSangria);
 
 		this.rebase();
 

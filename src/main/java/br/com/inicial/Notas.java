@@ -13,7 +13,10 @@ import br.com.base.ET;
 import br.com.base.Masks;
 import br.com.base.Resources;
 import br.com.conversores.ConversorDate;
+import br.com.emissao.ValidadorDocumento;
 import br.com.empresa.Empresa;
+import br.com.impressao.GeradorCupomSATModelo1;
+import br.com.jaxb.CFe.EnvCFe.LoteCFe.CFe;
 import br.com.nota.ModeloNota;
 import br.com.nota.Nota;
 import br.com.nota.NotaService;
@@ -41,15 +44,25 @@ import br.com.usuario.Usuario;
 import br.com.utilidades.GerenciadorLista;
 import br.com.utilidades.ListModelGenerica;
 import br.com.utilidades.ProvedorDeEventos;
+import br.com.webServices.TabelaImpostoAproximado;
 
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.io.File;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
 import java.util.List;
 
 import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultFormatterFactory;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import com.ibm.icu.text.NumberFormat;
 
@@ -59,6 +72,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -281,12 +295,15 @@ public class Notas extends Modulo {
 
 		this.nota = n;
 
+		this.btImprimir.setEnabled(this.nota.getId() > 0);
+		this.btBaixarXML.setEnabled(this.nota.getId() > 0);
+
 		if (!eq) {
 
 			this.txtNumero.requestFocus();
 
 			this.cboEntradaSaida.setSelectedItem(this.nota.getOperacao());
-			
+
 			this.btNovaNota.setEnabled(this.nota.getId() > 0);
 
 			this.cboModelo.setSelectedItem(this.nota.getModelo());
@@ -371,8 +388,13 @@ public class Notas extends Modulo {
 	private Produto aAdicionar;
 	private JFormattedTextField txtData;
 	private JComboBox<SaidaEntrada> cboEntradaSaida;
+	private JButton btImprimir;
+	private JButton btBaixarXML;
 
 	private void salvarNota() {
+
+		this.btImprimir.setEnabled(false);
+		this.btBaixarXML.setEnabled(false);
 
 		if (!vc(this.txtChave) || !vc(this.txtData) || !vc(this.txtNumero) || !vc(this.txtSerie)) {
 
@@ -394,8 +416,8 @@ public class Notas extends Modulo {
 			this.nota.setNumero(Integer.parseInt(this.txtNumero.getText()));
 			this.nota.setSerie(Integer.parseInt(this.txtSerie.getText()));
 
-			this.nota.setOperacao((SaidaEntrada)this.cboEntradaSaida.getSelectedItem());
-			
+			this.nota.setOperacao((SaidaEntrada) this.cboEntradaSaida.getSelectedItem());
+
 			this.nota.setModelo((ModeloNota) this.cboModelo.getSelectedItem());
 			this.nota.setStatus((StatusNota) this.cboSituacao.getSelectedItem());
 			this.nota.setTipo((TipoNota) this.cboTipo.getSelectedItem());
@@ -424,7 +446,7 @@ public class Notas extends Modulo {
 			et.getTransaction().commit();
 
 			this.setNota(nota);
-			
+
 		} catch (Exception ex) {
 
 			ex.printStackTrace();
@@ -451,7 +473,91 @@ public class Notas extends Modulo {
 		// ===================
 
 		this.cboEntradaSaida.setModel(new DefaultComboBoxModel<SaidaEntrada>(SaidaEntrada.values()));
-		
+
+		this.btImprimir.addActionListener(a -> {
+
+			if (this.nota.getModelo() == ModeloNota.NFCE) {
+
+				NotaService ns = new NotaService(et);
+
+				ValidadorDocumento vd = new ValidadorDocumento(ns, CFG.moduloSat, new GeradorCupomSATModelo1(),
+						new TabelaImpostoAproximado());
+
+				try {
+
+					CFe cfe = vd.notaParaCFe(this.nota, null);
+
+					String base64 = "123456789";
+
+					if (nota.getBase64() != null) {
+						if (!nota.getBase64().isEmpty()) {
+
+							base64 = nota.getBase64();
+
+						}
+					}
+
+					System.out
+							.println(cfe.getInfCFe().getTotal().getVCFeLei12741() + "===============================");
+
+					new GeradorCupomSATModelo1().gerarCupomFiscal(this.nota,
+							Double.parseDouble(cfe.getInfCFe().getTotal().getVCFeLei12741()), null, base64);
+
+				} catch (Exception e) {
+
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				}
+
+			}
+
+		});
+
+		final Notas este = this;
+		this.btBaixarXML.addActionListener(a -> {
+
+			if (this.nota.getModelo() == ModeloNota.NFCE) {
+
+				NotaService ns = new NotaService(et);
+
+				ValidadorDocumento vd = new ValidadorDocumento(ns, CFG.moduloSat, new GeradorCupomSATModelo1(),
+						new TabelaImpostoAproximado());
+
+				try {
+
+					CFe cfe = vd.notaParaCFe(this.nota, null);
+
+					JAXBContext ctx = JAXBContext.newInstance(CFe.class);
+					Marshaller unm = ctx.createMarshaller();
+
+					JFileChooser jsf = new JFileChooser();
+
+					jsf.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					jsf.setAcceptAllFileFilterUsed(false);
+
+					if (jsf.showOpenDialog(este) == JFileChooser.APPROVE_OPTION) {
+
+						File dir = jsf.getCurrentDirectory();
+						File arquivo = new File(
+								dir.getPath() + "/xml_nfce_" + nota.getChave() + "_" + nota.getId() + ".xml");
+						System.out.println(dir.getPath() + "\\xml_nfce_" + nota.getChave() + "_" + nota.getId() + ".xml");
+						arquivo.createNewFile();
+					
+						unm.marshal(cfe, arquivo);
+
+					}
+
+				} catch (InvalidKeyException | NoSuchAlgorithmException | KeyStoreException | CertificateException
+						| SignatureException | IOException | JAXBException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+		});
+
 		this.btAddVencimento.addActionListener(x -> {
 
 			if (!vc(this.txtDataVencimento) || !vc(this.txtValorVencimento)) {
@@ -769,7 +875,7 @@ public class Notas extends Modulo {
 		panel_2.add(txtData);
 
 		Masks.data().install(txtData);
-		
+
 		cboEntradaSaida = new JComboBox<SaidaEntrada>();
 		cboEntradaSaida.setBounds(169, 118, 119, 20);
 		panel_2.add(cboEntradaSaida);
@@ -1015,5 +1121,13 @@ public class Notas extends Modulo {
 		slPg = new JSlider();
 		slPg.setBounds(420, 482, 449, 26);
 		contentPane.add(slPg);
+
+		btImprimir = new JButton("Imprimir");
+		btImprimir.setBounds(671, 11, 112, 42);
+		contentPane.add(btImprimir);
+
+		btBaixarXML = new JButton("Baixar XML");
+		btBaixarXML.setBounds(793, 11, 119, 42);
+		contentPane.add(btBaixarXML);
 	}
 }

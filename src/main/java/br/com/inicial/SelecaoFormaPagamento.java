@@ -6,6 +6,8 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -206,21 +208,21 @@ public class SelecaoFormaPagamento extends JDialog {
 
 				NotaFactory nf = new NotaFactory();
 
-				nf.setFp(this.selecionada);
 				nf.setParcelas(1);
 				nf.setPrazoPagamento(0);
 				nf.setTransportadora(null);
 
 				System.out.println("TESTE2131231");
-				
-				System.out.println(this.pagamentos.stream().mapToDouble(p -> p.valor).sum() +"-----------------"+ this.venda.getTotal());
+
+				System.out.println(this.pagamentos.stream().mapToDouble(p -> p.valor).sum() + "-----------------"
+						+ this.venda.getTotal());
 				if (this.pagamentos.stream().mapToDouble(p -> p.valor).sum() < this.venda.getTotal()) {
-					
+
 					this.executando = false;
 					return;
 
 				}
-				
+
 				System.out.println("TESTE!!!!!!!!!!!!!");
 
 				nf.setValorMeioPagamento(this.pagamentos.stream().mapToDouble(p -> p.valor).sum());
@@ -236,11 +238,13 @@ public class SelecaoFormaPagamento extends JDialog {
 				} catch (Exception exx) {
 
 					exx.printStackTrace();
-					
+
 					this.executando = false;
+
+					fc.problemaFinalizar();
 					
 					fc.erro(exx.getMessage());
-					
+
 					return;
 
 				}
@@ -253,6 +257,8 @@ public class SelecaoFormaPagamento extends JDialog {
 				if (!vs.verificacaoPersistencia(venda)
 						|| notas.stream().map(ns::verificacaoPersistencia).anyMatch(b -> !b)) {
 
+					fc.problemaFinalizar();
+					
 					throw new RuntimeException("Nao é possivel criar a venda nem a nota");
 
 				}
@@ -267,14 +273,14 @@ public class SelecaoFormaPagamento extends JDialog {
 					notas.forEach(n -> n.setCpfNotaSemDestinatario(this.cpfNota));
 
 				}
-				
+
 				System.out.println("================================================================");
 
 				notas.forEach(n -> {
 
 					try {
 
-						vd.validarFiscalmente(n,pagamentos);
+						vd.validarFiscalmente(n, pagamentos);
 
 					} catch (Exception ex) {
 
@@ -328,14 +334,14 @@ public class SelecaoFormaPagamento extends JDialog {
 
 					p.vencimento = fnotas.get(0).getVencimentos().get(0);
 
-					if (p.formaPagamento == FormaPagamentoNota.VALE_PRESENTE) {
+					if (p.formaPagamento.getFormaPagamento() == FormaPagamentoNota.VALE_PRESENTE) {
 
 						et.persist(p.retirada);
 
 						return new Thread(() -> {
-							
+
 							ths.removeFirst();
-							
+
 							et.getTransaction().begin();
 							et.getTransaction().commit();
 
@@ -367,7 +373,7 @@ public class SelecaoFormaPagamento extends JDialog {
 						m.setOperacao(op);
 						m.setValor(p.valor);
 						m.setVencimento(p.vencimento);
-						m.setFormaPagamento(p.formaPagamento);
+						m.setFormaPagamento(p.formaPagamento.getFormaPagamento());
 						m.setExpediente(expediente);
 
 						mvs.mergeMovimento(m, true, new MovimentoService.Listener() {
@@ -438,12 +444,12 @@ public class SelecaoFormaPagamento extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	
-	public void dispensar(){
-		
+
+	public void dispensar() {
+
 		this.keyManager.removeKeyEventDispatcher(this.disp);
 		this.dispose();
-		
+
 	}
 
 	private String cpfNota;
@@ -597,13 +603,13 @@ public class SelecaoFormaPagamento extends JDialog {
 		getContentPane().setLayout(null);
 
 		lblDinheiro = new JLabel("Pagamento");
-		lblDinheiro.setFont(new Font("Arial", Font.BOLD, 17));
+		lblDinheiro.setFont(new Font("Arial", Font.BOLD, 13));
 		lblDinheiro.setBounds(10, 48, 289, 26);
 		getContentPane().add(lblDinheiro);
 
 		lblTroco = new JLabel("Troco");
-		lblTroco.setFont(new Font("Arial", Font.BOLD, 17));
-		lblTroco.setBounds(38, 157, 101, 14);
+		lblTroco.setFont(new Font("Arial", Font.BOLD, 13));
+		lblTroco.setBounds(38, 157, 261, 14);
 		getContentPane().add(lblTroco);
 
 		txtDinheiro = new JTextField();
@@ -668,7 +674,7 @@ public class SelecaoFormaPagamento extends JDialog {
 				Pagamento pg = new Pagamento();
 
 				pg.data = Calendar.getInstance();
-				pg.formaPagamento = selecionada.getFormaPagamento();
+				pg.formaPagamento = selecionada;
 				pg.valor = Math.min(vp.getSaldo(codigo),
 						venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum());
 				RetiradaValePresente rvp = vp.descontarValor(pg.valor, codigo);
@@ -693,11 +699,11 @@ public class SelecaoFormaPagamento extends JDialog {
 			Pagamento pg = new Pagamento();
 
 			pg.data = Calendar.getInstance();
-			pg.formaPagamento = selecionada.getFormaPagamento();
+			pg.formaPagamento = selecionada;
 			pg.valor = Math.min(valor, venda.getTotal() - pagamentos.stream().mapToDouble(p -> p.valor).sum());
 
 			if (pg.valor > 0) {
-				System.out.println("%%%%%%%%%%%%%%%%%%%%%%%");
+				
 				pagamentos.add(pg);
 
 			}
@@ -722,7 +728,8 @@ public class SelecaoFormaPagamento extends JDialog {
 				double v = Double.parseDouble(this.txtDinheiro.getText().replaceAll(",", "."))
 						+ this.pagamentos.stream().mapToDouble(p -> p.valor).sum();
 
-				this.txtTroco.setText(((v - this.venda.getTotal()) + "").replaceAll("\\.", ","));
+				this.txtTroco.setText((new BigDecimal(v - this.venda.getTotal()).setScale(2, RoundingMode.HALF_UP) + "")
+						.replaceAll("\\.", ","));
 
 			}
 

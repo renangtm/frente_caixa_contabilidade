@@ -1,8 +1,6 @@
 package br.com.caixa;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,16 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import br.com.movimento_financeiro.Movimento;
 import br.com.usuario.Usuario;
 import br.com.utilidades.Campo;
 
 @Entity
 public class Sangria {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
@@ -33,72 +29,47 @@ public class Sangria {
 	private double valor;
 	
 	@Column
+	private double saldo_caixa;
+	
+	@Column
 	@Campo(nome="data")
 	private Calendar momento;
 
-	@OneToOne(fetch=FetchType.EAGER)
+	@OneToOne
 	private Usuario gerente;
 	
-	@OneToMany(mappedBy="sangria")
-	private List<Movimento> movimentos;
-
-	@OneToMany(mappedBy="sangria")
-	private List<Reposicao> reposicoes;
-	
-	@Column
-	private double saldo_inicial;
-	
-	public Sangria(){
-		
-		this.reposicoes = new ArrayList<Reposicao>();
-		this.movimentos = new ArrayList<Movimento>();
-		
-	}
-	
-	
-	
-	
-	public double getSaldo_inicial() {
-		return saldo_inicial;
-	}
-
-
-
-
-	public void setSaldo_inicial(double saldo_inicial) {
-		this.saldo_inicial = saldo_inicial;
-	}
-
-
-
-
-	public List<Reposicao> getReposicoes() {
-		return reposicoes;
-	}
-
-
-
-	public void setReposicoes(List<Reposicao> reposicoes) {
-		this.reposicoes = reposicoes;
-	}
-
-
-
-	public List<Movimento> getMovimentos() {
-		return movimentos;
-	}
-
-
-
-	public void setMovimentos(List<Movimento> movimentos) {
-		this.movimentos = movimentos;
-	}
-
-
+	@ManyToOne
+	private Reducao reducao;
 
 	public int getId() {
 		return id;
 	}
+	
+	
+
+	public double getSaldo_caixa() {
+		return saldo_caixa;
+	}
+
+
+
+	public void setSaldo_caixa(double saldo_caixa) {
+		this.saldo_caixa = saldo_caixa;
+	}
+
+
+
+	public Reducao getReducao() {
+		return reducao;
+	}
+
+
+
+	public void setReducao(Reducao sangria) {
+		this.reducao = sangria;
+	}
+
+
 
 	public Usuario getGerente() {
 		return gerente;
@@ -139,7 +110,5 @@ public class Sangria {
 	public void setMomento(Calendar momento) {
 		this.momento = momento;
 	}
-
-	
 	
 }

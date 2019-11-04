@@ -6,14 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
 import br.com.emissao.GeradorCupomSAT;
+import br.com.inicial.Pagamento;
+import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Nota;
 import br.com.nota.ProdutoNota;
 import br.com.pessoa.PessoaFisica;
 import br.com.pessoa.PessoaJuridica;
+import br.com.venda.FormaPagamento;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -21,7 +25,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
-import br.com.inicial.Pagamento;
 
 public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
@@ -34,10 +37,11 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 			String cidadeEmpresa = nota.getEmitente().getEndereco().getCidade().getNome() + " - "
 					+ nota.getEmitente().getEndereco().getCidade().getEstado().getSigla();
-			
+
 			String cepEmpresa = nota.getEmitente().getEndereco().getCep();
-			
-			String ruaEmpresa = nota.getEmitente().getEndereco().getRua() + ", " + nota.getEmitente().getEndereco().getNumero();
+
+			String ruaEmpresa = nota.getEmitente().getEndereco().getRua() + ", "
+					+ nota.getEmitente().getEndereco().getNumero();
 
 			String cnpjEmpresa = nota.getEmitente().getCnpj();
 
@@ -47,20 +51,20 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 			String cnpjcpfConsumidor = "------------";
 
-			if(nota.getDestinatario() == null) {
-				
-				if(nota.getCpfNotaSemDestinatario() != null) {
-					
-					if(!nota.getCpfNotaSemDestinatario().isEmpty()) {
-					
+			if (nota.getDestinatario() == null) {
+
+				if (nota.getCpfNotaSemDestinatario() != null) {
+
+					if (!nota.getCpfNotaSemDestinatario().isEmpty()) {
+
 						cnpjcpfConsumidor = nota.getCpfNotaSemDestinatario();
-					
+
 					}
-					
+
 				}
-				
+
 			}
-			
+
 			if (nota.getDestinatario() != null) {
 
 				if (nota.getDestinatario().getClass().equals(PessoaFisica.class)) {
@@ -80,8 +84,6 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 			double total = nota.getValorTotalNota() + nota.getDescontoTotal();
 			double descontos = nota.getDescontoTotal();
 
-			String formaPagamento = nota.getForma_pagamento().toString();
-
 			double valorPagamento = nota.getValorMeioDePagamento();
 
 			double troco = nota.getTroco();
@@ -96,7 +98,7 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 				p.setDesconto(pn.getDesconto());
 
 				double aliq = ((pn.getImposto().getIcms().getValorIcms() + pn.getImposto().getIcms().getValorIcmsST())
-						/ (pn.getQuantidade() * pn.getValor() + pn.getOutro() + pn.getSeguro() + pn.getFrete()))*100;
+						/ (pn.getQuantidade() * pn.getValor() + pn.getOutro() + pn.getSeguro() + pn.getFrete())) * 100;
 
 				p.setIcms(aliq);
 
@@ -108,14 +110,13 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 				p.setQuantidade(pn.getQuantidade());
 
-				p.setValor_unitario(pn.getValor() + (pn.getOutro() + pn.getSeguro() + pn.getFrete()) / pn.getQuantidade());
+				p.setValor_unitario(
+						pn.getValor() + (pn.getOutro() + pn.getSeguro() + pn.getFrete()) / pn.getQuantidade());
 
-				p.setValor(p.getQuantidade()*p.getValor_unitario());
-				
+				p.setValor(p.getQuantidade() * p.getValor_unitario());
+
 				produtos.add(p);
-				
-				
-				
+
 			}
 
 			String numeroSat = nota.getEmpresa().getParametrosEmissao().getNumeroSat();
@@ -130,10 +131,59 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 			JasperReport subPagamentos = JasperCompileManager.compileReport(
 					GeradorCupomSATModelo1.class.getClassLoader().getResourceAsStream("icones/subPagamentos.jrxml"));
 
-			
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(nota.getEmpresa().getLogo().getArquivo()));
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
+
+			if (pagamentos == null) {
+
+				pagamentos = nota.getVencimentos().parallelStream().flatMap(v -> v.getMovimentos().parallelStream())
+						.map(m -> {
+
+							Pagamento p = new Pagamento();
+							p.setData(m.getData());
+							p.setFormaPagamento(new FormaPagamento() {
+
+								@Override
+								public String cnpjCredenciadoraCartao() {
+									// TODO Auto-generated method stub
+									return "";
+								}
+
+								@Override
+								public int codigoCredenciadoraCartao() {
+									// TODO Auto-generated method stub
+									return 0;
+								}
+
+								@Override
+								public FormaPagamentoNota getFormaPagamento() {
+									// TODO Auto-generated method stub
+									return m.getFormaPagamento();
+								}
+
+								@Override
+								public String getNome() {
+									// TODO Auto-generated method stub
+									return m.getFormaPagamento().toString();
+								}
+								
+								@Override
+								public String toString() {
+									
+									return this.getNome();
+									
+								}
+
+							});
+							p.setVencimento(m.getVencimento());
+							p.setValor(m.getValor());
+
+							return p;
+
+						}).collect(Collectors.toList());
+
+			}
 
 			parametros.put("qrCode", qrCode);
 			parametros.put("logo", img);
@@ -150,7 +200,7 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 			parametros.put("chave", chave);
 			parametros.put("numeroSat", numeroSat);
 			parametros.put("troco", troco);
-			parametros.put("formaPagamento", formaPagamento);
+			parametros.put("formaPagamento", "");
 			parametros.put("valorPagamento", valorPagamento);
 			parametros.put("valorImpostos", impostosAproximados);
 			parametros.put("subReportPagamentos", subPagamentos);
@@ -160,7 +210,7 @@ public class GeradorCupomSATModelo1 implements GeradorCupomSAT {
 
 			JasperPrint jp = JasperFillManager.fillReport(jr, parametros, jrd);
 
-			JasperViewer.viewReport(jp,false);
+			JasperViewer.viewReport(jp, false);
 
 		} catch (Exception ex) {
 

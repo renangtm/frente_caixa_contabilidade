@@ -2,13 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cupom_modelo_1" pageWidth="200" pageHeight="600" whenNoDataType="AllSectionsNoDetail" columnWidth="180" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" isTitleNewPage="true" isSummaryNewPage="true" isSummaryWithPageHeaderAndFooter="true" isIgnorePagination="true" uuid="65be634f-6951-47d9-b217-1c9c7b7df113">
 	<property name="ireport.zoom" value="2.357947691000035"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="368"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="logo" class="java.lang.Object"/>
 	<parameter name="nomeEmpresa" class="java.lang.String"/>
 	<parameter name="cnpjEmpresa" class="java.lang.String"/>
 	<parameter name="ieEmpresa" class="java.lang.String"/>
 	<parameter name="cidadeEmpresa" class="java.lang.String"/>
-	<parameter name="total" class="java.lang.Double"/>
 	<parameter name="ruaEmpresa" class="java.lang.String"/>
 	<parameter name="cepEmpresa" class="java.lang.String"/>
 	<parameter name="caixa" class="java.lang.String"/>
@@ -127,26 +126,12 @@
 				</textElement>
 				<text><![CDATA[Gerente:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="42" y="68" width="136" height="17" uuid="d4152c9f-7c9a-4d62-a479-5b610cbbd7d4"/>
-				<textElement verticalAlignment="Middle">
-					<font size="7" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["R$ "+new DecimalFormat("#,##0.00").format($P{total})]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="0" y="68" width="42" height="17" uuid="cda68789-0e6d-4449-a68b-cb530ef330be"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<text><![CDATA[Valor:]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="0" y="1" width="178" height="16" uuid="1f375e43-a9e3-4c80-8551-f61f5c0d9ceb"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Sangria]]></text>
+				<text><![CDATA[Relatorio de Reducao]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="85" width="42" height="17" uuid="9480a1aa-fb7c-43dd-8368-1043c876c901"/>

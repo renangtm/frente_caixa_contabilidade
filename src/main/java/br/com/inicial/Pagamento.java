@@ -3,16 +3,16 @@ package br.com.inicial;
 import java.util.Calendar;
 
 import br.com.cheque.Cheque;
-import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Vencimento;
 import br.com.produto.RetiradaValePresente;
+import br.com.venda.FormaPagamento;
 
 //Classe auxiliar
 public class Pagamento {
 	
 	public double valor;
 	public Calendar data;
-	public FormaPagamentoNota formaPagamento;
+	public FormaPagamento formaPagamento;
 	public Vencimento vencimento;
 	public Cheque cheque;
 	public RetiradaValePresente retirada;
@@ -29,10 +29,10 @@ public class Pagamento {
 	public void setData(Calendar data) {
 		this.data = data;
 	}
-	public FormaPagamentoNota getFormaPagamento() {
+	public FormaPagamento getFormaPagamento() {
 		return formaPagamento;
 	}
-	public void setFormaPagamento(FormaPagamentoNota formaPagamento) {
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
 		this.formaPagamento = formaPagamento;
 	}
 	public Vencimento getVencimento() {

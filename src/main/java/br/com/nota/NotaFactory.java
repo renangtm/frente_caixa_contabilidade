@@ -12,13 +12,12 @@ import br.com.venda.Venda;
 public class NotaFactory {
 
 	private double valorMeioPagamento;
-	private br.com.venda.FormaPagamento fp;
 	private Venda venda;
 	private Transportadora transportadora;
 
 	private int prazoPagamento;
 	private int parcelas;
-	
+
 	public int getParcelas() {
 		return parcelas;
 	}
@@ -43,14 +42,6 @@ public class NotaFactory {
 		this.transportadora = transportadora;
 	}
 
-	public br.com.venda.FormaPagamento getFp() {
-		return fp;
-	}
-
-	public void setFp(br.com.venda.FormaPagamento fp) {
-		this.fp = fp;
-	}
-
 	public Venda getVenda() {
 		return venda;
 	}
@@ -63,7 +54,7 @@ public class NotaFactory {
 
 		List<Nota> lst = new ArrayList<Nota>();
 
-		if (this.fp != null && this.venda != null) {
+		if (this.venda != null) {
 
 			if (this.venda.getProdutos().stream().filter(p -> p.getQuantidade() > 0).count() == 0) {
 
@@ -73,19 +64,11 @@ public class NotaFactory {
 
 			Nota nota = new Nota();
 
-			if (this.fp.codigoCredenciadoraCartao() >= 0) {
-
-				nota.setCredenciadoraCartao(this.fp.codigoCredenciadoraCartao());
-				nota.setCnpjCredenciadoraCartao(this.fp.cnpjCredenciadoraCartao());
-
-			}
-
 			nota.setData_emissao(Calendar.getInstance());
 			nota.setData_saida_entrada(Calendar.getInstance());
 			nota.setDestinatario(this.venda.getCliente());
 			nota.setEmitente(venda.getEmpresa().getPj());
 			nota.setEmpresa(this.venda.getEmpresa());
-			nota.setForma_pagamento(this.fp.getFormaPagamento());
 			nota.setModelo(ModeloNota.NFCE);
 
 			OperacaoLogistica op = OperacaoLogistica.VENDA_DENTRO_ESTADO;
@@ -105,21 +88,13 @@ public class NotaFactory {
 					this.venda.getProdutos().stream().filter(p -> p.getQuantidade() > 0).collect(Collectors.toList())
 							.get(0).getProduto().getCategoria().getTabelaCfop().getCFOP(op).getDescricao());
 
-			if (this.fp.getFormaPagamento().equals(FormaPagamentoNota.DINHEIRO)) {
+			if (this.valorMeioPagamento == 0) {
 
-				if (this.valorMeioPagamento == 0) {
-
-					throw new RuntimeException("Pagamento no dinheiro, mas nao informado o valor do meio de pagamento");
-
-				}
-
-				nota.setValorMeioDePagamento(this.valorMeioPagamento);
-
-			} else {
-
-				nota.setValorMeioDePagamento(venda.getTotal());
+				throw new RuntimeException("Pagamento no dinheiro, mas nao informado o valor do meio de pagamento");
 
 			}
+
+			nota.setValorMeioDePagamento(this.valorMeioPagamento);
 
 			nota.setObservacoes("Nota emitida referente a venda da empresa " + venda.getEmpresa().getPj().getNome());
 

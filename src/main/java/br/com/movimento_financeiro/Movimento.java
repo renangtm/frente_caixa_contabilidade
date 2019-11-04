@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 
 import br.com.banco.Banco;
 import br.com.caixa.ExpedienteCaixa;
-import br.com.caixa.Sangria;
+import br.com.caixa.Reducao;
 import br.com.historico.Historico;
 import br.com.nota.FormaPagamentoNota;
 import br.com.nota.Vencimento;
@@ -61,7 +61,7 @@ public class Movimento {
 	private FormaPagamentoNota formaPagamento;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
-	private Sangria sangria;
+	private Reducao reducao;
 	
 	
 	@Column
@@ -82,15 +82,15 @@ public class Movimento {
 	
 	
 	
-	public Sangria getSangria() {
-		return sangria;
+	public Reducao getReducao() {
+		return reducao;
 	}
 
 
 
 
-	public void setSangria(Sangria sangria) {
-		this.sangria = sangria;
+	public void setReducao(Reducao reducao) {
+		this.reducao = reducao;
 	}
 
 

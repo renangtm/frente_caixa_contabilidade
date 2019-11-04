@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import br.com.caixa.Reposicao;
 import br.com.caixa.Sangria;
+import br.com.caixa.Reducao;
 import br.com.movimento_financeiro.Movimento;
 import br.com.nota.FormaPagamentoNota;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -23,42 +24,40 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 
-public class GeradorCupomSangria {
+public class GeradorCupomReducao {
 
-	public void gerarCupom(Sangria sangria) throws JRException, IOException {
+	public void gerarCupom(Reducao reducao) throws JRException, IOException {
 
 		JasperReport jr = JasperCompileManager.compileReport(
-				GeradorCupomSATModelo1.class.getClassLoader().getResourceAsStream("icones/sangria.jrxml"));
+				GeradorCupomSATModelo1.class.getClassLoader().getResourceAsStream("icones/reducao.jrxml"));
 
 		JasperReport subSangria  = JasperCompileManager.compileReport(
-				GeradorCupomSATModelo1.class.getClassLoader().getResourceAsStream("icones/subSangria.jrxml"));
+				GeradorCupomSATModelo1.class.getClassLoader().getResourceAsStream("icones/subReducao.jrxml"));
 		
 		BufferedImage img = ImageIO
-				.read(new ByteArrayInputStream(sangria.getExpediente().getCaixa().getEmpresa().getLogo().getArquivo()));
+				.read(new ByteArrayInputStream(reducao.getExpediente().getCaixa().getEmpresa().getLogo().getArquivo()));
 
-		String nomeEmpresa = sangria.getExpediente().getCaixa().getEmpresa().getPj().getNome();
-		String cnpjEmpresa = sangria.getExpediente().getCaixa().getEmpresa().getPj().getCnpj();
-		String ieEmpresa = sangria.getExpediente().getCaixa().getEmpresa().getPj().getInscricao_estadual();
-		String cidadeEmpresa = sangria.getExpediente().getCaixa().getEmpresa().getPj().getEndereco().getCidade()
+		String nomeEmpresa = reducao.getExpediente().getCaixa().getEmpresa().getPj().getNome();
+		String cnpjEmpresa = reducao.getExpediente().getCaixa().getEmpresa().getPj().getCnpj();
+		String ieEmpresa = reducao.getExpediente().getCaixa().getEmpresa().getPj().getInscricao_estadual();
+		String cidadeEmpresa = reducao.getExpediente().getCaixa().getEmpresa().getPj().getEndereco().getCidade()
 				.getNome();
-		String ruaEmpresa = sangria.getExpediente().getCaixa().getEmpresa().getPj().getEndereco().getRua();
-		String cepEmpresa = sangria.getExpediente().getCaixa().getEmpresa().getPj().getEndereco().getCep();
+		String ruaEmpresa = reducao.getExpediente().getCaixa().getEmpresa().getPj().getEndereco().getRua();
+		String cepEmpresa = reducao.getExpediente().getCaixa().getEmpresa().getPj().getEndereco().getCep();
 
-		String operador = sangria.getExpediente().getUsuario().getPf().getNome() + " - Caixa: "
-				+ sangria.getExpediente().getCaixa().getNumero();
-		String gerente = sangria.getGerente().getPf().getNome();
+		String operador = reducao.getExpediente().getUsuario().getPf().getNome() + " - Caixa: "
+				+ reducao.getExpediente().getCaixa().getNumero();
+		String gerente = reducao.getGerente().getPf().getNome();
 
-		double total = sangria.getValor();
-		
 		double totalMovimentado = 0;
 
-		double saldoInicial = sangria.getSaldo_inicial();
+		double saldoInicial = reducao.getSaldo_inicial();
 
 		double finalCaixa = saldoInicial;
 		
 		Map<String, ItemSangria> itens = new HashMap<String, ItemSangria>();
 
-		for (Movimento m : sangria.getMovimentos()) {
+		for (Movimento m : reducao.getMovimentos()) {
 
 			String str = m.getFormaPagamento().toString();
 
@@ -86,7 +85,7 @@ public class GeradorCupomSangria {
 			
 		}
 
-		for (Reposicao m : sangria.getReposicoes()) {
+		for (Reposicao m : reducao.getReposicoes()) {
 
 			String str = "REPOSICAO";
 
@@ -109,7 +108,29 @@ public class GeradorCupomSangria {
 			
 		}
 		
-		finalCaixa -= sangria.getValor();
+		for (Sangria m : reducao.getSangrias()) {
+
+			String str = "SANGRIA";
+
+			ItemSangria it = itens.get(str);
+
+			if (it == null) {
+
+				it = new ItemSangria();
+				it.setTipo(str);
+				itens.put(str, it);
+
+			}
+
+			MovimentoSangria ms = new MovimentoSangria(m);
+
+			finalCaixa += m.getValor();
+			totalMovimentado += m.getValor();
+			it.setTotal(it.getTotal() + m.getValor());
+			it.getMovimentos().add(ms);
+			
+		}
+		
 		
 		List<ItemSangria> litens = new ArrayList<ItemSangria>(itens.values());
 		
@@ -128,7 +149,6 @@ public class GeradorCupomSangria {
 		parametros.put("cidadeEmpresa", cidadeEmpresa);
 		parametros.put("ruaEmpresa", ruaEmpresa);
 		parametros.put("cepEmpresa", cepEmpresa);
-		parametros.put("total", total);
 		parametros.put("caixa", operador);
 		parametros.put("gerente", gerente);
 		parametros.put("saldoInicial", saldoInicial);
