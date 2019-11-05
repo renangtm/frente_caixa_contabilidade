@@ -60,6 +60,10 @@ public class XML {
 
 	@Column
 	private boolean vistoSistema;
+	
+	@Enumerated(EnumType.STRING)
+	@Column
+	private TipoVisto tipoVisto;
 
 	@Transient
 	private Object conversionCache;
@@ -100,6 +104,24 @@ public class XML {
 
 		}
 
+	}
+
+	
+	
+	public TipoVisto getTipoVisto() {
+		return tipoVisto;
+	}
+
+	public void setTipoVisto(TipoVisto tipoVisto) {
+		this.tipoVisto = tipoVisto;
+	}
+
+	public Object getConversionCache() {
+		return conversionCache;
+	}
+
+	public void setConversionCache(Object conversionCache) {
+		this.conversionCache = conversionCache;
 	}
 
 	public Object getObjetoReferente() throws JAXBException {

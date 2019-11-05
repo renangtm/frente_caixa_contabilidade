@@ -41,6 +41,11 @@ public class GetDocumentosEmpresasRTC {
 
 			for (Empresa empresa : serv.getEmpresas("")) {
 
+				if(empresa.getParametrosEmissao().getCertificadoDigital() == null){
+					System.out.println(empresa.getPj().getNome()+"------------------");
+					continue;
+				}
+				
 				Protocol.registerProtocol("https",
 						new Protocol("https",
 								new TLSv12SocketFactory(

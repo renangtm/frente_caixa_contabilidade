@@ -46,9 +46,11 @@ public class XMLService implements Service<XML> {
 	public List<XML> getXMLsNaoVistadosUsuario(Empresa empresa) {
 
 		Query q = this.et.createQuery(
-				"SELECT x FROM XML x WHERE x.empresa = :empresa AND x.visto = false AND (x.tipo = :tipo1 OR x.tipo = :tipo2)");
+				"SELECT x FROM XML x WHERE x.empresa = :empresa AND (x.visto = false OR (x.tipoVisto IN (:visto1,:visto2))) AND (x.tipo = :tipo1 OR x.tipo = :tipo2)");
 		q.setParameter("tipo1", TipoXML.CTE);
 		q.setParameter("tipo2", TipoXML.NFE);
+		q.setParameter("visto1", TipoVisto.DESCONHECIMENTO_OPERACAO);
+		q.setParameter("visto2", TipoVisto.OPERACAO_NAOREALIZADA);
 		q.setParameter("empresa", empresa);
 
 		return (List<XML>) (List<?>) q.getResultList();

@@ -486,7 +486,7 @@ public class FrenteCaixa extends Modulo {
 			this.txtDescricaoProduto.setText(this.produtoSelecionado.getProduto().getNome());
 			this.txtQuantidade.setText((this.produtoSelecionado.getQuantidade() + "").replaceAll("\\.", ",") + " "
 					+ this.produtoSelecionado.getTipoQuantidade().toString());
-			this.txtValorUnitario.setText((this.produtoSelecionado.getValor() + "").replaceAll("\\.", ","));
+			this.txtValorUnitario.setText((new BigDecimal(this.produtoSelecionado.getValor()).setScale(2,RoundingMode.HALF_UP) + "").toString().replaceAll("\\.", ","));
 
 			this.txtSubTotal.setText(
 					(new BigDecimal(this.produtoSelecionado.getValor() * this.produtoSelecionado.getQuantidade())
