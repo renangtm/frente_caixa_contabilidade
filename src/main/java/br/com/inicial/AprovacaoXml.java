@@ -38,7 +38,6 @@ import br.com.pessoa.PessoaJuridica;
 import br.com.procNFe.TNFe.InfNFe.Cobr.Dup;
 import br.com.procNFe.TNFe.InfNFe.Det;
 import br.com.procNFe.TNfeProc;
-import br.com.processosComNFe.UtilidadesNFE;
 import br.com.transportadora.Transportadora;
 import br.com.usuario.Usuario;
 import br.com.utilidades.ListModelGenerica;
@@ -49,7 +48,6 @@ import javax.swing.JButton;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -156,7 +154,7 @@ public class AprovacaoXml extends Modulo {
 		this.btManifestar.addActionListener(a -> {
 
 			XML xml = this.model.getListaBase().get(this.tblNcm.getSelectedRow());
-
+			/*
 			try {
 
 				Object obj = xml.getObjetoReferente();
@@ -375,6 +373,7 @@ public class AprovacaoXml extends Modulo {
 					
 				}
 				
+				
 
 			} catch (JAXBException | ParseException | DatatypeConfigurationException e) {
 
@@ -382,6 +381,8 @@ public class AprovacaoXml extends Modulo {
 				return;
 
 			}
+			
+			*/
 
 			xml.setTipoVisto(TipoVisto.IMPORTADA);
 			xml.setVisto(true);

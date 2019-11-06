@@ -34,6 +34,9 @@ public class Pessoa {
 	private String email;
 	
 	@Column
+	private String contaContabil;
+	
+	@Column
 	private String whatsapp;
 	
 	@Column
@@ -55,6 +58,18 @@ public class Pessoa {
 	}
 	
 	
+
+	public String getContaContabil() {
+		return contaContabil;
+	}
+
+
+
+	public void setContaContabil(String contaContabil) {
+		this.contaContabil = contaContabil;
+	}
+
+
 
 	public Cliente getCliente() {
 		return cliente;

@@ -24,6 +24,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/E0029/Desktop/RtcContabil/RtcContabil/nfe-wsdl-4.00.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/T-Gamer/Desktop/RtcContabilidade/nfe-wsdl-4.00.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -3,10 +3,12 @@ package br.com.venda;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.produto.BandeiraCartaoService;
+
 public class FormaPagamentoVendaService {
 	
 	
-	public List<FormaPagamento> getFormasPagamento(){
+	public List<FormaPagamento> getFormasPagamento(BandeiraCartaoService serv){
 		
 		FormaPagamento cheque = new FormaPagamento() {
 
@@ -108,72 +110,6 @@ public class FormaPagamentoVendaService {
 			
 		};
 		
-		FormaPagamento creditoVisa = new FormaPagamento() {
-
-			public String toString(){
-				
-				return "Credito Visa";
-				
-			}
-			
-			public String getNome() {
-				// TODO Auto-generated method stub
-				return "Credito";
-			}
-
-			@Override
-			public int codigoCredenciadoraCartao() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
-				// TODO Auto-generated method stub
-				return br.com.nota.FormaPagamentoNota.CARTAO_VISA;
-			}
-
-			@Override
-			public String cnpjCredenciadoraCartao() {
-				// TODO Auto-generated method stub
-				return "";
-			}
-			
-		};
-		
-		FormaPagamento creditoMastercard = new FormaPagamento() {
-			
-			public String toString(){
-				
-				return "Credito	Mastercard";
-				
-			}
-
-			public String getNome() {
-				// TODO Auto-generated method stub
-				return "Credito Mastercard";
-			}
-			
-			@Override
-			public int codigoCredenciadoraCartao() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public br.com.nota.FormaPagamentoNota getFormaPagamento() {
-				// TODO Auto-generated method stub
-				return br.com.nota.FormaPagamentoNota.CARTAO_MASTERCARD;
-			}
-
-			@Override
-			public String cnpjCredenciadoraCartao() {
-				// TODO Auto-generated method stub
-				return "";
-			}
-			
-		};
-		
 		FormaPagamento debitoMastercard = new FormaPagamento() {
 			
 			public String toString(){
@@ -243,11 +179,48 @@ public class FormaPagamentoVendaService {
 		ArrayList<FormaPagamento> fp = new ArrayList<FormaPagamento>();
 		fp.add(dinheiro);
 		fp.add(debitoVisa);
-		fp.add(creditoVisa);
 		fp.add(debitoMastercard);
-		fp.add(creditoMastercard);
 		fp.add(cheque);
 		fp.add(valePresente);
+		
+		serv.getElementos(0, 1000, "", "").stream().forEach(a->{
+			
+			FormaPagamento f = new FormaPagamento() {
+				
+				public String toString(){
+					
+					return a.getNome()+" Credito";
+					
+				}
+
+				public String getNome() {
+					// TODO Auto-generated method stub
+					return this.toString();
+				}
+				
+				@Override
+				public int codigoCredenciadoraCartao() {
+					// TODO Auto-generated method stub
+					return 0;
+				}
+
+				@Override
+				public br.com.nota.FormaPagamentoNota getFormaPagamento() {
+					// TODO Auto-generated method stub
+					return br.com.nota.FormaPagamentoNota.CARTAO_VISA;
+				}
+
+				@Override
+				public String cnpjCredenciadoraCartao() {
+					// TODO Auto-generated method stub
+					return a.getCnpjCredenciadora();
+				}
+				
+			};
+			
+			fp.add(f);
+			
+		});
 		
 		return fp;
 		

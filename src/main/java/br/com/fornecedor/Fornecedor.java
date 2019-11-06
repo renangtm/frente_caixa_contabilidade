@@ -19,22 +19,22 @@ import br.com.pessoa.PessoaJuridica;
 public class Fornecedor {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
-	@OneToOne(fetch=FetchType.EAGER,cascade=CascadeType.PERSIST)
-	@JoinColumn(name="id_pessoa")
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "id_pessoa")
 	private PessoaJuridica pj;
-	
-	@OneToMany(mappedBy="fornecedor")
+
+	@OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL)
 	private List<FornecedorXCodigo> codigosEntrada;
 
-	public Fornecedor(){
-		
+	public Fornecedor() {
+
 		this.codigosEntrada = new ArrayList<FornecedorXCodigo>();
-		
+
 	}
-	
+
 	public List<FornecedorXCodigo> getCodigosEntrada() {
 		return codigosEntrada;
 	}
@@ -62,7 +62,5 @@ public class Fornecedor {
 	public void setPj(PessoaJuridica pessoa) {
 		this.pj = pessoa;
 	}
-	
-	
-	
+
 }

@@ -33,6 +33,8 @@ import br.com.produto.Produto;
 import br.com.produto.ProdutoRelatorio;
 import br.com.produto.ProdutoService;
 import br.com.produto.RepresentadorProdutoCompleto;
+import br.com.produto.Tipo;
+import br.com.produto.TipoService;
 import br.com.produto.ValePresente;
 import br.com.quantificacao.TipoQuantidade;
 import br.com.quantificacao.UnidadePeso;
@@ -63,6 +65,7 @@ import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import java.awt.Dimension;
+import javax.swing.JComboBox;
 
 public class Produtos extends Modulo {
 
@@ -76,18 +79,18 @@ public class Produtos extends Modulo {
 
 	private void setProduto(Produto produto) {
 
-		if(produto.getClass().equals(ValePresente.class)) {
-			
+		if (produto.getClass().equals(ValePresente.class)) {
+
 			this.btConfirmar.setEnabled(false);
 			this.btDadosContabeis.setEnabled(false);
-			
-		}else {
-			
+
+		} else {
+
 			this.btConfirmar.setEnabled(true);
 			this.btDadosContabeis.setEnabled(true);
-			
+
 		}
-		
+
 		if (this.produto != null) {
 
 			try {
@@ -120,6 +123,12 @@ public class Produtos extends Modulo {
 		this.txtCusto.setValue(produto.getCusto());
 		this.txtPeso.setValue(produto.getPeso());
 		this.txtVolume.setValue(produto.getVolume());
+
+		if (this.produto.getTipoProduto() != null) {
+
+			this.cboTipo.setSelectedItem(this.produto.getTipoProduto());
+
+		}
 
 		if (produto.getNcm() != null)
 			this.txtNcm.setText(produto.getNcm().getNumero());
@@ -190,6 +199,8 @@ public class Produtos extends Modulo {
 
 	private Empresa empresa;
 
+	private JComboBox<Tipo> cboTipo;
+
 	public void init(Usuario operador) {
 
 		this.setTitle(operador.getPf().getEmpresa().getPj().getNome() + " - Operador: " + operador.getPf().getNome()
@@ -202,6 +213,13 @@ public class Produtos extends Modulo {
 
 		ProdutoService ps = new ProdutoService(et);
 		ps.setEmpresa(this.empresa);
+
+		TipoService ts = new TipoService(et);
+		ts.setEmpresa(this.empresa);
+
+		List<Tipo> tipos = ts.getElementos(0, 1000, "", "");
+
+		this.cboTipo.setModel(new DefaultComboBoxModel<Tipo>(tipos.toArray(new Tipo[tipos.size()])));
 
 		this.grProdutos = new GerenciadorLista<Produto>(Produto.class, this.tblProdutos, ps,
 				new ProvedorDeEventos<Produto>() {
@@ -388,16 +406,16 @@ public class Produtos extends Modulo {
 			Categorias c = new Categorias(this.produto.getCategoria(), this.et);
 			c.init(this.operador);
 			c.setVisible(true);
-			
-			((JDesktopPane)this.getParent()).add(c);
-			
+
+			((JDesktopPane) this.getParent()).add(c);
+
 			try {
 				c.setSelected(true);
 			} catch (PropertyVetoException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			c.centralizar();
 
 		});
@@ -420,28 +438,26 @@ public class Produtos extends Modulo {
 				psr.setEmpresa(this.empresa);
 
 				this.btGerarRelatorio.setEnabled(false);
-				
-				Loading.getLoading(()->{
-					
+
+				Loading.getLoading(() -> {
+
 					List<ProdutoRelatorio> produtos = psr.getProdutoRelatorio(filtro, inicio, fim);
 
 					try {
-					
+
 						new GeradorRelatorioProdutos().gerarReltorio(produtos, this.empresa, inicio, fim);
-					
+
 					} catch (Exception e1) {
-						
+
 						e1.printStackTrace();
 						erro("Ocorreu um problema ao gerar");
-						
+
 					}
-					
+
 					this.btGerarRelatorio.setEnabled(true);
-					
+
 				});
-				
-				
-				
+
 			} catch (Exception ex) {
 
 				erro("Ocorreu um problema ao gerar o reltorio");
@@ -479,6 +495,7 @@ public class Produtos extends Modulo {
 
 				}
 
+				produto.setTipoProduto((Tipo) cboTipo.getSelectedItem());
 				produto.setNome(txtNome.getText());
 				produto.setCodigo_barra(txtCodigoBarra.getText());
 				produto.setValor(((Number) txtValor.getValue()).doubleValue());
@@ -647,12 +664,17 @@ public class Produtos extends Modulo {
 
 		txtPorcentagemLoja = new JFormattedTextField();
 
+		cboTipo = new JComboBox<Tipo>();
+
 		javax.swing.GroupLayout gl_pnlInfoProd = new javax.swing.GroupLayout(pnlInfoProd);
 		gl_pnlInfoProd.setHorizontalGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING).addGroup(gl_pnlInfoProd
 				.createSequentialGroup().addContainerGap()
-				.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_pnlInfoProd.createSequentialGroup().addComponent(jLabel4).addGap(18)
-								.addComponent(txtNome, 257, 257, 257).addContainerGap())
+								.addComponent(txtNome, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(cboTipo, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+								.addContainerGap())
 						.addGroup(gl_pnlInfoProd.createSequentialGroup()
 								.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_pnlInfoProd.createSequentialGroup().addComponent(jLabel6)
@@ -665,7 +687,7 @@ public class Produtos extends Modulo {
 												.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(txtCusto,
 														GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)))
 								.addGap(10))
-						.addGroup(Alignment.TRAILING, gl_pnlInfoProd.createSequentialGroup().addGroup(gl_pnlInfoProd
+						.addGroup(gl_pnlInfoProd.createSequentialGroup().addGroup(gl_pnlInfoProd
 								.createParallelGroup(Alignment.TRAILING)
 								.addGroup(gl_pnlInfoProd.createSequentialGroup().addComponent(btDadosContabeis)
 										.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -673,13 +695,13 @@ public class Produtos extends Modulo {
 												.addGroup(gl_pnlInfoProd.createSequentialGroup()
 														.addComponent(lblPorcentagemLoja, GroupLayout.PREFERRED_SIZE,
 																101, GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(ComponentPlacement.RELATED, 12,
+														.addPreferredGap(ComponentPlacement.RELATED, 24,
 																Short.MAX_VALUE)
 														.addComponent(txtPorcentagemLoja, GroupLayout.PREFERRED_SIZE,
 																96, GroupLayout.PREFERRED_SIZE))
 												.addGroup(gl_pnlInfoProd.createSequentialGroup()
 														.addComponent(chkApareceLoja).addPreferredGap(
-																ComponentPlacement.RELATED, 0, Short.MAX_VALUE))))
+																ComponentPlacement.RELATED, 112, Short.MAX_VALUE))))
 								.addGroup(gl_pnlInfoProd.createSequentialGroup().addComponent(jLabel5)
 										.addPreferredGap(ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
 										.addComponent(txtNcm, GroupLayout.PREFERRED_SIZE, 198,
@@ -687,36 +709,40 @@ public class Produtos extends Modulo {
 										.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnBtncm,
 												GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
 								.addGap(28)))));
-		gl_pnlInfoProd.setVerticalGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING).addGroup(gl_pnlInfoProd
-				.createSequentialGroup().addContainerGap()
-				.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE).addComponent(jLabel4).addComponent(
-						txtNome, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE).addComponent(jLabel5)
-						.addComponent(txtNcm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnBtncm, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(gl_pnlInfoProd
-						.createParallelGroup(Alignment.BASELINE).addComponent(jLabel6).addComponent(txtCodigoBarra,
-								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(ComponentPlacement.RELATED)
-				.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE).addComponent(jLabel7)
-						.addComponent(txtCusto, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addComponent(jLabel8).addComponent(txtValor, GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGap(18)
-				.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
-						.addComponent(btDadosContabeis, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-						.addGroup(gl_pnlInfoProd.createSequentialGroup()
-								.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblPorcentagemLoja).addComponent(txtPorcentagemLoja,
-												GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(chkApareceLoja)))
-				.addContainerGap()));
+		gl_pnlInfoProd.setVerticalGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnlInfoProd.createSequentialGroup().addContainerGap()
+						.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE).addComponent(jLabel4)
+								.addComponent(txtNome, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(cboTipo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE).addComponent(jLabel5)
+								.addComponent(txtNcm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnBtncm, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE).addComponent(jLabel6)
+								.addComponent(txtCodigoBarra, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE).addComponent(jLabel7)
+								.addComponent(txtCusto, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(jLabel8).addComponent(txtValor, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(18)
+						.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.LEADING)
+								.addComponent(btDadosContabeis, GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+								.addGroup(gl_pnlInfoProd.createSequentialGroup()
+										.addGroup(gl_pnlInfoProd.createParallelGroup(Alignment.BASELINE)
+												.addComponent(lblPorcentagemLoja).addComponent(txtPorcentagemLoja,
+														GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+												Short.MAX_VALUE)
+										.addComponent(chkApareceLoja)))
+						.addContainerGap()));
 		pnlInfoProd.setLayout(gl_pnlInfoProd);
 
 		jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Imagem"));
@@ -1057,5 +1083,4 @@ public class Produtos extends Modulo {
 	private JLabel lblFim;
 	private JFormattedTextField txtFim;
 	private JButton btGerarRelatorio;
-
 }

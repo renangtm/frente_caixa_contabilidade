@@ -33,6 +33,7 @@ import br.com.nota.Nota;
 import br.com.nota.NotaFactory;
 import br.com.nota.NotaService;
 import br.com.operacao.Operacao;
+import br.com.produto.BandeiraCartaoService;
 import br.com.produto.RetiradaValePresente;
 import br.com.produto.ValePresente;
 import br.com.produto.ValePresenteService;
@@ -597,7 +598,10 @@ public class SelecaoFormaPagamento extends JDialog {
 
 		FormaPagamentoVendaService serv = new FormaPagamentoVendaService();
 
-		this.pg = serv.getFormasPagamento();
+		BandeiraCartaoService sb = new BandeiraCartaoService(et);
+		sb.setEmpresa(this.venda.getEmpresa());
+		
+		this.pg = serv.getFormasPagamento(sb);
 
 		this.selecionada = this.pg.get(0);
 		getContentPane().setLayout(null);

@@ -194,6 +194,8 @@ public class CadastroPessoa extends Modulo {
 			
 			this.txtRg.setText(pf.getRg());
 			
+			this.txtContaContabil.setText(pf.getContaContabil());
+			
 			this.txtSkype.setText(pf.getSkype());
 			
 			this.txtWhatsapp.setValue(pf.getWhatsapp());
@@ -239,6 +241,8 @@ public class CadastroPessoa extends Modulo {
 			this.txtRua.setText((pf.getEndereco()==null)?"":pf.getEndereco().getRua());
 			
 			this.txtCep.setValue((pf.getEndereco()==null)?"":pf.getEndereco().getCep());
+			
+			this.txtContaContabil.setText(pf.getContaContabil());
 			
 			this.txtBairro.setText((pf.getEndereco()==null)?"":pf.getEndereco().getBairro());
 			
@@ -352,6 +356,7 @@ public class CadastroPessoa extends Modulo {
 				pf.setTelefone(this.txtTelefone.getText());
 				pf.setWhatsapp(this.txtWhatsapp.getText());
 				pf.setCpf(this.txtCpf.getText());
+				pf.setContaContabil(this.txtContaContabil.getText());
 				
 				Endereco e = (pf.getEndereco() != null)?pf.getEndereco():new Endereco();
 				
@@ -431,6 +436,7 @@ public class CadastroPessoa extends Modulo {
 				pf.setTelefone(this.txtTelefone.getText());
 				pf.setWhatsapp(this.txtWhatsapp.getText());
 				pf.setCnpj(this.txtCnpj.getText());
+				pf.setContaContabil(this.txtContaContabil.getText());
 				
 				Endereco e = (pf.getEndereco()!=null)?pf.getEndereco():new Endereco();
 				e.setBairro(this.txtBairro.getText());
@@ -512,6 +518,7 @@ public class CadastroPessoa extends Modulo {
 	private JButton btDetalheCliente2;
 	private JButton btDetalheTransp;
 	private JButton btDetalheBanco;
+	private JTextField txtContaContabil;
 	
 	public void init(Usuario usu) {
 
@@ -745,7 +752,7 @@ public class CadastroPessoa extends Modulo {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Contatos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(323, 70, 312, 218);
+		panel_1.setBounds(323, 70, 312, 139);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -1003,5 +1010,13 @@ public class CadastroPessoa extends Modulo {
 		btDetalheBanco = new JButton("...");
 		btDetalheBanco.setBounds(220, 135, 31, 25);
 		panel_3.add(btDetalheBanco);
+		
+		JLabel lblContaContbil = new JLabel("Conta Cont\u00E1bil:");
+		lblContaContbil.setBounds(334, 232, 79, 14);
+		contentPane.add(lblContaContbil);
+		
+		txtContaContabil = new JTextField();
+		txtContaContabil.setBounds(426, 229, 191, 20);
+		contentPane.add(txtContaContabil);
 	}
 }

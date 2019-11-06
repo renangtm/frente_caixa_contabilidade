@@ -397,7 +397,7 @@ public class MenuPrincipal extends TelaFrame {
 			@Override
 			protected Void doInBackground() throws Exception {
 
-				double perc = 5;
+				double perc = 4;
 
 				if ((getHeight() * (perc / 100)) % 1 > 0) {
 

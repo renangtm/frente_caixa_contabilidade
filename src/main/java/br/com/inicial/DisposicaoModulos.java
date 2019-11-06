@@ -24,27 +24,30 @@ public class DisposicaoModulos {
 
 		}
 
-		if(usuario.getPf().getEmpresa().getClass().equals(Contabilidade.class)){
-			
+		if (usuario.getPf().getEmpresa().getClass().equals(Contabilidade.class)) {
+
 			disposicao.add(ControleEmpresa.class);
-			
+
 		}
-		
+
 		if (usuario.getPermissao(TipoPermissao.CADASTRO_PRODUTO).isConsultar()) {
 
 			disposicao.add(Produtos.class);
+
+			disposicao.add(CadastroTipoProduto.class);
 			
 			disposicao.add(CadastroValePresente.class);
+			
+			disposicao.add(CadastroBandeiraCartao.class);
 
 		}
-		
-		
+
 		if (usuario.getPermissao(TipoPermissao.ASSOCIACAO_COMANDA).isConsultar()) {
-			
+
 			disposicao.add(AssociacaoComanda.class);
 
 		}
-		
+
 		if (usuario.getPermissao(TipoPermissao.CADASTRO_CFOP).isConsultar()) {
 
 			disposicao.add(CadastroCFOP.class);
@@ -62,14 +65,13 @@ public class DisposicaoModulos {
 			disposicao.add(CadastroNcm.class);
 
 		}
-		
+
 		if (usuario.getPermissao(TipoPermissao.CONTRATAR_CONTABILIDADE).isConsultar()) {
 
 			disposicao.add(SelecaoContabilidade.class);
 
 		}
-		
-		
+
 		disposicao.add(CadastroCheque.class);
 
 		if (usuario.getPermissao(TipoPermissao.CADASTRO_CODIGO_BARRA).isConsultar()) {
@@ -89,10 +91,13 @@ public class DisposicaoModulos {
 		if (usuario.getPermissao(TipoPermissao.NOTAS).isConsultar()) {
 
 			Object[] menu_notas = new Object[2];
-			menu_notas[0] = "Notas";
+			menu_notas[0] = "Fiscal";
 
 			List<Object> _menu_notas = new ArrayList<Object>();
 			_menu_notas.add(Notas.class);
+
+			if (usuario.getPermissao(TipoPermissao.APROVACAO_XML).isConsultar())
+				_menu_notas.add(AprovacaoXml.class);
 
 			menu_notas[1] = _menu_notas;
 
@@ -107,8 +112,6 @@ public class DisposicaoModulos {
 			_menu_financeiro.add(CadastroOperacao.class);
 		if (usuario.getPermissao(TipoPermissao.FINANCEIRO).isConsultar())
 			_menu_financeiro.add(CadastroMovimento.class);
-		if (usuario.getPermissao(TipoPermissao.APROVACAO_XML).isConsultar())
-			_menu_financeiro.add(AprovacaoXml.class);
 
 		if (_menu_financeiro.size() > 0) {
 

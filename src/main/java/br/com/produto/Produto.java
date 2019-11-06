@@ -48,6 +48,9 @@ public class Produto implements ItemQuantificavel{
 	@Fetch(FetchMode.JOIN)
 	private NCM ncm;
 	
+	@ManyToOne(fetch=FetchType.EAGER)
+	private Tipo tipoProduto;
+	
 	@Column
 	private double custo;
 	
@@ -91,6 +94,16 @@ public class Produto implements ItemQuantificavel{
 	@Column
 	private String imagem;
 	
+	
+	
+	public Tipo getTipoProduto() {
+		return tipoProduto;
+	}
+
+	public void setTipoProduto(Tipo tipoProduto) {
+		this.tipoProduto = tipoProduto;
+	}
+
 	public NCM getNcm() {
 		return ncm;
 	}
